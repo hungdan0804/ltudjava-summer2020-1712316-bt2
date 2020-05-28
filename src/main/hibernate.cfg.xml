@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+        <property name="hibernate.connection.password">123456789</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/project_demo</property>
+        <property name="hibernate.connection.username">root</property>
+	    <mapping class="Object.Student" />
+	    <mapping class="Object.Classes" />
+	    <mapping class="Object.Course" />
+	    <mapping class="Object.CurrentCourse" />
+	    <mapping class="Object.CurrentCourseInfo" />
+	    <mapping class="Object.Schedule" />
+	    <mapping class="Object.Transcript" />
+	    <mapping class="Object.CheckExaminationPaper" />
+	    <mapping class="Object.CheckExaminationPaperInfo" />
+    </session-factory>
+</hibernate-configuration>

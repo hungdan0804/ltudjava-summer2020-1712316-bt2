@@ -2,13 +2,22 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import Object.Student;
+import Util.HibernateUtil;
 import Util.RoundedButton;
 import Util.RoundedPanel;
+import Util.RoundedPasswordField;
 import Util.RoundedTextField;
 import java.awt.Color;
 import java.awt.Image;
@@ -21,18 +30,15 @@ import javax.swing.JTextField;
 
 public class SignIn extends JFrame {
 	private static final long serialVersionUID = 1L;
+	private DashBoard dashboard;
 	private JPanel contentPane;
+	private JTextField usernameField;
+	private JPasswordField passwordField;
+	private JButton signin;
+	
+	
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					SignIn frame = new SignIn();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		
 	}
 
 	public SignIn() {
@@ -69,7 +75,7 @@ public class SignIn extends JFrame {
 		
 		
 		JPanel content = new JPanel();
-		content.setBounds(0, header.getHeight(), contentPane.getWidth(), contentPane.getHeight()*7/8);
+		content.setBounds(0, header.getHeight(), contentPane.getWidth(), contentPane.getHeight()-header.getHeight());
 		contentPane.add(content);
 		content.setLayout(null);
 		
@@ -94,7 +100,7 @@ public class SignIn extends JFrame {
 		username.setBounds(loginform.getWidth()/10, loginform_icon.getY()+loginform_icon.getHeight()+40, loginform.getWidth()*8/10, 20);
 		loginform.add(username);
 		
-		JTextField usernameField = new RoundedTextField(30);
+		usernameField = new RoundedTextField(30);
 		usernameField.setBackground(Color.WHITE);
 		usernameField.setBounds(loginform.getWidth()/10,username.getY()+30,loginform.getWidth()*8/10, 30);
 		loginform.add(usernameField);
@@ -104,12 +110,12 @@ public class SignIn extends JFrame {
 		password.setBounds(loginform.getWidth()/10,usernameField.getY()+50, loginform.getWidth()*8/10, 20);
 		loginform.add(password);
 		
-		JTextField passwordField = new RoundedTextField(30);
+		passwordField = new RoundedPasswordField();
 		passwordField.setBackground(Color.WHITE);
 		passwordField.setBounds(loginform.getWidth()/10,password.getY()+30, loginform.getWidth()*8/10, 30);
 		loginform.add(passwordField);
 		
-		JButton signin = new RoundedButton();
+		signin = new RoundedButton();
 		signin.setFont(new Font("Tahoma", Font.BOLD, 14));
 		signin.setText("\u0110\u0103ng nh\u1EADp");
 		signin.setForeground(new Color(22,72,159));
@@ -122,5 +128,78 @@ public class SignIn extends JFrame {
 		background.setIcon(new ImageIcon(new ImageIcon(SignIn.class.getResource("/img/hcmus_bg.jpg")).getImage().getScaledInstance(contentPane.getWidth(), contentPane.getHeight()*7/8, Image.SCALE_DEFAULT)));
 		content.add(background);
 		
+		submitForm();
+	}
+	
+	public void submitForm() {
+		//press button to submit
+		signin.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(java.awt.event.ActionEvent event) {
+				// TODO Auto-generated method stub
+				Transaction transaction = null;
+				Student student =null;
+		        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+		            // start a transaction
+		            transaction = session.beginTransaction();
+		            // query a student
+		            student = session.get(Student.class,usernameField.getText());
+		            if(student !=null) {
+		            	String myPass=String.valueOf(passwordField.getPassword());
+		            	if(student.getPassword().compareTo(myPass)==0) {
+		            		dashboard=new DashBoard(student);
+		            		dashboard.setVisible(true);
+		            		dispose();
+		            	}
+		            }
+		            // commit transaction
+		            transaction.commit();
+		       } catch (Exception e) {
+		            e.printStackTrace();
+		        }
+			}
+		});
+		//press ennter in password field to submit
+		passwordField.addKeyListener(new KeyListener() {
+			@Override
+			public void keyPressed(KeyEvent event) {
+				// TODO Auto-generated method stub
+				if(event.getKeyCode()==KeyEvent.VK_ENTER) {
+					Transaction transaction = null;
+					Student student =null;
+			        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			            // start a transaction
+			            transaction = session.beginTransaction();
+			            // query a student
+			            student = session.get(Student.class,usernameField.getText());
+			            if(student !=null) {
+			            	String myPass=String.valueOf(passwordField.getPassword());
+			            	if(student.getPassword().compareTo(myPass)==0) {
+			            		dashboard=new DashBoard(student);
+			            		dashboard.setVisible(true);
+			            		dispose();
+			            	}
+			            }
+			            // commit transaction
+			            transaction.commit();
+			       } catch (Exception e) {
+			            e.printStackTrace();
+			        }
+				}		
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}	
+		});
 	}
 }

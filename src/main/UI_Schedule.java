@@ -9,14 +9,15 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.ImageIcon;
@@ -33,16 +34,15 @@ import javax.swing.table.JTableHeader;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import Object.Classes;
 import Object.Course;
 import Object.CurrentCourse;
+import Object.CurrentCourseInfo;
 import Object.Schedule;
 import Object.Student;
 import Util.HeaderRenderer;
 import Util.HibernateUtil;
 import Util.RoundedButton;
-
 import javax.swing.JTable;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -52,6 +52,8 @@ public class UI_Schedule extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Student curStudent;
+	private JLabel Dashboard;
+	private JLabel sign_out;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();//{"STT","MÃ MÔN","TÊN MÔN", "PHÒNG HỌC","THỜI GIAN"};
     private Vector<String> choose_classes = new Vector<>();
@@ -91,7 +93,7 @@ public class UI_Schedule extends JFrame {
 		
 		JLabel icon = new JLabel("");
 		header.add(icon, BorderLayout.WEST);
-		icon.setIcon(new ImageIcon(SignIn.class.getResource("/img/hcmus_icon.png")));
+		icon.setIcon(new ImageIcon(UI_SignIn.class.getResource("/img/hcmus_icon.png")));
 		
 		JLabel title = new JLabel("HCMUS PORTAL",SwingConstants.CENTER);
 		title.setBackground(Color.WHITE);
@@ -112,7 +114,7 @@ public class UI_Schedule extends JFrame {
 		
 		JLabel user_icon = new JLabel("");
 		user_icon.setHorizontalAlignment(SwingConstants.CENTER);
-		user_icon.setIcon(new ImageIcon(new ImageIcon(SignIn.class.getResource("/img/user_icon.png")).getImage().getScaledInstance(navi_header.getWidth()*1/3, navi_header.getHeight()*2/3, Image.SCALE_DEFAULT)));
+		user_icon.setIcon(new ImageIcon(new ImageIcon(UI_SignIn.class.getResource("/img/user_icon.png")).getImage().getScaledInstance(navi_header.getWidth()*1/3, navi_header.getHeight()*2/3, Image.SCALE_DEFAULT)));
 		user_icon.setBounds(0, 0,navigation.getWidth(),navi_header.getHeight()*2/3);
 		user_icon.setOpaque(false);
 		navi_header.add(user_icon);
@@ -131,8 +133,8 @@ public class UI_Schedule extends JFrame {
 		navigation.add(navi_menu);
 		navi_menu.setLayout(new GridLayout(8, 10));
 		
-		JLabel Dashboard = new JLabel("Dashboard");
-		Dashboard.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_1.png")));
+		Dashboard = new JLabel("Dashboard");
+		Dashboard.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_1.png")));
 		Dashboard.setForeground(Color.WHITE);
 		Dashboard.setFont(new Font("Arial", Font.BOLD, 14));
 		Dashboard.setBorder(new EmptyBorder(0,10,0,0));
@@ -143,20 +145,20 @@ public class UI_Schedule extends JFrame {
 		schedule.setForeground(Color.WHITE);
 		schedule.setFont(new Font("Arial", Font.BOLD, 14));
 		schedule.setBorder(new EmptyBorder(0,10,0,0));
-		schedule.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_2.png")));
+		schedule.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_2.png")));
 		schedule.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(schedule);
 		
 		JLabel transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
 		transcripts.setForeground(Color.WHITE);
-		transcripts.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_3.png")));
+		transcripts.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_3.png")));
 		transcripts.setHorizontalAlignment(SwingConstants.LEFT);
 		transcripts.setFont(new Font("Arial", Font.BOLD, 14));
 		transcripts.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(transcripts);
 		
 		JLabel profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
-		profile.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_4.png")));
+		profile.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_4.png")));
 		profile.setFont(new Font("Arial", Font.BOLD, 14));
 		profile.setForeground(Color.WHITE);
 		profile.setHorizontalAlignment(SwingConstants.LEFT);
@@ -164,7 +166,7 @@ public class UI_Schedule extends JFrame {
 		navi_menu.add(profile);
 		
 		JLabel cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
-		cep.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_5.png")));
+		cep.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_5.png")));
 		cep.setHorizontalAlignment(SwingConstants.LEFT);
 		cep.setForeground(Color.WHITE);
 		cep.setFont(new Font("Arial", Font.BOLD, 14));
@@ -175,7 +177,7 @@ public class UI_Schedule extends JFrame {
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
-		list_cep.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_6.png")));
+		list_cep.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_6.png")));
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
@@ -183,15 +185,15 @@ public class UI_Schedule extends JFrame {
 		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
 		list_classes.setForeground(Color.WHITE);
 		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_7.png")));
+		list_classes.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_7.png")));
 		list_classes.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_classes);
 		
-		JLabel sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
+		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
 		sign_out.setForeground(Color.WHITE);
 		sign_out.setHorizontalAlignment(SwingConstants.LEFT);
-		sign_out.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_8.png")));
+		sign_out.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_8.png")));
 		sign_out.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(sign_out);
 		
@@ -237,6 +239,11 @@ public class UI_Schedule extends JFrame {
 		comboBox_year = new JComboBox<String>(choose_year);
 		comboBox_year.setBounds(filter_year.getX()+90, content.getHeight()/7, 90, 20);
 		content.add(comboBox_year);
+		
+		JLabel lblNewLabel = new JLabel("THỜI KHÓA BIỂU");
+		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/20, content.getWidth(), 20);
+		content.add(lblNewLabel);
 		//authentication
 		if(curStudent.getRole()==0) {
 			btn_import = new RoundedButton();
@@ -249,6 +256,24 @@ public class UI_Schedule extends JFrame {
 			importListener();
 		}
 		filterListener();
+		clickListener();
+	}
+	
+	class MListener extends MouseAdapter{
+		 public void mouseClicked(MouseEvent e)  
+		 {  
+			 JLabel choose =(JLabel) e.getSource();
+			 switch(choose.getText()) {
+			 	case "THỜI KHÓA BIỂU": case"Thời khóa biểu": UI_Schedule ui= new UI_Schedule(curStudent); ui.setVisible(true);dispose();break;
+			 	case "Đăng xuất": UI_SignIn ui2= new UI_SignIn();ui2.setVisible(true);dispose();break;
+			 	case "Dashboard": UI_DashBoard ui3= new UI_DashBoard(curStudent);ui3.setVisible(true);dispose();break;
+			 };
+		 }  
+   }
+	
+	private void clickListener() {
+		Dashboard.addMouseListener(new MListener());
+		sign_out.addMouseListener(new MListener());
 	}
 	
 	private void filterListener() {
@@ -257,6 +282,13 @@ public class UI_Schedule extends JFrame {
 		comboBox_classes.addActionListener(new FilterListener());
 	}
 	
+	private Vector<String> getCurrentYear() {
+		Vector<String> res = new Vector<>();
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		res.add(year-1+"-"+year);
+		res.add(year+"-"+(year+1));
+		return res;
+	}
 	
 	private void importListener() {
 		btn_import.addActionListener(new ActionListener() {
@@ -265,14 +297,15 @@ public class UI_Schedule extends JFrame {
 				// TODO Auto-generated method stub				
 				JComboBox<String> jcb = new JComboBox<String>(choose_classes);			
 				JOptionPane.showMessageDialog( null, jcb, "Chọn lớp cần import", JOptionPane.QUESTION_MESSAGE);
-				JComboBox<String> jcb2 = new JComboBox<String>(choose_year);			
+				Vector<String> curYear= getCurrentYear();
+				JComboBox<String> jcb2 = new JComboBox<String>(curYear);			
 				JOptionPane.showMessageDialog( null, jcb2, "Chọn năm học", JOptionPane.QUESTION_MESSAGE);
 				JComboBox<String> jcb3 = new JComboBox<String>(choose_term);			
 				JOptionPane.showMessageDialog( null, jcb3, "Chọn học kỳ", JOptionPane.QUESTION_MESSAGE);
 				if(!choose_classes.contains(jcb.getSelectedItem())) {
 					JOptionPane.showMessageDialog(contentPane, "Lớp này không tồn tại");
 				}else {
-					int choice = JOptionPane.showConfirmDialog(contentPane, "Bấm yes để chọn đường dẫn file !!!", "Import File",
+					int choice = JOptionPane.showConfirmDialog(contentPane,"Lớp: "+jcb.getSelectedItem()+"\nNăm học: "+jcb2.getSelectedItem()+"\nHọc kỳ: "+jcb3.getSelectedItem()+"\nBấm yes để chọn file dữ liệu !!!", "Import File",
 				            JOptionPane.YES_NO_OPTION);
 	
 				    if (choice == JOptionPane.YES_OPTION){
@@ -300,17 +333,27 @@ public class UI_Schedule extends JFrame {
 	private void readFile(String path,String classes,String year,String term) {
 		BufferedReader bfr=null;
 		Transaction transaction = null;
+		Classes t=null;
+		List<String> currentCourseID= new ArrayList<>();
 		String scheduleID =classes+"-"+year+"-"+term;
 		try (Session session = HibernateUtil.getSessionFactory().openSession()){
 			transaction = session.beginTransaction();
+			t=session.get(Classes.class, classes);
+			System.out.println(t.getStudents().toString());
 			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path), Charset.defaultCharset()));
 			String row="";
 			bfr.readLine();//read header
 			while ((row = bfr.readLine()) != null) {
 			    String[] data = row.split(",");
 			    Course course=new Course(data[1],data[2]);
-			    Classes t=new Classes(classes);
+			    currentCourseID.add(data[1]+"-"+classes);
 			    session.save(new CurrentCourse(data[1]+"-"+classes,course,t,data[3],data[4],scheduleID));
+			}
+			for(String id:currentCourseID) {
+				for(Student student:t.getStudents()) {
+					CurrentCourseInfo res= new CurrentCourseInfo(id,student);
+					session.save(res);
+				}
 			}
 			session.save(new Schedule(scheduleID,year,term));
 			transaction.commit();

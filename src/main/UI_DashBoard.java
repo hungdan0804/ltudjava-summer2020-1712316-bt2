@@ -4,33 +4,33 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
 import Object.Student;
 import Util.RoundedLabel;
-import java.awt.Image;
-import java.awt.GridLayout;
 
-
-public class DashBoard extends JFrame{
+public class UI_DashBoard extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private Student curStudent;
 	private JPanel contentPane;
 	private JLabel schedule_box;
+	private JLabel schedule;
+	private JLabel sign_out;
 
 	/**
 	 * Create the frame.
 	 */
-	public DashBoard(Student student) {
+	public UI_DashBoard(Student student) {
 		
 		this.curStudent=student;
 		setResizable(false);
@@ -55,7 +55,7 @@ public class DashBoard extends JFrame{
 		
 		JLabel icon = new JLabel("");
 		header.add(icon, BorderLayout.WEST);
-		icon.setIcon(new ImageIcon(SignIn.class.getResource("/img/hcmus_icon.png")));
+		icon.setIcon(new ImageIcon(UI_SignIn.class.getResource("/img/hcmus_icon.png")));
 		
 		JLabel title = new JLabel("HCMUS PORTAL",SwingConstants.CENTER);
 		title.setBackground(Color.WHITE);
@@ -76,7 +76,7 @@ public class DashBoard extends JFrame{
 		
 		JLabel user_icon = new JLabel("");
 		user_icon.setHorizontalAlignment(SwingConstants.CENTER);
-		user_icon.setIcon(new ImageIcon(new ImageIcon(SignIn.class.getResource("/img/user_icon.png")).getImage().getScaledInstance(navi_header.getWidth()*1/3, navi_header.getHeight()*2/3, Image.SCALE_DEFAULT)));
+		user_icon.setIcon(new ImageIcon(new ImageIcon(UI_SignIn.class.getResource("/img/user_icon.png")).getImage().getScaledInstance(navi_header.getWidth()*1/3, navi_header.getHeight()*2/3, Image.SCALE_DEFAULT)));
 		user_icon.setBounds(0, 0,navigation.getWidth(),navi_header.getHeight()*2/3);
 		user_icon.setOpaque(false);
 		navi_header.add(user_icon);
@@ -96,31 +96,31 @@ public class DashBoard extends JFrame{
 		navi_menu.setLayout(new GridLayout(8, 10));
 		
 		JLabel Dashboard = new JLabel("Dashboard");
-		Dashboard.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_1.png")));
+		Dashboard.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_1.png")));
 		Dashboard.setForeground(Color.WHITE);
 		Dashboard.setFont(new Font("Arial", Font.BOLD, 14));
 		Dashboard.setBorder(new EmptyBorder(0,10,0,0));
 		Dashboard.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(Dashboard);
 		
-		JLabel schedule = new JLabel("Th\u1EDDi kh\u00F3a bi\u1EC3u");
+		schedule = new JLabel("Th\u1EDDi kh\u00F3a bi\u1EC3u");
 		schedule.setForeground(Color.WHITE);
 		schedule.setFont(new Font("Arial", Font.BOLD, 14));
 		schedule.setBorder(new EmptyBorder(0,10,0,0));
-		schedule.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_2.png")));
+		schedule.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_2.png")));
 		schedule.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(schedule);
 		
 		JLabel transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
 		transcripts.setForeground(Color.WHITE);
-		transcripts.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_3.png")));
+		transcripts.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_3.png")));
 		transcripts.setHorizontalAlignment(SwingConstants.LEFT);
 		transcripts.setFont(new Font("Arial", Font.BOLD, 14));
 		transcripts.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(transcripts);
 		
 		JLabel profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
-		profile.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_4.png")));
+		profile.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_4.png")));
 		profile.setFont(new Font("Arial", Font.BOLD, 14));
 		profile.setForeground(Color.WHITE);
 		profile.setHorizontalAlignment(SwingConstants.LEFT);
@@ -128,7 +128,7 @@ public class DashBoard extends JFrame{
 		navi_menu.add(profile);
 		
 		JLabel cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
-		cep.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_5.png")));
+		cep.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_5.png")));
 		cep.setHorizontalAlignment(SwingConstants.LEFT);
 		cep.setForeground(Color.WHITE);
 		cep.setFont(new Font("Arial", Font.BOLD, 14));
@@ -139,7 +139,7 @@ public class DashBoard extends JFrame{
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
-		list_cep.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_6.png")));
+		list_cep.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_6.png")));
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
@@ -147,15 +147,15 @@ public class DashBoard extends JFrame{
 		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
 		list_classes.setForeground(Color.WHITE);
 		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_7.png")));
+		list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
 		list_classes.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_classes);
 		
-		JLabel sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
+		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
 		sign_out.setForeground(Color.WHITE);
 		sign_out.setHorizontalAlignment(SwingConstants.LEFT);
-		sign_out.setIcon(new ImageIcon(DashBoard.class.getResource("/img/navi_icon_8.png")));
+		sign_out.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_8.png")));
 		sign_out.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(sign_out);
 		
@@ -167,7 +167,7 @@ public class DashBoard extends JFrame{
 		home.setLayout(new GridLayout(2, 3,home.getWidth()/13,home.getWidth()/13));
 		
 		schedule_box = new RoundedLabel();
-		schedule_box.setIcon(new ImageIcon(DashBoard.class.getResource("/img/dashboard_icon_1.png")));
+		schedule_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_1.png")));
 		schedule_box.setFont(new Font("Arial", Font.BOLD, 18));
 		schedule_box.setBackground(Color.WHITE);
 		schedule_box.setVerticalTextPosition(SwingConstants.TOP);
@@ -179,7 +179,7 @@ public class DashBoard extends JFrame{
 		JLabel Transcript_box = new RoundedLabel();
 		Transcript_box.setBackground(Color.WHITE);
 		Transcript_box.setText("B\u1EA2NG \u0110I\u1EC2M");
-		Transcript_box.setIcon(new ImageIcon(DashBoard.class.getResource("/img/dashboard_icon_2.png")));
+		Transcript_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_2.png")));
 		Transcript_box.setFont(new Font("Arial", Font.BOLD, 18));
 		Transcript_box.setVerticalTextPosition(SwingConstants.TOP);
 		Transcript_box.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -189,7 +189,7 @@ public class DashBoard extends JFrame{
 		JLabel profile_box = new RoundedLabel();
 		profile_box.setFont(new Font("Arial", Font.BOLD, 18));
 		profile_box.setHorizontalAlignment(SwingConstants.CENTER);
-		profile_box.setIcon(new ImageIcon(DashBoard.class.getResource("/img/dashboard_icon_3.png")));
+		profile_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_3.png")));
 		profile_box.setText("TH\u00D4NG TIN C\u00C1 NH\u00C2N");
 		profile_box.setVerticalTextPosition(SwingConstants.TOP);
 		profile_box.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -200,7 +200,7 @@ public class DashBoard extends JFrame{
 		cep_box.setBackground(Color.WHITE);
 		cep_box.setFont(new Font("Arial", Font.BOLD, 18));
 		cep_box.setHorizontalAlignment(SwingConstants.CENTER);
-		cep_box.setIcon(new ImageIcon(DashBoard.class.getResource("/img/dashboard_icon_4.png")));
+		cep_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_4.png")));
 		cep_box.setText("PH\u00DAC KH\u1EA2O \u0110I\u1EC2M");
 		cep_box.setVerticalTextPosition(SwingConstants.TOP);
 		cep_box.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -210,7 +210,7 @@ public class DashBoard extends JFrame{
 		list_cep_box.setBackground(Color.WHITE);
 		list_cep_box.setFont(new Font("Arial", Font.BOLD, 18));
 		list_cep_box.setHorizontalAlignment(SwingConstants.CENTER);
-		list_cep_box.setIcon(new ImageIcon(DashBoard.class.getResource("/img/dashboard_icon_5.png")));
+		list_cep_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_5.png")));
 		list_cep_box.setText("<html><p>DANH S\u00C1CH <br> PH\u00DAC KH\u1EA2O</p></html>");
 		list_cep_box.setVerticalTextPosition(SwingConstants.TOP);
 		list_cep_box.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -219,16 +219,20 @@ public class DashBoard extends JFrame{
 		JLabel list_classes_box = new RoundedLabel();
 		list_classes_box.setBackground(Color.WHITE);
 		list_classes_box.setFont(new Font("Arial", Font.BOLD, 18));
-		list_classes_box.setIcon(new ImageIcon(DashBoard.class.getResource("/img/dashboard_icon_6.png")));
+		list_classes_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_6.png")));
 		list_classes_box.setHorizontalAlignment(SwingConstants.CENTER);
 		list_classes_box.setText("DANH S\u00C1CH L\u1EDAP");
 		list_classes_box.setVerticalTextPosition(SwingConstants.TOP);
 		list_classes_box.setHorizontalTextPosition(SwingConstants.CENTER);
 		home.add(list_classes_box);
 		
+		clickListener();
+	}
+	
+	private void clickListener() {
 		schedule_box.addMouseListener(new MListener());
 		schedule.addMouseListener(new MListener());
-		
+		sign_out.addMouseListener(new MListener());
 	}
 	
 	private String getLastName(String fullname) {
@@ -241,7 +245,7 @@ public class DashBoard extends JFrame{
 			 JLabel choose =(JLabel) e.getSource();
 			 switch(choose.getText()) {
 			 	case "THỜI KHÓA BIỂU": case"Thời khóa biểu": UI_Schedule ui= new UI_Schedule(curStudent); ui.setVisible(true);dispose();break;
-			 	
+			 	case "Đăng xuất": UI_SignIn ui2= new UI_SignIn();ui2.setVisible(true);dispose();break;
 			 };
 		 }  
     }

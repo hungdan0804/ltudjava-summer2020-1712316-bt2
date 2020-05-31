@@ -28,9 +28,9 @@ import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
-public class SignIn extends JFrame {
+public class UI_SignIn extends JFrame {
 	private static final long serialVersionUID = 1L;
-	private DashBoard dashboard;
+	private UI_DashBoard dashboard;
 	private JPanel contentPane;
 	private JTextField usernameField;
 	private JPasswordField passwordField;
@@ -41,7 +41,7 @@ public class SignIn extends JFrame {
 		
 	}
 
-	public SignIn() {
+	public UI_SignIn() {
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,7 +65,7 @@ public class SignIn extends JFrame {
 		
 		JLabel icon = new JLabel("");
 		header.add(icon, BorderLayout.WEST);
-		icon.setIcon(new ImageIcon(SignIn.class.getResource("/img/hcmus_icon.png")));
+		icon.setIcon(new ImageIcon(UI_SignIn.class.getResource("/img/hcmus_icon.png")));
 		
 		JLabel title = new JLabel("HCMUS PORTAL",SwingConstants.CENTER);
 		title.setBackground(Color.WHITE);
@@ -91,7 +91,7 @@ public class SignIn extends JFrame {
 		slogan.setBounds(0, 10, loginform.getWidth(), loginform.getHeight()/15);
 		loginform.add(slogan);
 		
-		JLabel loginform_icon = new JLabel(new ImageIcon(SignIn.class.getResource("/img/hcmus_icon_1.png")));
+		JLabel loginform_icon = new JLabel(new ImageIcon(UI_SignIn.class.getResource("/img/hcmus_icon_1.png")));
 		loginform_icon.setBounds(0, slogan.getHeight()+slogan.getY(), loginform.getWidth(), 100);
 		loginform.add(loginform_icon);
 		
@@ -125,7 +125,7 @@ public class SignIn extends JFrame {
 		JLabel background = new JLabel("");
 		background.setBounds(0, 0, contentPane.getWidth(), contentPane.getHeight()*7/8);
 		background.setOpaque(true);
-		background.setIcon(new ImageIcon(new ImageIcon(SignIn.class.getResource("/img/hcmus_bg.jpg")).getImage().getScaledInstance(contentPane.getWidth(), contentPane.getHeight()*7/8, Image.SCALE_DEFAULT)));
+		background.setIcon(new ImageIcon(new ImageIcon(UI_SignIn.class.getResource("/img/hcmus_bg.jpg")).getImage().getScaledInstance(contentPane.getWidth(), contentPane.getHeight()*7/8, Image.SCALE_DEFAULT)));
 		content.add(background);
 		
 		submitForm();
@@ -148,7 +148,7 @@ public class SignIn extends JFrame {
 		            if(student !=null) {
 		            	String myPass=String.valueOf(passwordField.getPassword());
 		            	if(student.getPassword().compareTo(myPass)==0) {
-		            		dashboard=new DashBoard(student);
+		            		dashboard=new UI_DashBoard(student);
 		            		dashboard.setVisible(true);
 		            		dispose();
 		            	}
@@ -176,7 +176,7 @@ public class SignIn extends JFrame {
 			            if(student !=null) {
 			            	String myPass=String.valueOf(passwordField.getPassword());
 			            	if(student.getPassword().compareTo(myPass)==0) {
-			            		dashboard=new DashBoard(student);
+			            		dashboard=new UI_DashBoard(student);
 			            		dashboard.setVisible(true);
 			            		dispose();
 			            	}

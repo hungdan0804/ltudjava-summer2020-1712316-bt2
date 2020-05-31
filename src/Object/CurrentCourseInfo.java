@@ -2,6 +2,7 @@ package Object;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +18,8 @@ public class CurrentCourseInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(columnDefinition = "integer auto_increment") 
 	protected int currentCourseInfoID;
 	protected String currentCourse;
 	
@@ -25,9 +27,8 @@ public class CurrentCourseInfo implements Serializable{
 	@JoinColumn (name="studentID")
 	protected Student student;
 
-	public CurrentCourseInfo(int currentCourseInfoID, String currentCourse, Student student) {
+	public CurrentCourseInfo(String currentCourse, Student student) {
 		super();
-		this.currentCourseInfoID = currentCourseInfoID;
 		this.currentCourse = currentCourse;
 		this.student = student;
 	}

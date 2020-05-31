@@ -29,10 +29,9 @@ public class Classes implements Serializable {
 	}
 	
 	
-	public Classes(String _classID, List<Student> _students) {
+	public Classes(String _classID) {
 		super();
 		this.classID = _classID;
-		this.students.addAll(_students);
 	}
 
 

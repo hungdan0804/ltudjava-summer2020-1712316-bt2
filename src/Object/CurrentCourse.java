@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.sun.istack.internal.NotNull;
+
 
 @Entity
 @Table(name="currentcourse",schema="project_demo")
@@ -23,6 +25,9 @@ public class CurrentCourse implements Serializable {
 	@Column(name = "currentCourseID")
 	protected String currentCourseID;
 	protected String location;
+	protected String startingTime;
+	@NotNull
+	protected String scheduleID;
 	
 	@ManyToOne
 	@JoinColumn(name = "course")
@@ -41,14 +46,24 @@ public class CurrentCourse implements Serializable {
 	public CurrentCourse() {
 		
 	}
-	public CurrentCourse(String _currentCourseID,String _location) {
+	public CurrentCourse(String _currentCourseID,Course course,Classes classes,String _location,String _startingTime,String scheduleID) {
 		super();
 		this.currentCourseID = _currentCourseID;
 		this.location = _location;
+		this.startingTime=_startingTime;
+		this.course=course;
+		this.classes=classes;
+		this.scheduleID=scheduleID;
 	}
 	
 	
-
+	
+	public String getScheduleID() {
+		return scheduleID;
+	}
+	public void setScheduleID(String scheduleID) {
+		this.scheduleID = scheduleID;
+	}
 	public Classes getClasses() {
 		return classes;
 	}
@@ -88,4 +103,11 @@ public class CurrentCourse implements Serializable {
 	public void setLocation(String location) {
 		this.location = location;
 	}
+	public String getStartingTime() {
+		return startingTime;
+	}
+	public void setStartingTime(String startingTime) {
+		this.startingTime = startingTime;
+	}
+	
 }

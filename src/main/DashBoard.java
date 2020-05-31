@@ -5,6 +5,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,10 +21,11 @@ import java.awt.Image;
 import java.awt.GridLayout;
 
 
-public class DashBoard extends JFrame {
+public class DashBoard extends JFrame{
 	private static final long serialVersionUID = 1L;
 	private Student curStudent;
 	private JPanel contentPane;
+	private JLabel schedule_box;
 
 	/**
 	 * Create the frame.
@@ -77,7 +82,7 @@ public class DashBoard extends JFrame {
 		navi_header.add(user_icon);
 		
 		
-		JLabel user_name = new JLabel("Ch�o "+getLastName(curStudent.getFullname()));
+		JLabel user_name = new JLabel("Chào "+getLastName(curStudent.getFullname()));
 		user_name.setFont(new Font("Arial", Font.BOLD, 16));
 		user_name.setForeground(Color.WHITE);
 		user_name.setHorizontalAlignment(SwingConstants.CENTER);
@@ -161,7 +166,7 @@ public class DashBoard extends JFrame {
 		contentPane.add(home);
 		home.setLayout(new GridLayout(2, 3,home.getWidth()/13,home.getWidth()/13));
 		
-		JLabel schedule_box = new RoundedLabel();
+		schedule_box = new RoundedLabel();
 		schedule_box.setIcon(new ImageIcon(DashBoard.class.getResource("/img/dashboard_icon_1.png")));
 		schedule_box.setFont(new Font("Arial", Font.BOLD, 18));
 		schedule_box.setBackground(Color.WHITE);
@@ -220,10 +225,24 @@ public class DashBoard extends JFrame {
 		list_classes_box.setVerticalTextPosition(SwingConstants.TOP);
 		list_classes_box.setHorizontalTextPosition(SwingConstants.CENTER);
 		home.add(list_classes_box);
+		
+		schedule_box.addMouseListener(new MListener());
+		schedule.addMouseListener(new MListener());
+		
 	}
 	
 	private String getLastName(String fullname) {
 		String []str = fullname.split(" ");
 		return str[str.length-1];
 	}
+	class MListener extends MouseAdapter{
+		 public void mouseClicked(MouseEvent e)  
+		 {  
+			 JLabel choose =(JLabel) e.getSource();
+			 switch(choose.getText()) {
+			 	case "THỜI KHÓA BIỂU": case"Thời khóa biểu": UI_Schedule ui= new UI_Schedule(curStudent); ui.setVisible(true);dispose();break;
+			 	
+			 };
+		 }  
+    }
 }

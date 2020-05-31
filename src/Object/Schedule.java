@@ -19,15 +19,15 @@ public class Schedule implements Serializable {
 	protected String year;
 	protected String term;
 	
-	@OneToMany(targetEntity=CurrentCourse.class, mappedBy="classes", fetch=FetchType.EAGER)
+	
+	@OneToMany(targetEntity=CurrentCourse.class, mappedBy="scheduleID", fetch=FetchType.EAGER)
 	protected List<CurrentCourse> currentCourses;
 	
-	public Schedule(String scheduleID, String year, String term, Classes classes, List<CurrentCourse> currentCourses) {
+	public Schedule(String scheduleID, String year, String term) {
 		super();
 		this.scheduleID = scheduleID;
 		this.year = year;
 		this.term = term;
-		this.currentCourses = currentCourses;
 	}
 
 

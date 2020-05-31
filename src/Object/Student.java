@@ -22,6 +22,7 @@ public class Student implements Serializable {
 	protected String address;
 	protected String city;
 	protected String district;
+	protected String year;
 	
 	public Student() {
 		
@@ -31,7 +32,7 @@ public class Student implements Serializable {
 	}
 	
 	public Student(String _studentID, String _fullname, String _gender, String _IDCard, String _class, String _password,
-			String _address, String _city, String _district) {
+			String _address, String _city, String _district,String year) {
 		super();
 		this.studentID=_studentID;
 		this.fullname = _fullname;
@@ -43,10 +44,17 @@ public class Student implements Serializable {
 		this.city = _city;
 		this.district = _district;
 		this.role=1;
+		this.year=year;
 	}
 	
 	
 	
+	public String getYear() {
+		return year;
+	}
+	public void setYear(String year) {
+		this.year = year;
+	}
 	public String getStudentID() {
 		return studentID;
 	}

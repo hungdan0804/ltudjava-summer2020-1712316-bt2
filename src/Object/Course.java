@@ -13,16 +13,13 @@ public class Course implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Column(name = "courseID")
 	protected String courseID;
-	
-	@Column(name = "courseName")
 	protected String courseName;
 	
-
 	public Course() {
 		
 	}
+	
 	public Course(String courseID,String courseName) {
 		this.courseID=courseID;
 		this.courseName=courseName;

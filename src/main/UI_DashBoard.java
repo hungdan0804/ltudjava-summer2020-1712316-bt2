@@ -7,8 +7,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import Adapter.MyListener;
 import Object.Student;
 import Util.RoundedLabel;
 
@@ -230,23 +229,13 @@ public class UI_DashBoard extends JFrame {
 	}
 	
 	private void clickListener() {
-		schedule_box.addMouseListener(new MListener());
-		schedule.addMouseListener(new MListener());
-		sign_out.addMouseListener(new MListener());
+		schedule_box.addMouseListener(new MyListener(curStudent,this));
+		schedule.addMouseListener(new MyListener(curStudent,this));
+		sign_out.addMouseListener(new MyListener(curStudent,this));
 	}
 	
 	private String getLastName(String fullname) {
 		String []str = fullname.split(" ");
 		return str[str.length-1];
 	}
-	class MListener extends MouseAdapter{
-		 public void mouseClicked(MouseEvent e)  
-		 {  
-			 JLabel choose =(JLabel) e.getSource();
-			 switch(choose.getText()) {
-			 	case "THỜI KHÓA BIỂU": case"Thời khóa biểu": UI_Schedule ui= new UI_Schedule(curStudent); ui.setVisible(true);dispose();break;
-			 	case "Đăng xuất": UI_SignIn ui2= new UI_SignIn();ui2.setVisible(true);dispose();break;
-			 };
-		 }  
-    }
 }

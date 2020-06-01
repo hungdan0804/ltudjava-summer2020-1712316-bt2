@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -25,7 +26,9 @@ public class CheckExaminationPaperInfo implements Serializable{
 	@JoinColumn (name="studentID")
 	protected Student student;
 	@ManyToOne
-	@JoinColumn(name = "currentCourse")
+	@JoinColumns({
+		@JoinColumn(name = "scheduleID")
+	})
 	protected CurrentCourse currentCourse;
 	protected int cep;
 	protected String columnUpdate;

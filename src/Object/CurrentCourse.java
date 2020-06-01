@@ -3,8 +3,6 @@ package Object;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -13,21 +11,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.sun.istack.internal.NotNull;
-
-
 @Entity
 @Table(name="currentcourse",schema="project_demo")
 public class CurrentCourse implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	@Id
-	@Column(name = "currentCourseID")
+	protected String scheduleID;
 	protected String currentCourseID;
 	protected String location;
 	protected String startingTime;
-	@NotNull
-	protected String scheduleID;
 	
 	@ManyToOne
 	@JoinColumn(name = "course")
@@ -37,8 +30,6 @@ public class CurrentCourse implements Serializable {
 	@JoinColumn(name = "classes")
 	protected Classes classes;
 	
-	@OneToMany(targetEntity=CurrentCourseInfo.class, mappedBy="currentCourse", fetch=FetchType.EAGER)
-	protected List<CurrentCourseInfo> info = new ArrayList<>();
 	
 	@OneToMany(targetEntity=Transcript.class, mappedBy="currentCourse", fetch=FetchType.EAGER)
 	protected List<Transcript> transcipts = new ArrayList<>();
@@ -75,12 +66,6 @@ public class CurrentCourse implements Serializable {
 	}
 	public void setTranscipts(List<Transcript> transcipts) {
 		this.transcipts = transcipts;
-	}
-	public List<CurrentCourseInfo> getInfo() {
-		return info;
-	}
-	public void setInfo(List<CurrentCourseInfo> info) {
-		this.info = info;
 	}
 	public Course getCourse() {
 		return course;

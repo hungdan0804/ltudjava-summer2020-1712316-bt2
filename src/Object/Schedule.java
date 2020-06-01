@@ -29,16 +29,9 @@ public class Schedule implements Serializable {
 		this.year = year;
 		this.term = term;
 	}
-
-
-
-
 	public Schedule() {
 		super();
 	}
-	
-	
-	
 	
 	public String getScheduleID() {
 		return scheduleID;

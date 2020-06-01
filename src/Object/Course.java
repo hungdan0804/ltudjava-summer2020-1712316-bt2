@@ -1,7 +1,6 @@
 package Object;
 
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -18,6 +17,9 @@ public class Course implements Serializable {
 	
 	public Course() {
 		
+	}
+	public Course(String courseID) {
+		this.courseID=courseID;
 	}
 	
 	public Course(String courseID,String courseName) {

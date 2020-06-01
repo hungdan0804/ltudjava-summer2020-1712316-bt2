@@ -1,11 +1,7 @@
 package Object;
 
 import java.io.Serializable;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,39 +14,47 @@ public class CurrentCourseInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(columnDefinition = "integer auto_increment") 
-	protected int currentCourseInfoID;
-	protected String currentCourse;
+	protected String currentCourseInfoID;
 	
+	protected String currentCourse;
+
 	@ManyToOne
-	@JoinColumn (name="studentID")
+	@JoinColumn (name="student")
 	protected Student student;
 
-	public CurrentCourseInfo(String currentCourse, Student student) {
+
+	public CurrentCourseInfo(String currentCourseInfoID, String currentCourse, Student student) {
 		super();
+		this.currentCourseInfoID = currentCourseInfoID;
 		this.currentCourse = currentCourse;
 		this.student = student;
 	}
+
 	public CurrentCourseInfo() {
 	
 	}
 
-	public int getCurrentCourseInfoID() {
+	public String getCurrentCourseInfoID() {
 		return currentCourseInfoID;
 	}
-	public void setCurrentCourseInfoID(int currentCourseInfoID) {
+
+
+
+	public void setCurrentCourseInfoID(String currentCourseInfoID) {
 		this.currentCourseInfoID = currentCourseInfoID;
 	}
 	public String getCurrentCourse() {
 		return currentCourse;
 	}
+
 	public void setCurrentCourse(String currentCourse) {
 		this.currentCourse = currentCourse;
 	}
+
 	public Student getStudent() {
 		return student;
 	}
+
 	public void setStudent(Student student) {
 		this.student = student;
 	}

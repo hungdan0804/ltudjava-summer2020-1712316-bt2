@@ -17,5 +17,6 @@
 	    <mapping class="Object.Transcript" />
 	    <mapping class="Object.CheckExaminationPaper" />
 	    <mapping class="Object.CheckExaminationPaperInfo" />
+	    <mapping class="Object.StudentAndYear" />
     </session-factory>
 </hibernate-configuration>

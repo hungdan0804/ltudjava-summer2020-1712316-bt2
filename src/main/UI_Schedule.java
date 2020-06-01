@@ -34,12 +34,15 @@ import javax.swing.table.JTableHeader;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+
+import Adapter.MyListener;
 import Object.Classes;
 import Object.Course;
 import Object.CurrentCourse;
 import Object.CurrentCourseInfo;
 import Object.Schedule;
 import Object.Student;
+import Object.StudentAndYear;
 import Util.HeaderRenderer;
 import Util.HibernateUtil;
 import Util.RoundedButton;
@@ -204,6 +207,7 @@ public class UI_Schedule extends JFrame {
 		content.setLayout(null);
 		
 		table = new JTable(data,column);
+		table.setEnabled(false);
 		table.setRowHeight(30);
 		allignCenterAllColumn(table);
 		JTableHeader t_header = table.getTableHeader();
@@ -259,21 +263,26 @@ public class UI_Schedule extends JFrame {
 		clickListener();
 	}
 	
-	class MListener extends MouseAdapter{
+	class TableListener extends MouseAdapter{
+		
 		 public void mouseClicked(MouseEvent e)  
 		 {  
-			 JLabel choose =(JLabel) e.getSource();
-			 switch(choose.getText()) {
-			 	case "THỜI KHÓA BIỂU": case"Thời khóa biểu": UI_Schedule ui= new UI_Schedule(curStudent); ui.setVisible(true);dispose();break;
-			 	case "Đăng xuất": UI_SignIn ui2= new UI_SignIn();ui2.setVisible(true);dispose();break;
-			 	case "Dashboard": UI_DashBoard ui3= new UI_DashBoard(curStudent);ui3.setVisible(true);dispose();break;
-			 };
+			 int row = table.rowAtPoint(e.getPoint());
+		     int col = table.columnAtPoint(e.getPoint());
+		     if(col == 1) {
+		    	 String curCourse = (String)table.getValueAt(row, col);
+		    	 UI_CurrentCourseInfo frame = new UI_CurrentCourseInfo(curStudent,comboBox_classes.getSelectedItem( )+"-"+curCourse,comboBox_classes.getSelectedItem( )+"-"+comboBox_year.getSelectedItem()+"-" +comboBox_term.getSelectedItem());
+		    	 frame.setVisible(true);
+		    	 dispose();
+		     }
 		 }  
-   }
-	
+	}
 	private void clickListener() {
-		Dashboard.addMouseListener(new MListener());
-		sign_out.addMouseListener(new MListener());
+		Dashboard.addMouseListener(new MyListener(curStudent,this));
+		sign_out.addMouseListener(new MyListener(curStudent,this));
+		if(curStudent.getRole()==0) {
+			table.addMouseListener(new TableListener());
+		}
 	}
 	
 	private void filterListener() {
@@ -317,7 +326,7 @@ public class UI_Schedule extends JFrame {
 				        	String classesID= (String) jcb.getSelectedItem();
 				        	String year= (String)jcb2.getSelectedItem();
 				        	String term= (String)jcb3.getSelectedItem();
-				        	readFile(path,classesID,year,term);
+				        	updateSchedule(path,classesID,year,term);
 				        }
 				        if (rVal == JFileChooser.CANCEL_OPTION) {
 	
@@ -330,50 +339,102 @@ public class UI_Schedule extends JFrame {
 		
 	}
 	
-	private void readFile(String path,String classes,String year,String term) {
-		BufferedReader bfr=null;
+	@SuppressWarnings({ "unused", "unchecked" })
+	private void updateSchedule(String path,String curClasses,String year,String term) {
 		Transaction transaction = null;
 		Classes t=null;
-		List<String> currentCourseID= new ArrayList<>();
-		String scheduleID =classes+"-"+year+"-"+term;
+		Vector<Vector<String>> filedata= readfile(path);
 		try (Session session = HibernateUtil.getSessionFactory().openSession()){
 			transaction = session.beginTransaction();
-			t=session.get(Classes.class, classes);
+			t=session.get(Classes.class, curClasses);
 			System.out.println(t.getStudents().toString());
-			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path), Charset.defaultCharset()));
-			String row="";
-			bfr.readLine();//read header
-			while ((row = bfr.readLine()) != null) {
-			    String[] data = row.split(",");
-			    Course course=new Course(data[1],data[2]);
-			    currentCourseID.add(data[1]+"-"+classes);
-			    session.save(new CurrentCourse(data[1]+"-"+classes,course,t,data[3],data[4],scheduleID));
+			//import schedule for admin
+			String classesSchedule=curClasses+"-"+year+"-"+term;
+			session.save(new Schedule(classesSchedule,year,term));
+			for(Vector<String> x : filedata) {
+				String currentCourseID = curClasses+"-"+x.get(1);
+				Course course = new Course(x.get(1),x.get(2));
+				Classes classes = new Classes(curClasses);
+				session.save(new CurrentCourse(currentCourseID,course,classes,x.get(3),x.get(4),classesSchedule));
 			}
-			for(String id:currentCourseID) {
-				for(Student student:t.getStudents()) {
-					CurrentCourseInfo res= new CurrentCourseInfo(id,student);
-					session.save(res);
+			//if new schoolyear
+			Query o = session.createQuery("from StudentAndYear where studentID = :id");
+            o.setParameter("id", curStudent.getStudentID());
+            List<StudentAndYear> c = new ArrayList<StudentAndYear>(o.list());
+            for(int i=0;i<c.size();i++) {
+            	StudentAndYear d = c.get(i);
+            	if(d.getYear().compareTo(year)==0) {
+            		break;
+            	}
+            	if(i==c.size()-1) {
+            		choose_year.add(year);
+            		session.save(new StudentAndYear(curStudent.getStudentID(),year));
+            	}
+            }
+			//import schedule for every student
+			for(Student st : t.getStudents()) {
+				String scheduleID =st.getStudentID()+"-"+year+"-"+term;
+				o = session.createQuery("from StudentAndYear where studentID = :id");
+	            o.setParameter("id", st.getStudentID());
+	            List<StudentAndYear> l = new ArrayList<StudentAndYear>(o.list());
+	            for(int i=0;i<l.size();i++) {
+	            	StudentAndYear d = l.get(i);
+	            	if(d.getYear().compareTo(year)==0) {
+	            		break;
+	            	}
+	            	if(i==l.size()-1) {
+	            		session.save(new StudentAndYear(st.getStudentID(),year));
+	            	}
+	            }
+				//import current corse for every schedule
+				for(Vector<String> x : filedata) {
+					String currentCourseID = curClasses+"-"+x.get(1);
+					Course course = new Course(x.get(1),x.get(2));
+					Classes classes = new Classes(curClasses);
+					CurrentCourseInfo ccinfo=new CurrentCourseInfo(st.getStudentID()+"-"+x.get(1),currentCourseID,st);
+					session.save(new CurrentCourse(currentCourseID,course,classes,x.get(3),x.get(4),scheduleID));
+					session.save(ccinfo);
 				}
+				session.save(new Schedule(scheduleID,year,term));
 			}
-			session.save(new Schedule(scheduleID,year,term));
+			//import student for every current course 
 			transaction.commit();
-		} catch (IOException e ) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		loadData();
 	}
 	
+	private Vector<Vector<String>> readfile(String path) {
+		// TODO Auto-generated method stub
+		BufferedReader bfr=null;
+		String row="";
+		Vector<Vector<String>> res = new Vector<>();
+		try {
+			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path), Charset.defaultCharset()));
+			bfr.readLine();
+			while ((row = bfr.readLine()) != null) {
+				Vector<String> temp = new Vector<>();
+			    String[] data = row.split(",");
+			    temp.add(data[0]);
+			    temp.add(data[1]);
+			    temp.add(data[2]);
+			    temp.add(data[3]);
+			    temp.add(data[4]);
+			    res.add(temp);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//read header
+		return res;
+	}
+
 	@SuppressWarnings("unchecked")
 	private void initializeData() {
 		if(curStudent.getRole() == 1) {
 			choose_classes.add(curStudent.getClasses());
 		}
 		
-		String[] year = curStudent.getYear().split(",");
-		for(String t:year) {
-			choose_year.add(t);
-		}
+		
 		
 		choose_term.add("1");
 		choose_term.add("2");
@@ -389,28 +450,46 @@ public class UI_Schedule extends JFrame {
 		Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
-            transaction = session.beginTransaction();
+            transaction = session.beginTransaction();        
+            Query t = session.createQuery("from StudentAndYear where studentID = :id");
+            t.setParameter("id", curStudent.getStudentID());
+            List<StudentAndYear> l = new ArrayList<StudentAndYear>(t.list());
+            for(StudentAndYear x : l) {
+            	choose_year.add(x.getYear());
+            }
+                 
             // query a student
-           if(curStudent.getRole()==0) {
+            List<Schedule> schedules;
+            if(curStudent.getRole()==0) {
         	   Query query = session.createQuery("from Classes");
         	   List<Classes> classes= new ArrayList<>(query.list());
         	   for(Classes i :classes) {
         		   choose_classes.add(i.getClassID());
         	   }
-           };
-           Query query2 = session.createQuery("from Schedule where scheduleID= :id");
-           query2.setParameter("id", choose_classes.get(0)+"-"+choose_year.get(0)+"-"+choose_term.get(0));
-           List<Schedule> schedules = new ArrayList<>(query2.list());
-           for(Integer i = 0; i <  schedules.get(0).getCurrentCourses().size();i++) {
-            	CurrentCourse cur = schedules.get(0).getCurrentCourses().get(i);
-            	Vector<String> row = new Vector<>(); 
-            	row.add(i.toString());
-            	row.add(cur.getCourse().getCourseID());
-            	row.add(cur.getCourse().getCourseName());
-            	row.add(cur.getLocation());
-            	row.add(cur.getStartingTime());
-            	data.add(row);
-            }
+        	   Query query2 = session.createQuery("from Schedule where scheduleID= :id");
+        	   String str =choose_classes.get(0)+"-"+choose_year.get(0)+"-"+choose_term.get(0);
+	           query2.setParameter("id", str);
+	           schedules = new ArrayList<>(query2.list());
+	           
+           	 }else {
+	           Query query2 = session.createQuery("from Schedule where scheduleID= :id");
+	           query2.setParameter("id", curStudent.getStudentID()+"-"+choose_year.get(0)+"-"+choose_term.get(0));
+	           schedules = new ArrayList<>(query2.list());
+	           
+           	 }
+             if(schedules.isEmpty()) {
+            	 return;
+             }
+	         for(Integer i = 0; i <  schedules.get(0).getCurrentCourses().size();i++) {
+	           CurrentCourse cur = schedules.get(0).getCurrentCourses().get(i);
+	           Vector<String> row = new Vector<>(); 
+	           row.add(i.toString());
+	           row.add(cur.getCourse().getCourseID());
+	           row.add(cur.getCourse().getCourseName());
+	           row.add(cur.getLocation());
+	           row.add(cur.getStartingTime());
+	           data.add(row);
+	         }
             // commit transaction
             transaction.commit();
        } catch (Exception e) {
@@ -446,21 +525,32 @@ public class UI_Schedule extends JFrame {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
             transaction = session.beginTransaction();
-            // query a student      
-           Query query = session.createQuery("from Schedule where scheduleID= :id");
-           query.setParameter("id", comboBox_classes.getSelectedItem()+"-"+comboBox_year.getSelectedItem()+"-"+comboBox_term.getSelectedItem());
-           schedules = new ArrayList<>(query.list());
-           data.clear();
-           for(Integer i = 0; i <  schedules.get(0).getCurrentCourses().size();i++) {
-            	CurrentCourse cur = schedules.get(0).getCurrentCourses().get(i);
-            	Vector<String> row = new Vector<>(); 
-            	row.add(i.toString());
-            	row.add(cur.getCourse().getCourseID());
-            	row.add(cur.getCourse().getCourseName());
-            	row.add(cur.getLocation());
-            	row.add(cur.getStartingTime());
-            	data.add(row);
+            if(curStudent.getRole() == 0) {
+	            // query a student      
+            	Query query = session.createQuery("from Schedule where scheduleID= :id");
+            	String str= comboBox_classes.getSelectedItem()+"-"+comboBox_year.getSelectedItem()+"-"+comboBox_term.getSelectedItem();
+	           	query.setParameter("id", str);
+	           	schedules = new ArrayList<>(query.list());
+	           
+            }else {
+            	Query query = session.createQuery("from Schedule where scheduleID= :id");
+            	query.setParameter("id", curStudent.getStudentID()+"-"+comboBox_year.getSelectedItem()+"-"+comboBox_term.getSelectedItem());
+            	schedules = new ArrayList<>(query.list());
             }
+            data.clear();
+            if(schedules.isEmpty()) {
+           	 	return;
+            }
+	        for(Integer i = 0; i <  schedules.get(0).getCurrentCourses().size();i++) {
+	          CurrentCourse cur = schedules.get(0).getCurrentCourses().get(i);
+	          Vector<String> row = new Vector<>(); 
+	          row.add(i.toString());
+	          row.add(cur.getCourse().getCourseID());
+	          row.add(cur.getCourse().getCourseName());
+	          row.add(cur.getLocation());
+	          row.add(cur.getStartingTime());
+	          data.add(row);
+	        }
             // commit transaction
             transaction.commit();
             DefaultTableModel tableModel = (DefaultTableModel) table.getModel();

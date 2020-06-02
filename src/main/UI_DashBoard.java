@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import Adapter.MyListener;
+import MyListener.MyListener;
 import Object.Student;
 import Util.RoundedLabel;
 
@@ -25,6 +25,10 @@ public class UI_DashBoard extends JFrame {
 	private JLabel schedule_box;
 	private JLabel schedule;
 	private JLabel sign_out;
+	private JLabel Transcript_box;
+	private JLabel transcripts;
+	private JLabel profile;
+	private JLabel profile_box;
 
 	/**
 	 * Create the frame.
@@ -110,7 +114,7 @@ public class UI_DashBoard extends JFrame {
 		schedule.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(schedule);
 		
-		JLabel transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
+		transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
 		transcripts.setForeground(Color.WHITE);
 		transcripts.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_3.png")));
 		transcripts.setHorizontalAlignment(SwingConstants.LEFT);
@@ -118,7 +122,7 @@ public class UI_DashBoard extends JFrame {
 		transcripts.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(transcripts);
 		
-		JLabel profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
+		profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
 		profile.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_4.png")));
 		profile.setFont(new Font("Arial", Font.BOLD, 14));
 		profile.setForeground(Color.WHITE);
@@ -175,7 +179,7 @@ public class UI_DashBoard extends JFrame {
 		schedule_box.setText("TH\u1EDCI KH\u00D3A BI\u1EC2U");
 		home.add(schedule_box);
 		
-		JLabel Transcript_box = new RoundedLabel();
+		Transcript_box = new RoundedLabel();
 		Transcript_box.setBackground(Color.WHITE);
 		Transcript_box.setText("B\u1EA2NG \u0110I\u1EC2M");
 		Transcript_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_2.png")));
@@ -185,7 +189,7 @@ public class UI_DashBoard extends JFrame {
 		Transcript_box.setHorizontalAlignment(SwingConstants.CENTER);
 		home.add(Transcript_box);
 		
-		JLabel profile_box = new RoundedLabel();
+		profile_box = new RoundedLabel();
 		profile_box.setFont(new Font("Arial", Font.BOLD, 18));
 		profile_box.setHorizontalAlignment(SwingConstants.CENTER);
 		profile_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_3.png")));
@@ -232,6 +236,11 @@ public class UI_DashBoard extends JFrame {
 		schedule_box.addMouseListener(new MyListener(curStudent,this));
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
+		transcripts.addMouseListener(new MyListener(curStudent,this));
+		Transcript_box.addMouseListener(new MyListener(curStudent,this));
+		profile.addMouseListener(new MyListener(curStudent,this));
+		profile_box.addMouseListener(new MyListener(curStudent,this));
+		
 	}
 	
 	private String getLastName(String fullname) {

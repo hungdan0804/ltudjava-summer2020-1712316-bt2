@@ -35,7 +35,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import Adapter.MyListener;
+import MyListener.MyListener;
 import Object.Classes;
 import Object.Course;
 import Object.CurrentCourse;
@@ -57,6 +57,8 @@ public class UI_Schedule extends JFrame {
 	private Student curStudent;
 	private JLabel Dashboard;
 	private JLabel sign_out;
+	private JLabel transcripts;
+	private JLabel profile;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();//{"STT","MÃ MÔN","TÊN MÔN", "PHÒNG HỌC","THỜI GIAN"};
     private Vector<String> choose_classes = new Vector<>();
@@ -67,10 +69,7 @@ public class UI_Schedule extends JFrame {
     private JComboBox<String> comboBox_classes;
     private JTable table;
     private JButton btn_import;
-    
-	/**
-	 * Create the frame.
-	 */
+
 	public UI_Schedule(Student student) {
 		this.curStudent=student;
 		initializeData();
@@ -152,7 +151,7 @@ public class UI_Schedule extends JFrame {
 		schedule.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(schedule);
 		
-		JLabel transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
+		transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
 		transcripts.setForeground(Color.WHITE);
 		transcripts.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_3.png")));
 		transcripts.setHorizontalAlignment(SwingConstants.LEFT);
@@ -160,7 +159,7 @@ public class UI_Schedule extends JFrame {
 		transcripts.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(transcripts);
 		
-		JLabel profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
+		profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
 		profile.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_4.png")));
 		profile.setFont(new Font("Arial", Font.BOLD, 14));
 		profile.setForeground(Color.WHITE);
@@ -217,7 +216,7 @@ public class UI_Schedule extends JFrame {
 		table.setFillsViewportHeight(true);
 		content.add(sp);
 		
-		JLabel filter_classes = new JLabel("LỚP");
+		JLabel filter_classes = new JLabel("MÔN");
 		filter_classes.setFont(new Font("Arial", Font.BOLD, 16));
 		filter_classes.setBounds(content.getWidth()/20, content.getHeight()/7, 46, 16);
 		content.add(filter_classes);
@@ -246,7 +245,7 @@ public class UI_Schedule extends JFrame {
 		
 		JLabel lblNewLabel = new JLabel("THỜI KHÓA BIỂU");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
-		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/20, content.getWidth(), 20);
+		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
 		content.add(lblNewLabel);
 		//authentication
 		if(curStudent.getRole()==0) {
@@ -264,7 +263,6 @@ public class UI_Schedule extends JFrame {
 	}
 	
 	class TableListener extends MouseAdapter{
-		
 		 public void mouseClicked(MouseEvent e)  
 		 {  
 			 int row = table.rowAtPoint(e.getPoint());
@@ -280,6 +278,8 @@ public class UI_Schedule extends JFrame {
 	private void clickListener() {
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
+		transcripts.addMouseListener(new MyListener(curStudent,this));
+		profile.addMouseListener(new MyListener(curStudent,this));
 		if(curStudent.getRole()==0) {
 			table.addMouseListener(new TableListener());
 		}
@@ -331,7 +331,6 @@ public class UI_Schedule extends JFrame {
 				        if (rVal == JFileChooser.CANCEL_OPTION) {
 	
 				        }
-	
 				    }
 				}
 			}

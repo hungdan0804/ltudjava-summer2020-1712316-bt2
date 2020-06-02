@@ -20,8 +20,7 @@ public class Student implements Serializable {
 	protected int role;
 	protected String password;
 	protected String address;
-	protected String city;
-	protected String district;
+
 	
 	public Student() {
 		
@@ -31,7 +30,7 @@ public class Student implements Serializable {
 	}
 	
 	public Student(String _studentID, String _fullname, String _gender, String _IDCard, String _class, String _password,
-			String _address, String _city, String _district) {
+			String _address) {
 		super();
 		this.studentID=_studentID;
 		this.fullname = _fullname;
@@ -40,8 +39,6 @@ public class Student implements Serializable {
 		this.classes = _class;
 		this.password = _password;
 		this.address = _address;
-		this.city = _city;
-		this.district = _district;
 		this.role=1;
 	}
 	
@@ -97,18 +94,5 @@ public class Student implements Serializable {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public String getCity() {
-		return city;
-	}
-	public void setCity(String city) {
-		this.city = city;
-	}
-	public String getDistrict() {
-		return district;
-	}
-	public void setDistrict(String district) {
-		this.district = district;
-	}
-	
 	
 }

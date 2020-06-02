@@ -25,11 +25,8 @@ public class CheckExaminationPaperInfo implements Serializable{
 	@ManyToOne
 	@JoinColumn (name="studentID")
 	protected Student student;
-	@ManyToOne
-	@JoinColumns({
-		@JoinColumn(name = "scheduleID")
-	})
-	protected CurrentCourse currentCourse;
+
+	protected String currentCourse;
 	protected int cep;
 	protected String columnUpdate;
 	protected float wantedMark;
@@ -38,7 +35,7 @@ public class CheckExaminationPaperInfo implements Serializable{
 	public CheckExaminationPaperInfo() {
 		super();
 	}
-	public CheckExaminationPaperInfo(int cepInfoID, Student student, CurrentCourse currentCourse, int cep,
+	public CheckExaminationPaperInfo(int cepInfoID, Student student, String currentCourse, int cep,
 			String columnUpdate, float wantedMark, String reason) {
 		super();
 		this.cepInfoID = cepInfoID;
@@ -61,10 +58,10 @@ public class CheckExaminationPaperInfo implements Serializable{
 	public void setStudent(Student student) {
 		this.student = student;
 	}
-	public CurrentCourse getCurrentCourse() {
+	public String getCurrentCourse() {
 		return currentCourse;
 	}
-	public void setCurrentCourse(CurrentCourse currentCourse) {
+	public void setCurrentCourse(String currentCourse) {
 		this.currentCourse = currentCourse;
 	}
 	public int getCep() {

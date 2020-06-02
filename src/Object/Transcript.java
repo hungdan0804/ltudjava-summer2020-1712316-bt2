@@ -1,11 +1,7 @@
 package Object;
 
 import java.io.Serializable;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,9 +14,7 @@ public class Transcript implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(columnDefinition = "integer auto_increment") 
-	protected int transcriptID;
+	protected String transcriptID;
 	protected String currentCourse;
 	
 	@ManyToOne
@@ -38,7 +32,7 @@ public class Transcript implements Serializable{
 	
 	
 
-	public Transcript(int transcriptID, String currentCourse, Student student, float midtermMark, float finaltermMark,
+	public Transcript(String transcriptID, String currentCourse, Student student, float midtermMark, float finaltermMark,
 			float otherMark, float totalMark) {
 		super();
 		this.transcriptID = transcriptID;
@@ -52,11 +46,11 @@ public class Transcript implements Serializable{
 
 
 
-	public int getTranscriptID() {
+	public String getTranscriptID() {
 		return transcriptID;
 	}
 
-	public void setTranscriptID(int transcriptID) {
+	public void setTranscriptID(String transcriptID) {
 		this.transcriptID = transcriptID;
 	}
 

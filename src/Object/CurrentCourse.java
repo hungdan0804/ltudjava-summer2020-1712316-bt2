@@ -1,14 +1,10 @@
 package Object;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -18,6 +14,7 @@ public class CurrentCourse implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	protected String scheduleID;
+	@Id
 	protected String currentCourseID;
 	protected String location;
 	protected String startingTime;
@@ -29,10 +26,6 @@ public class CurrentCourse implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "classes")
 	protected Classes classes;
-	
-	
-	@OneToMany(targetEntity=Transcript.class, mappedBy="currentCourse", fetch=FetchType.EAGER)
-	protected List<Transcript> transcipts = new ArrayList<>();
 	
 	public CurrentCourse() {
 		
@@ -61,12 +54,7 @@ public class CurrentCourse implements Serializable {
 	public void setClasses(Classes classes) {
 		this.classes = classes;
 	}
-	public List<Transcript> getTranscipts() {
-		return transcipts;
-	}
-	public void setTranscipts(List<Transcript> transcipts) {
-		this.transcipts = transcipts;
-	}
+
 	public Course getCourse() {
 		return course;
 	}

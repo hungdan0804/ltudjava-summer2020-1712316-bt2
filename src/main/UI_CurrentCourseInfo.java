@@ -29,7 +29,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import Adapter.MyListener;
+import MyListener.MyListener;
 import Object.Classes;
 import Object.CurrentCourse;
 import Object.CurrentCourseInfo;

@@ -3,7 +3,6 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -15,10 +14,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
+
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
+
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -361,7 +360,17 @@ public class UI_Profile extends JFrame {
 		        }
 			}		
 		});
-		
+		change_password.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				UI_Profile_ChangePassword ui = new UI_Profile_ChangePassword(curStudent);
+				ui.setVisible(true);
+				dispose();
+			}
+			
+		});
 	}
 	private String getLastName(String fullname) {
 		String []str = fullname.split(" ");

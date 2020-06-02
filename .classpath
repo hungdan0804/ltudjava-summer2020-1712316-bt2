@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="C:/Users/ADMIN/eclipse-workspace/ltudjava-summer2020-1712316-bt2/lib/mysql-connector-java-8.0.20.jar"/>
 	<classpathentry kind="lib" path="C:/Users/ADMIN/eclipse-workspace/ltudjava-summer2020-1712316-bt2/lib/hibernate-core-5.1.0.Final.jar"/>
 	<classpathentry kind="lib" path="C:/Users/ADMIN/eclipse-workspace/ltudjava-summer2020-1712316-bt2/lib/antlr-2.7.7.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ADMIN/eclipse-workspace/ltudjava-summer2020-1712316-bt2/lib/jbcrypt-0.3m.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -22,6 +22,7 @@ import Util.RoundedTextField;
 import java.awt.Color;
 import java.awt.Image;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.Font;
@@ -151,6 +152,8 @@ public class UI_SignIn extends JFrame {
 		            		dashboard=new UI_DashBoard(student);
 		            		dashboard.setVisible(true);
 		            		dispose();
+		            	}else {
+		            		JOptionPane.showMessageDialog(contentPane,"Sai Mật khẩu hoặc tài khoản !!!");
 		            	}
 		            }
 		            // commit transaction
@@ -179,6 +182,8 @@ public class UI_SignIn extends JFrame {
 			            		dashboard=new UI_DashBoard(student);
 			            		dashboard.setVisible(true);
 			            		dispose();
+			            	}else {
+			            		JOptionPane.showMessageDialog(contentPane,"Sai Mật khẩu hoặc tài khoản !!!");
 			            	}
 			            }
 			            // commit transaction

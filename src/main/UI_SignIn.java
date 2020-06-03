@@ -103,6 +103,7 @@ public class UI_SignIn extends JFrame {
 		
 		usernameField = new RoundedTextField(30);
 		usernameField.setBackground(Color.WHITE);
+		usernameField.setBorder(new EmptyBorder(0,10,0,0));
 		usernameField.setBounds(loginform.getWidth()/10,username.getY()+30,loginform.getWidth()*8/10, 30);
 		loginform.add(usernameField);
 		
@@ -113,6 +114,7 @@ public class UI_SignIn extends JFrame {
 		
 		passwordField = new RoundedPasswordField();
 		passwordField.setBackground(Color.WHITE);
+		passwordField.setBorder(new EmptyBorder(0,10,0,0));
 		passwordField.setBounds(loginform.getWidth()/10,password.getY()+30, loginform.getWidth()*8/10, 30);
 		loginform.add(passwordField);
 		

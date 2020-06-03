@@ -1,6 +1,8 @@
 eclipse.preferences.version=1
 encoding//src/MyListener/MyListener.java=UTF-8
 encoding//src/main/Main.java=UTF-8
+encoding//src/main/UI_CEP.java=UTF-8
+encoding//src/main/UI_CEP_FORM.java=UTF-8
 encoding//src/main/UI_CurrentCourseInfo.java=UTF-8
 encoding//src/main/UI_DashBoard.java=UTF-8
 encoding//src/main/UI_Profile.java=UTF-8

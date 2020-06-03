@@ -3,37 +3,33 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import MyListener.MyListener;
 import Object.Student;
-import Util.HibernateUtil;
 import Util.RoundedButton;
 import Util.RoundedPanel;
+import Util.RoundedTextArea;
 import Util.RoundedTextField;
+import javax.swing.JTextArea;
 
-import javax.swing.JTextField;
-import javax.swing.JButton;
-
-public class UI_Profile extends JFrame {
-
+public class UI_CEP_FORM extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel content;
@@ -42,20 +38,19 @@ public class UI_Profile extends JFrame {
 	private JLabel sign_out;
     private JLabel schedule;
     private JLabel profile;
-    private JLabel cep;
     private JLabel transcripts;
+    private JLabel cep;
+    private JPanel panel = new JPanel();
     private JPanel profile_content;
     private JTextField studentID_Box;
     private JTextField fullname_Box;
-    private JTextField gender_Box;
-    private JTextField idCard_Box;
-    private JTextField classes_Box;
-    private JTextField address_Box;
+    private JTextField course_box;
+    private JTextField columnM_Box;
+    private JTextField newM_Box; 
     private JButton change_password;
-    private JButton update_info;
     private JButton save_info;
-	
-	public UI_Profile(Student student) {
+    
+	public UI_CEP_FORM(Student student) {
 		this.curStudent=student;
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
@@ -195,6 +190,13 @@ public class UI_Profile extends JFrame {
 		content.add(profile_content);
 		profile_content.setLayout(null);
 		
+		JLabel lblNewLabel = new JLabel("ĐƠN PHÚC KHẢO");
+		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
+		content.add(lblNewLabel);
+		panel.setBackground(Color.WHITE);
+		
+		
 		JLabel studentID = new JLabel("MSSV");
 		studentID.setFont(new Font("Arial", Font.BOLD, 16));
 		studentID.setBounds(profile_content.getWidth()/20,profile_content.getHeight()/10, 50, 16);
@@ -211,7 +213,7 @@ public class UI_Profile extends JFrame {
 		
 		JLabel fullName = new JLabel("HỌ VÀ TÊN");
 		fullName.setFont(new Font("Arial", Font.BOLD, 16));
-		fullName.setBounds(studentID_Box.getX() +140,profile_content.getHeight()/10, 90, 16);
+		fullName.setBounds(studentID_Box.getX() +110,profile_content.getHeight()/10, 90, 16);
 		profile_content.add(fullName);
 		
 		fullname_Box = new RoundedTextField(20);
@@ -223,74 +225,45 @@ public class UI_Profile extends JFrame {
 		profile_content.add(fullname_Box);
 		fullname_Box.setColumns(10);
 		
-		JLabel gender = new JLabel("GIỚI TÍNH");
-		gender.setFont(new Font("Arial", Font.BOLD, 16));
-		gender.setBounds(fullname_Box.getX()+250,profile_content.getHeight()/10, 80, 16);
-		profile_content.add(gender);
+		JLabel courseID = new JLabel("MÔN");
+		courseID.setFont(new Font("Arial", Font.BOLD, 16));
+		courseID.setBounds(fullname_Box.getX()+220,profile_content.getHeight()/10, 40, 16);
+		profile_content.add(courseID);
 		
-		gender_Box = new RoundedTextField(20);
-		gender_Box.setBorder(new EmptyBorder(0,10,0,0));
-		gender_Box.setText(curStudent.getGender());
-		gender_Box.setBackground(Color.WHITE);
-		gender_Box.setEditable(false);
-		gender_Box.setBounds(gender.getX()+90, profile_content.getHeight()/10-3, 60, 25);
-		profile_content.add(gender_Box);
-		gender_Box.setColumns(10);
+		course_box = new RoundedTextField(20);
+		course_box.setBorder(new EmptyBorder(0,10,0,0));
+		course_box.setBackground(Color.WHITE);
+		course_box.setBounds(courseID.getX()+50, profile_content.getHeight()/10-3, 130, 25);
+		profile_content.add(course_box);
+		course_box.setColumns(10);
 		
-		JLabel idCard  = new JLabel("CHỨNG MINH NHÂN DÂN");
-		idCard .setFont(new Font("Arial", Font.BOLD, 16));
-		idCard .setBounds(profile_content.getWidth()/20,profile_content.getHeight()/5, 200, 16);
-		profile_content.add(idCard );
+		JLabel columnM  = new JLabel("CỘT ĐIỂM CẦN PHÚC KHẢO");
+		columnM .setFont(new Font("Arial", Font.BOLD, 16));
+		columnM .setBounds(profile_content.getWidth()/20,profile_content.getHeight()/5, 220, 16);
+		profile_content.add(columnM );
+		columnM_Box = new RoundedTextField(20);
+		columnM_Box.setBorder(new EmptyBorder(0,10,0,0));
+		columnM_Box.setBackground(Color.WHITE);
+		columnM_Box.setBounds(columnM.getX()+230, profile_content.getHeight()/5-3, 150, 25);
+		profile_content.add(columnM_Box);
+		columnM_Box.setColumns(10);
 		
-		idCard_Box = new RoundedTextField(20);
-		idCard_Box.setBorder(new EmptyBorder(0,10,0,0));
-		idCard_Box.setText(curStudent.getIdCard());
-		idCard_Box.setBackground(Color.WHITE);
-		idCard_Box.setEditable(false);
-		idCard_Box.setBounds(idCard.getX()+210, profile_content.getHeight()/5-3, 150, 25);
-		profile_content.add(idCard_Box);
-		idCard_Box.setColumns(10);
+		JLabel newM  = new JLabel("ĐIỂM MONG MUỐN");
+		newM .setFont(new Font("Arial", Font.BOLD, 16));
+		newM .setBounds(columnM_Box.getX()+190,profile_content.getHeight()/5, 130, 16);
+		profile_content.add(newM );
 		
-		JLabel classes  = new JLabel("LỚP");
-		classes .setFont(new Font("Arial", Font.BOLD, 16));
-		classes .setBounds(idCard_Box.getX()+190,profile_content.getHeight()/5, 40, 16);
-		profile_content.add(classes );
-		
-		classes_Box = new RoundedTextField(20);
-		classes_Box.setBorder(new EmptyBorder(0,10,0,0));
-		classes_Box.setText(curStudent.getClasses());
-		classes_Box.setBackground(Color.WHITE);
-		classes_Box.setEditable(false);
-		classes_Box.setBounds(classes.getX()+50, profile_content.getHeight()/5-3, 90, 25);
-		profile_content.add(classes_Box);
-		classes_Box.setColumns(10);
-		
-		JLabel address  = new JLabel("ĐỊA CHỈ");
-		address .setFont(new Font("Arial", Font.BOLD, 16));
-		address .setBounds(profile_content.getWidth()/20,profile_content.getHeight()*3/10, 60, 16);
-		profile_content.add(address );
-		
-		address_Box = new RoundedTextField(20);
-		address_Box.setBorder(new EmptyBorder(0,10,0,0));
-		address_Box.setText(curStudent.getAddress());
-		address_Box.setBackground(Color.WHITE);
-		address_Box.setEditable(false);
-		address_Box.setBounds(address.getX()+70, profile_content.getHeight()*3/10-3, 500, 25);
-		profile_content.add(address_Box);
-		address_Box.setColumns(10);
-		
-		update_info = new RoundedButton();
-		update_info.setForeground(Color.WHITE);
-		update_info.setFont(new Font("Arial", Font.BOLD, 12));
-		update_info.setText("Cập nhật");
-		update_info.setBounds(profile_content.getWidth()/20, profile_content.getHeight()*9/10, 90, 23);
-		update_info.setBackground(new Color(22,72,159));
-		profile_content.add(update_info);
+		newM_Box = new RoundedTextField(20);
+		newM_Box.setBorder(new EmptyBorder(0,10,0,0));
+		newM_Box.setBackground(Color.WHITE);
+		newM_Box.setBounds(newM.getX()+140, profile_content.getHeight()/5-3, 90, 25);
+		profile_content.add(newM_Box);
+		newM_Box.setColumns(10);
 		
 		save_info = new RoundedButton();
 		save_info.setForeground(Color.WHITE);
 		save_info.setFont(new Font("Arial", Font.BOLD, 12));
-		save_info.setText("Lưu lại");
+		save_info.setText("Gửi đơn");
 		save_info.setBounds(profile_content.getWidth()/20, profile_content.getHeight()*9/10, 90, 23);
 		save_info.setBackground(new Color(22,72,159));
 		profile_content.add(save_info);
@@ -299,88 +272,35 @@ public class UI_Profile extends JFrame {
 		change_password = new RoundedButton();
 		change_password.setForeground(Color.WHITE);
 		change_password.setFont(new Font("Arial", Font.BOLD, 12));
-		change_password.setText("Đổi mật khẩu");
-		change_password.setBounds(update_info.getX()+100, profile_content.getHeight()*9/10,120, 23);
+		change_password.setText("Quay Lại");
+		change_password.setBounds(save_info.getX()+100, profile_content.getHeight()*9/10,120, 23);
 		change_password.setBackground(new Color(22,72,159));
 		profile_content.add(change_password);
 		
-		JLabel lblNewLabel = new JLabel("THÔNG TIN CÁ NHÂN");
-		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
-		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
-		content.add(lblNewLabel);
+		JLabel reason = new JLabel("LÝ DO");
+		reason.setFont(new Font("Arial", Font.BOLD, 16));
+		reason.setBounds(profile_content.getWidth()/20,profile_content.getHeight()*3/10, 220, 16);
+		profile_content.add(reason);
+		
+		JTextArea textArea = new RoundedTextArea();
+		textArea.setBackground(Color.LIGHT_GRAY);
+		textArea.setBounds(profile_content.getWidth()/20,profile_content.getHeight()*2/5, profile_content.getWidth()*9/10, profile_content.getHeight()*4/10);
+		textArea.setBorder(new EmptyBorder(0,10,0,0));
+		textArea.setFont(new Font("Arial", Font.BOLD, 16));
+		profile_content.add(textArea);
 		
 		clickListener();
 	}
 	
-	private void clickListener() {
+	private void clickListener(){
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
-		schedule.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
+		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		
-		update_info.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				update_info.setVisible(false);
-				save_info.setVisible(true);
-		
-				fullname_Box.setEditable(true);
-				fullname_Box.setBackground(Color.LIGHT_GRAY);
-				
-				idCard_Box.setEditable(true);
-				idCard_Box.setBackground(Color.LIGHT_GRAY);
-				
-				address_Box.setEditable(true);
-				address_Box.setBackground(Color.LIGHT_GRAY);
-			}
-		});
-		save_info.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				update_info.setVisible(true);
-				save_info.setVisible(false);
-		
-				fullname_Box.setEditable(false);
-				fullname_Box.setBackground(Color.WHITE);
-				
-				idCard_Box.setEditable(false);
-				idCard_Box.setBackground(Color.WHITE);
-				
-				address_Box.setEditable(false);
-				address_Box.setBackground(Color.WHITE);
-				
-				curStudent.setFullname(fullname_Box.getText());
-				curStudent.setIdCard(idCard_Box.getText());
-				curStudent.setAddress(address_Box.getText());
-				
-				Transaction transaction = null;
-				try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-					// start a transaction
-		            transaction = session.beginTransaction();
-		            session.merge(curStudent);
-		            //import student for every current course 
-					transaction.commit();
-				}catch (Exception e2) {
-		            e2.printStackTrace();
-		        }
-			}		
-		});
-		change_password.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				UI_Profile_ChangePassword ui = new UI_Profile_ChangePassword(curStudent);
-				ui.setVisible(true);
-				dispose();
-			}
-			
-		});
 	}
+	
 	private String getLastName(String fullname) {
 		String []str = fullname.split(" ");
 		return str[str.length-1];

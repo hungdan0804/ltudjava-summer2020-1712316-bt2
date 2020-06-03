@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import Object.Student;
+import main.UI_CEP;
 import main.UI_DashBoard;
 import main.UI_Profile;
 import main.UI_Schedule;
@@ -32,6 +33,7 @@ public class MyListener extends MouseAdapter{
 		 	case "Đăng xuất": UI_SignIn ui2= new UI_SignIn();ui2.setVisible(true);frame.dispose();break;
 		 	case "BẢNG ĐIỂM": case "Bảng điểm": checkRoleTranscript();break;
 		 	case "THÔNG TIN CÁ NHÂN": case "Thông tin cá nhân": UI_Profile ui4 = new UI_Profile(curStudent);ui4.setVisible(true);frame.dispose();break;
+		 	case "PHÚC KHẢO ĐIỂM": case "Phúc khảo điểm": UI_CEP ui5= new UI_CEP(curStudent);ui5.setVisible(true);frame.dispose();break;
 		 };
 	 }
 

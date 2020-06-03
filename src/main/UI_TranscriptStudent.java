@@ -48,6 +48,7 @@ public class UI_TranscriptStudent extends JFrame {
 	private JLabel schedule;
 	private JLabel profile;
 	private JTable table;
+	private JLabel cep;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();
     private Vector<String> choose_term = new Vector<>();
@@ -153,7 +154,7 @@ public class UI_TranscriptStudent extends JFrame {
 		profile.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(profile);
 		
-		JLabel cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
+		cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
 		cep.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_5.png")));
 		cep.setHorizontalAlignment(SwingConstants.LEFT);
 		cep.setForeground(Color.WHITE);
@@ -237,6 +238,7 @@ public class UI_TranscriptStudent extends JFrame {
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
+		cep.addMouseListener(new MyListener(curStudent,this));
 	}
 	
 	private void filterListener() {

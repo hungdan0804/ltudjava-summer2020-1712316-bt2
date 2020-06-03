@@ -59,6 +59,7 @@ public class UI_Schedule extends JFrame {
 	private JLabel sign_out;
 	private JLabel transcripts;
 	private JLabel profile;
+	private JLabel cep;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();//{"STT","MÃ MÔN","TÊN MÔN", "PHÒNG HỌC","THỜI GIAN"};
     private Vector<String> choose_classes = new Vector<>();
@@ -167,7 +168,7 @@ public class UI_Schedule extends JFrame {
 		profile.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(profile);
 		
-		JLabel cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
+		cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
 		cep.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_5.png")));
 		cep.setHorizontalAlignment(SwingConstants.LEFT);
 		cep.setForeground(Color.WHITE);
@@ -280,6 +281,8 @@ public class UI_Schedule extends JFrame {
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
+		cep.addMouseListener(new MyListener(curStudent,this));
+		
 		if(curStudent.getRole()==0) {
 			table.addMouseListener(new TableListener());
 		}

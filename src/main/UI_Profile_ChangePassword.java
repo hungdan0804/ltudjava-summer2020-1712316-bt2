@@ -2,9 +2,7 @@ package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -14,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,7 +20,6 @@ import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -32,18 +28,17 @@ import javax.swing.text.Document;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import MyListener.MyListener;
 import Object.Student;
 import Util.HibernateUtil;
 import Util.RoundedButton;
 import Util.RoundedPanel;
 import Util.RoundedPasswordField;
-import Util.RoundedTextField;
 
 import javax.swing.JButton;
-import javax.swing.JTextField;
 
 public class UI_Profile_ChangePassword extends JFrame {
-
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JPanel content;
 	private Student curStudent;
@@ -53,6 +48,7 @@ public class UI_Profile_ChangePassword extends JFrame {
     private JLabel profile;
     private JLabel transcripts;
     private JPanel profile_content;
+    private JLabel cep;
     private JPasswordField old_password_box;
     private JPasswordField new_password_box;
     private JPasswordField rpnew_password_box;
@@ -163,7 +159,7 @@ public class UI_Profile_ChangePassword extends JFrame {
 		profile.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(profile);
 		
-		JLabel cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
+		cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
 		cep.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_5.png")));
 		cep.setHorizontalAlignment(SwingConstants.LEFT);
 		cep.setForeground(Color.WHITE);
@@ -269,22 +265,25 @@ public class UI_Profile_ChangePassword extends JFrame {
 		profile_content.add(rpnew_password_invisible);
 		
 		old_password_box = new RoundedPasswordField();
+		old_password_box.setBorder(new EmptyBorder(0,10,0,0));
 		old_password_box.setBounds(old_password.getX()+120, profile_content.getHeight()/10-5, 200, 25);
 		profile_content.add(old_password_box);
 		old_password_box.setColumns(10);
 		
 		new_password_box = new RoundedPasswordField();
+		new_password_box.setBorder(new EmptyBorder(0,10,0,0));
 		new_password_box.setBounds(new_password.getX()+120, old_password.getY()+29, 200, 25);
 		profile_content.add(new_password_box);
 		new_password_box.setColumns(10);
 		
 		rpnew_password_box = new RoundedPasswordField();
+		rpnew_password_box.setBorder(new EmptyBorder(0,10,0,0));
 		rpnew_password_box.setBounds(rpnew_password.getX()+120,new_password.getY()+29, 200, 25);
 		profile_content.add(rpnew_password_box);
 		rpnew_password_box.setColumns(10);
 		
 		
-		JLabel lblNewLabel = new JLabel("DỔI MẬT KHẨU");
+		JLabel lblNewLabel = new JLabel("ĐỔI MẬT KHẨU");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
 		content.add(lblNewLabel);
@@ -294,7 +293,12 @@ public class UI_Profile_ChangePassword extends JFrame {
 	
 	
 	private void clickListener() {
-		
+		Dashboard.addMouseListener(new MyListener(curStudent,this));
+		sign_out.addMouseListener(new MyListener(curStudent,this));
+		schedule.addMouseListener(new MyListener(curStudent,this));
+		transcripts.addMouseListener(new MyListener(curStudent,this));
+		cep.addMouseListener(new MyListener(curStudent,this));
+	
 		old_password_visible.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e)  
 			{  
@@ -367,6 +371,7 @@ public class UI_Profile_ChangePassword extends JFrame {
 				Document doc = (Document)e.getDocument();			    
 			    try {
 			    	String myPass=curStudent.getPassword();
+			    	
 			    	if(myPass.compareTo(doc.getText(0, doc.getLength())) != 0) {
 			    		old_password_box.setForeground(Color.RED);
 			    		old_password_check = false;
@@ -374,6 +379,7 @@ public class UI_Profile_ChangePassword extends JFrame {
 			    		old_password_box.setForeground(Color.BLACK);
 			    		old_password_check = true;
 			    	}
+			    	
 					
 				} catch (BadLocationException e1) {
 					// TODO Auto-generated catch block

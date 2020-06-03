@@ -3,10 +3,12 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,27 +18,25 @@ import javax.swing.border.EmptyBorder;
 
 import MyListener.MyListener;
 import Object.Student;
-import Util.RoundedLabel;
+import Util.RoundedButton;
+import Util.RoundedPanel;
+import Util.RoundedTextField;
 
-public class UI_DashBoard extends JFrame {
+public class UI_TABLE_CEP_INFO extends JFrame {
+
 	private static final long serialVersionUID = 1L;
-	private Student curStudent;
 	private JPanel contentPane;
-	private JLabel schedule_box;
-	private JLabel schedule;
+	private JPanel content;
+	private Student curStudent;
+	private JLabel Dashboard;
 	private JLabel sign_out;
-	private JLabel Transcript_box;
-	private JLabel transcripts;
-	private JLabel profile;
-	private JLabel profile_box;
-	private JLabel cep;
-	private JLabel cep_box;
-
-	/**
-	 * Create the frame.
-	 */
-	public UI_DashBoard(Student student) {
-		
+    private JLabel schedule;
+    private JLabel profile;
+    private JLabel transcripts;
+    private JLabel cep;
+    private JPanel panel = new JPanel();
+    private JPanel profile_content;
+	public UI_TABLE_CEP_INFO(Student student) {
 		this.curStudent=student;
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
@@ -87,7 +87,7 @@ public class UI_DashBoard extends JFrame {
 		navi_header.add(user_icon);
 		
 		
-		JLabel user_name = new JLabel("ChÃ o "+getLastName(curStudent.getFullname()));
+		JLabel user_name = new JLabel("Chào "+getLastName(curStudent.getFullname()));
 		user_name.setFont(new Font("Arial", Font.BOLD, 16));
 		user_name.setForeground(Color.WHITE);
 		user_name.setHorizontalAlignment(SwingConstants.CENTER);
@@ -100,8 +100,8 @@ public class UI_DashBoard extends JFrame {
 		navigation.add(navi_menu);
 		navi_menu.setLayout(new GridLayout(8, 10));
 		
-		JLabel Dashboard = new JLabel("Dashboard");
-		Dashboard.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_1.png")));
+		Dashboard = new JLabel("Dashboard");
+		Dashboard.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_1.png")));
 		Dashboard.setForeground(Color.WHITE);
 		Dashboard.setFont(new Font("Arial", Font.BOLD, 14));
 		Dashboard.setBorder(new EmptyBorder(0,10,0,0));
@@ -112,20 +112,20 @@ public class UI_DashBoard extends JFrame {
 		schedule.setForeground(Color.WHITE);
 		schedule.setFont(new Font("Arial", Font.BOLD, 14));
 		schedule.setBorder(new EmptyBorder(0,10,0,0));
-		schedule.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_2.png")));
+		schedule.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_2.png")));
 		schedule.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(schedule);
 		
 		transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
 		transcripts.setForeground(Color.WHITE);
-		transcripts.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_3.png")));
+		transcripts.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_3.png")));
 		transcripts.setHorizontalAlignment(SwingConstants.LEFT);
 		transcripts.setFont(new Font("Arial", Font.BOLD, 14));
 		transcripts.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(transcripts);
 		
 		profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
-		profile.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_4.png")));
+		profile.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_4.png")));
 		profile.setFont(new Font("Arial", Font.BOLD, 14));
 		profile.setForeground(Color.WHITE);
 		profile.setHorizontalAlignment(SwingConstants.LEFT);
@@ -133,7 +133,7 @@ public class UI_DashBoard extends JFrame {
 		navi_menu.add(profile);
 		
 		cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
-		cep.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_5.png")));
+		cep.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_5.png")));
 		cep.setHorizontalAlignment(SwingConstants.LEFT);
 		cep.setForeground(Color.WHITE);
 		cep.setFont(new Font("Arial", Font.BOLD, 14));
@@ -144,7 +144,7 @@ public class UI_DashBoard extends JFrame {
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
-		list_cep.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_6.png")));
+		list_cep.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_6.png")));
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
@@ -152,7 +152,7 @@ public class UI_DashBoard extends JFrame {
 		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
 		list_classes.setForeground(Color.WHITE);
 		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
+		list_classes.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_7.png")));
 		list_classes.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_classes);
 		
@@ -160,90 +160,29 @@ public class UI_DashBoard extends JFrame {
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
 		sign_out.setForeground(Color.WHITE);
 		sign_out.setHorizontalAlignment(SwingConstants.LEFT);
-		sign_out.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_8.png")));
+		sign_out.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_8.png")));
 		sign_out.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(sign_out);
 		
-		JPanel home = new JPanel();
-		home.setBackground(Color.WHITE);
-		home.setBounds(navigation.getWidth(),header.getHeight(),contentPane.getWidth()-navigation.getWidth(),contentPane.getHeight()-header.getHeight());
-		home.setBorder(new EmptyBorder(home.getWidth()/13,home.getWidth()/13,home.getWidth()/13,home.getWidth()/13));
-		contentPane.add(home);
-		home.setLayout(new GridLayout(2, 3,home.getWidth()/13,home.getWidth()/13));
+		content = new JPanel();
+		content.setBackground(Color.WHITE);
+		content.setBounds(navigation.getWidth(),header.getHeight(),contentPane.getWidth()-navigation.getWidth(),contentPane.getHeight()-header.getHeight());
+		contentPane.add(content);
+		content.setLayout(null);
 		
-		schedule_box = new RoundedLabel();
-		schedule_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_1.png")));
-		schedule_box.setFont(new Font("Arial", Font.BOLD, 18));
-		schedule_box.setBackground(Color.WHITE);
-		schedule_box.setVerticalTextPosition(SwingConstants.TOP);
-		schedule_box.setHorizontalTextPosition(SwingConstants.CENTER);
-		schedule_box.setHorizontalAlignment(SwingConstants.CENTER);
-		schedule_box.setText("TH\u1EDCI KH\u00D3A BI\u1EC2U");
-		home.add(schedule_box);
-		
-		Transcript_box = new RoundedLabel();
-		Transcript_box.setBackground(Color.WHITE);
-		Transcript_box.setText("B\u1EA2NG \u0110I\u1EC2M");
-		Transcript_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_2.png")));
-		Transcript_box.setFont(new Font("Arial", Font.BOLD, 18));
-		Transcript_box.setVerticalTextPosition(SwingConstants.TOP);
-		Transcript_box.setHorizontalTextPosition(SwingConstants.CENTER);
-		Transcript_box.setHorizontalAlignment(SwingConstants.CENTER);
-		home.add(Transcript_box);
-		
-		profile_box = new RoundedLabel();
-		profile_box.setFont(new Font("Arial", Font.BOLD, 18));
-		profile_box.setHorizontalAlignment(SwingConstants.CENTER);
-		profile_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_3.png")));
-		profile_box.setText("TH\u00D4NG TIN C\u00C1 NH\u00C2N");
-		profile_box.setVerticalTextPosition(SwingConstants.TOP);
-		profile_box.setHorizontalTextPosition(SwingConstants.CENTER);
-		profile_box.setBackground(Color.WHITE);
-		home.add(profile_box);
-		
-		cep_box = new RoundedLabel();
-		cep_box.setBackground(Color.WHITE);
-		cep_box.setFont(new Font("Arial", Font.BOLD, 18));
-		cep_box.setHorizontalAlignment(SwingConstants.CENTER);
-		cep_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_4.png")));
-		cep_box.setText("PH\u00DAC KH\u1EA2O \u0110I\u1EC2M");
-		cep_box.setVerticalTextPosition(SwingConstants.TOP);
-		cep_box.setHorizontalTextPosition(SwingConstants.CENTER);
-		home.add(cep_box);
-		
-		JLabel list_cep_box = new RoundedLabel();
-		list_cep_box.setBackground(Color.WHITE);
-		list_cep_box.setFont(new Font("Arial", Font.BOLD, 18));
-		list_cep_box.setHorizontalAlignment(SwingConstants.CENTER);
-		list_cep_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_5.png")));
-		list_cep_box.setText("<html><p>DANH S\u00C1CH <br> PH\u00DAC KH\u1EA2O</p></html>");
-		list_cep_box.setVerticalTextPosition(SwingConstants.TOP);
-		list_cep_box.setHorizontalTextPosition(SwingConstants.CENTER);
-		home.add(list_cep_box);
-		
-		JLabel list_classes_box = new RoundedLabel();
-		list_classes_box.setBackground(Color.WHITE);
-		list_classes_box.setFont(new Font("Arial", Font.BOLD, 18));
-		list_classes_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_6.png")));
-		list_classes_box.setHorizontalAlignment(SwingConstants.CENTER);
-		list_classes_box.setText("DANH S\u00C1CH L\u1EDAP");
-		list_classes_box.setVerticalTextPosition(SwingConstants.TOP);
-		list_classes_box.setHorizontalTextPosition(SwingConstants.CENTER);
-		home.add(list_classes_box);
+		JLabel lblNewLabel = new JLabel("THÔNG TIN CÁ NHÂN");
+		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
+		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
+		content.add(lblNewLabel);
 		
 		clickListener();
 	}
-	
-	private void clickListener() {
-		schedule_box.addMouseListener(new MyListener(curStudent,this));
-		schedule.addMouseListener(new MyListener(curStudent,this));
+	private void clickListener(){
+		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
-		Transcript_box.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
-		profile_box.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
-		cep_box.addMouseListener(new MyListener(curStudent,this));
 		
 	}
 	

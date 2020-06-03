@@ -75,6 +75,7 @@ public class UI_Transcript extends JFrame {
     private JButton btn_change;
     private JButton btn_import;
     private JLabel schedule;
+    private JLabel cep;
 
 	public UI_Transcript(Student student){
 		this.curStudent=student;
@@ -173,7 +174,7 @@ public class UI_Transcript extends JFrame {
 		profile.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(profile);
 		
-		JLabel cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
+		cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
 		cep.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_5.png")));
 		cep.setHorizontalAlignment(SwingConstants.LEFT);
 		cep.setForeground(Color.WHITE);
@@ -280,6 +281,7 @@ public class UI_Transcript extends JFrame {
 		content.add(filter_pass);
 			
 		comboBox_pass = new JComboBox<String>(choose_pass);
+		comboBox_pass.setBorder(new EmptyBorder(0,10,0,0));
 		comboBox_pass.setBounds(content.getWidth()/20 + filter_course.getWidth(), content.getHeight()/10, 70, 20);
 		content.add(comboBox_pass);
 			
@@ -318,6 +320,8 @@ public class UI_Transcript extends JFrame {
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
+		cep.addMouseListener(new MyListener(curStudent,this));
+		
 		table.getModel().addTableModelListener(new TableModelListener() {
 			@Override
 			public void tableChanged(TableModelEvent arg0) {

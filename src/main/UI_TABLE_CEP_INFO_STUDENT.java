@@ -3,14 +3,17 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,12 +24,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import MyListener.MyListener;
+import Object.CheckExaminationPaperInfo;
+import Object.Course;
 import Object.Student;
 import Util.HeaderRenderer;
-import Util.RoundedButton;
-import Util.RoundedPanel;
-import Util.RoundedTextField;
+import Util.HibernateUtil;
 
 public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 
@@ -43,6 +50,8 @@ public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();
     private JTable table;
+    private JComboBox<String> comboBox_status;
+    private Vector<String> choose_status = new Vector<>();
 
 	public UI_TABLE_CEP_INFO_STUDENT(Student student) {
 		this.curStudent=student;
@@ -191,29 +200,134 @@ public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 		table.setFillsViewportHeight(true);
 		content.add(sp);
 		
+		JLabel filter_status = new JLabel("TRẠNG THÁI");
+		filter_status.setFont(new Font("Arial", Font.BOLD, 16));
+		filter_status.setBounds(content.getWidth()/20, content.getHeight()/7, 120, 16);
+		content.add(filter_status);
 		
-		JLabel lblNewLabel = new JLabel("H\u1ED2  S\u01A0 C\u1EA6N DUY\u1EC6T");
+		comboBox_status = new JComboBox<String>(choose_status);
+		comboBox_status.setBounds(content.getWidth()/20 + filter_status.getWidth(), content.getHeight()/7, 90, 20);
+		content.add(comboBox_status);
+		
+		
+		JLabel lblNewLabel = new JLabel("HỒ SƠ CẦN DUYỆT");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
 		content.add(lblNewLabel);
 		
 		clickListener();
 	}
+	@SuppressWarnings("unchecked")
 	private void initializeData() {
 		// TODO Auto-generated method stub
 		column.add("STT");
 		column.add("MÔN");
-		column.add("CỘT ĐIỂM PHÚC KHẢO");
+		column.add("ĐIỂM PHÚC KHẢO");
 		column.add("ĐIỂM MONG MUỐN");
 		column.add("LÝ DO");
 		column.add("TRẠNG THÁI");
+		
+		choose_status.add("Tất cả");
+		choose_status.add("Chưa duyệt");
+		choose_status.add("Chấp nhận");
+		choose_status.add("Từ chối");
+		
+		Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // start a transaction
+            transaction = session.beginTransaction();        
+            Query t = session.createQuery("from CheckExaminationPaperInfo where studentID = :id");
+            t.setParameter("id", curStudent.getStudentID());
+            List<CheckExaminationPaperInfo> l = new ArrayList<CheckExaminationPaperInfo>(t.list());
+            Vector<String> temp=null;
+            String[] split =null;
+            for(Integer i =0;i<l.size();i++) {
+            	CheckExaminationPaperInfo cur= l.get(i);
+            	split = cur.getCurrentCourse().split("-");
+            	t = session.createQuery("from Course where courseID = :id");
+                t.setParameter("id", split[1]);
+                List<Course> course = new ArrayList<Course>(t.list());
+            	temp =new Vector<>();
+            	temp.add(i.toString());
+            	temp.add(course.get(0).getCourseName());
+            	temp.add(cur.getColumnUpdate());
+            	temp.add(Float.toString(cur.getWantedMark()));
+            	temp.add(cur.getReason());
+            	temp.add(cur.getStatus());
+            	data.add(temp);
+            	
+            } 
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }	
 	}
+	@SuppressWarnings("unchecked")
+	private void loadData() {
+		// TODO Auto-generated method stub
+			
+		Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // start a transaction
+            transaction = session.beginTransaction();
+            Query t=null;
+            if(((String)comboBox_status.getSelectedItem()).compareTo("Tất cả")==0) {
+            	t = session.createQuery("from CheckExaminationPaperInfo where studentID = :id");
+                t.setParameter("id", curStudent.getStudentID());
+            }else {
+	            t = session.createQuery("from CheckExaminationPaperInfo where studentID = :id and status= :status");
+	            t.setParameter("id", curStudent.getStudentID());
+	            t.setParameter("status", comboBox_status.getSelectedItem());
+            }
+            List<CheckExaminationPaperInfo> l = new ArrayList<CheckExaminationPaperInfo>(t.list());
+            Vector<String> temp=null;
+            String[] split =null;
+            data.clear();
+            if(l.isEmpty()) {
+            	return;
+            }
+            for(Integer i =0;i<l.size();i++) {
+            	CheckExaminationPaperInfo cur= l.get(i);
+            	split = cur.getCurrentCourse().split("-");
+            	t = session.createQuery("from Course where courseID = :id");
+                t.setParameter("id", split[1]);
+                List<Course> course = new ArrayList<Course>(t.list());
+            	temp =new Vector<>();
+            	temp.add(i.toString());
+            	temp.add(course.get(0).getCourseName());
+            	temp.add(cur.getColumnUpdate());
+            	temp.add(Float.toString(cur.getWantedMark()));
+            	temp.add(cur.getReason());
+            	temp.add(cur.getStatus());
+            	data.add(temp);
+            	
+            } 
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }	
+	}
+	
+	class FilterListener implements ActionListener{
+		@Override
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+			table.repaint();
+			loadData();
+		}
+	}
+	
+	
 	private void clickListener(){
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
+		schedule.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
+		
+		comboBox_status.addActionListener (new FilterListener());
 		
 	}
 	private void allignCenterAllColumn(JTable table) {

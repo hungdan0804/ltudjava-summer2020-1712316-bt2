@@ -59,6 +59,7 @@ public class UI_Transcript extends JFrame {
 	private JLabel sign_out;
 	private JTable table;
 	private JLabel profile;
+	private JLabel list_cep;
 	private JLabel ratio_pass = new RoundedLabel();
 	private JLabel ratio_fail = new RoundedLabel();
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
@@ -182,7 +183,7 @@ public class UI_Transcript extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
+		list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -281,7 +282,6 @@ public class UI_Transcript extends JFrame {
 		content.add(filter_pass);
 			
 		comboBox_pass = new JComboBox<String>(choose_pass);
-		comboBox_pass.setBorder(new EmptyBorder(0,10,0,0));
 		comboBox_pass.setBounds(content.getWidth()/20 + filter_course.getWidth(), content.getHeight()/10, 70, 20);
 		content.add(comboBox_pass);
 			
@@ -321,6 +321,7 @@ public class UI_Transcript extends JFrame {
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
+		list_cep.addMouseListener(new MyListener(curStudent,this));
 		
 		table.getModel().addTableModelListener(new TableModelListener() {
 			@Override

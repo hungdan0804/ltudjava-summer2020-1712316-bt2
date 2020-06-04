@@ -55,6 +55,7 @@ public class UI_CEP_FORM extends JFrame {
     private JLabel profile;
     private JLabel transcripts;
     private JLabel cep;
+    private JLabel list_cep;
     private JTextArea textArea;
     private JPanel panel = new JPanel();
     private JPanel profile_content;
@@ -176,7 +177,7 @@ public class UI_CEP_FORM extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
+		list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -270,13 +271,13 @@ public class UI_CEP_FORM extends JFrame {
 		
 		JLabel newM  = new JLabel("ĐIỂM MONG MUỐN");
 		newM .setFont(new Font("Arial", Font.BOLD, 16));
-		newM .setBounds(columnM_Box.getX()+190,profile_content.getHeight()/5, 130, 16);
+		newM .setBounds(columnM_Box.getX()+190,profile_content.getHeight()/5, 150, 16);
 		profile_content.add(newM );
 		
 		newM_Box = new RoundedTextField(20);
 		newM_Box.setBorder(new EmptyBorder(0,10,0,0));
 		newM_Box.setBackground(Color.WHITE);
-		newM_Box.setBounds(newM.getX()+140, profile_content.getHeight()/5-3, 90, 25);
+		newM_Box.setBounds(newM.getX()+160, profile_content.getHeight()/5-3, 90, 25);
 		profile_content.add(newM_Box);
 		newM_Box.setColumns(10);
 		
@@ -354,7 +355,7 @@ public class UI_CEP_FORM extends JFrame {
 		profile.addMouseListener(new MyListener(curStudent,this));
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
-		
+		list_cep.addMouseListener(new MyListener(curStudent,this));
 		save_info.addActionListener(new ActionListener() {
 
 			@SuppressWarnings("unchecked")

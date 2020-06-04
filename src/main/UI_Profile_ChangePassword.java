@@ -49,6 +49,7 @@ public class UI_Profile_ChangePassword extends JFrame {
     private JLabel transcripts;
     private JPanel profile_content;
     private JLabel cep;
+    private JLabel list_cep;
     private JPasswordField old_password_box;
     private JPasswordField new_password_box;
     private JPasswordField rpnew_password_box;
@@ -167,7 +168,7 @@ public class UI_Profile_ChangePassword extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
+		list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -297,7 +298,9 @@ public class UI_Profile_ChangePassword extends JFrame {
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
+		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
+		list_cep.addMouseListener(new MyListener(curStudent,this));
 	
 		old_password_visible.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e)  

@@ -44,6 +44,7 @@ public class UI_Profile extends JFrame {
     private JLabel profile;
     private JLabel cep;
     private JLabel transcripts;
+    private JLabel list_cep;
     private JPanel profile_content;
     private JTextField studentID_Box;
     private JTextField fullname_Box;
@@ -159,7 +160,7 @@ public class UI_Profile extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
+		list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -318,6 +319,7 @@ public class UI_Profile extends JFrame {
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
+		list_cep.addMouseListener(new MyListener(curStudent,this));
 		
 		update_info.addActionListener(new ActionListener() {
 			@Override

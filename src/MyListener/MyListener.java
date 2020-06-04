@@ -12,6 +12,9 @@ import main.UI_DashBoard;
 import main.UI_Profile;
 import main.UI_Schedule;
 import main.UI_SignIn;
+import main.UI_TABLE_CEP_INFO_1;
+import main.UI_TABLE_CEP_INFO_2;
+import main.UI_TABLE_CEP_INFO_STUDENT;
 import main.UI_Transcript;
 import main.UI_TranscriptStudent;
 
@@ -34,6 +37,7 @@ public class MyListener extends MouseAdapter{
 		 	case "BẢNG ĐIỂM": case "Bảng điểm": checkRoleTranscript();break;
 		 	case "THÔNG TIN CÁ NHÂN": case "Thông tin cá nhân": UI_Profile ui4 = new UI_Profile(curStudent);ui4.setVisible(true);frame.dispose();break;
 		 	case "PHÚC KHẢO ĐIỂM": case "Phúc khảo điểm": UI_CEP ui5= new UI_CEP(curStudent);ui5.setVisible(true);frame.dispose();break;
+		 	case "HỒ SƠ CẦN DUYỆT": case "Hồ sơ cần duyệt": checkRoleListCep();break;
 		 };
 	 }
 
@@ -44,6 +48,17 @@ public class MyListener extends MouseAdapter{
 			 ui=new UI_Transcript(curStudent);
 		}else {
 			ui=new UI_TranscriptStudent(curStudent);
+		}
+		ui.setVisible(true);
+		frame.dispose();
+	}
+	private void checkRoleListCep() {
+		// TODO Auto-generated method stub
+		JFrame ui;
+		if(curStudent.getRole()==1) {
+			 ui=new UI_TABLE_CEP_INFO_STUDENT(curStudent);
+		}else {
+			ui=new UI_TABLE_CEP_INFO_1(curStudent);
 		}
 		ui.setVisible(true);
 		frame.dispose();

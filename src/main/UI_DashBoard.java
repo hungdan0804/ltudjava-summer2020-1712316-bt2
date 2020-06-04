@@ -31,6 +31,8 @@ public class UI_DashBoard extends JFrame {
 	private JLabel profile_box;
 	private JLabel cep;
 	private JLabel cep_box;
+	private JLabel list_cep;
+	private JLabel list_cep_box;
 
 	/**
 	 * Create the frame.
@@ -140,7 +142,7 @@ public class UI_DashBoard extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
+		list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -211,7 +213,7 @@ public class UI_DashBoard extends JFrame {
 		cep_box.setHorizontalTextPosition(SwingConstants.CENTER);
 		home.add(cep_box);
 		
-		JLabel list_cep_box = new RoundedLabel();
+		list_cep_box = new RoundedLabel();
 		list_cep_box.setBackground(Color.WHITE);
 		list_cep_box.setFont(new Font("Arial", Font.BOLD, 18));
 		list_cep_box.setHorizontalAlignment(SwingConstants.CENTER);
@@ -244,6 +246,8 @@ public class UI_DashBoard extends JFrame {
 		profile_box.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		cep_box.addMouseListener(new MyListener(curStudent,this));
+		list_cep.addMouseListener(new MyListener(curStudent,this));
+		list_cep_box.addMouseListener(new MyListener(curStudent,this));
 		
 	}
 	

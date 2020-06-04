@@ -39,6 +39,8 @@ import Object.StudentAndYear;
 import Util.HeaderRenderer;
 import Util.HibernateUtil;
 import Util.RoundedButton;
+import Util.RoundedLabel;
+
 import javax.swing.JButton;
 
 public class UI_CurrentCourseInfo extends JFrame {
@@ -57,7 +59,10 @@ public class UI_CurrentCourseInfo extends JFrame {
     private JLabel sign_out;
     private JLabel schedule;
     private JLabel Dashboard;
-  
+    private JLabel transcripts;
+    private JLabel profile;
+    private JLabel cep;
+    private JLabel list_cep;
 
 	public UI_CurrentCourseInfo(Student student,String curCourse,String scheduleID) {
 		this.curScheduleID=scheduleID;
@@ -142,7 +147,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 		schedule.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(schedule);
 		
-		JLabel transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
+		transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
 		transcripts.setForeground(Color.WHITE);
 		transcripts.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_3.png")));
 		transcripts.setHorizontalAlignment(SwingConstants.LEFT);
@@ -150,7 +155,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 		transcripts.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(transcripts);
 		
-		JLabel profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
+		profile = new JLabel("Th\u00F4ng tin c\u00E1 nh\u00E2n");
 		profile.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_4.png")));
 		profile.setFont(new Font("Arial", Font.BOLD, 14));
 		profile.setForeground(Color.WHITE);
@@ -158,7 +163,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 		profile.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(profile);
 		
-		JLabel cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
+		cep = new JLabel("Ph\u00FAc kh\u1EA3o \u0111i\u1EC3m");
 		cep.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_5.png")));
 		cep.setHorizontalAlignment(SwingConstants.LEFT);
 		cep.setForeground(Color.WHITE);
@@ -166,7 +171,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
+		list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -213,11 +218,12 @@ public class UI_CurrentCourseInfo extends JFrame {
 		filter_course.setBounds(content.getWidth()/20, content.getHeight()/7, 46, 16);
 		content.add(filter_course);
 		
-		this.label_course = new JLabel(this.curCourseID);
+		this.label_course = new RoundedLabel();
+		label_course.setText(this.curCourseID);
 		label_course.setFont(new Font("Arial", Font.BOLD, 14));
 		label_course.setHorizontalAlignment(SwingConstants.CENTER);
 		label_course.setOpaque(true);
-		this.label_course.setBounds(content.getWidth()/20 + filter_course.getWidth(), content.getHeight()/7, 120, 20);
+		this.label_course.setBounds(content.getWidth()/20 + filter_course.getWidth(), content.getHeight()/7, 200, 20);
 		content.add(this.label_course);
 		
 		insertRow = new RoundedButton();
@@ -225,7 +231,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 		insertRow.setForeground(Color.WHITE);
 		insertRow.setFont(new Font("Arial", Font.BOLD, 12));
 		insertRow.setText("Thêm SV");
-		insertRow.setBounds(label_course.getX() + 130, content.getHeight()/7, 90, 23);
+		insertRow.setBounds(label_course.getX() + label_course.getWidth()+30, content.getHeight()/7, 90, 23);
 		content.add(insertRow);
 		
 		deleteRow = new RoundedButton();
@@ -233,7 +239,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 		deleteRow.setForeground(Color.WHITE);
 		deleteRow.setFont(new Font("Arial", Font.BOLD, 12));
 		deleteRow.setText("Xóa SV");
-		deleteRow.setBounds(insertRow.getX() + 100, content.getHeight()/7, 90, 23);
+		deleteRow.setBounds(insertRow.getX() + insertRow.getWidth()+30, content.getHeight()/7, 90, 23);
 		content.add(deleteRow);
 		
 		JLabel lblNewLabel = new JLabel("DANH SÁCH HỌC SINH TỪNG MÔN HỌC");
@@ -249,6 +255,10 @@ public class UI_CurrentCourseInfo extends JFrame {
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		schedule.addMouseListener(new MyListener(curStudent,this));
+		transcripts.addMouseListener(new MyListener(curStudent,this));
+		profile.addMouseListener(new MyListener(curStudent,this));
+		cep.addMouseListener(new MyListener(curStudent,this));
+		list_cep.addMouseListener(new MyListener(curStudent,this));
 	}
 	
 	private void buttonListener() {

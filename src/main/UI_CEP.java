@@ -59,6 +59,7 @@ public class UI_CEP extends JFrame {
     private JLabel schedule;
     private JLabel profile;
     private JLabel transcripts;
+    private JLabel list_cep;
     private ArrayList<String> data = new ArrayList<String>();
     private ArrayList<Integer> data_id = new ArrayList<>();
     private Vector<Integer> data_term = new Vector<>();
@@ -174,7 +175,7 @@ public class UI_CEP extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
+		list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -271,6 +272,7 @@ public class UI_CEP extends JFrame {
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
+		list_cep.addMouseListener(new MyListener(curStudent,this));
 		if(curStudent.getRole()==0) {
 			btn_create.addActionListener(new ActionListener() {
 				@Override

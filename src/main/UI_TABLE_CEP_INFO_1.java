@@ -3,6 +3,7 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -10,6 +11,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -29,15 +31,17 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import MyListener.MyListener;
-
+import Object.CheckExaminationPaper;
+import Object.Classes;
 import Object.CurrentCourse;
+import Object.Schedule;
 import Object.Student;
 import Object.StudentAndYear;
-import Object.Transcript;
 import Util.HeaderRenderer;
 import Util.HibernateUtil;
+import main.UI_TABLE_CEP_INFO_STUDENT.FilterListener;
 
-public class UI_TranscriptStudent extends JFrame {
+public class UI_TABLE_CEP_INFO_1 extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -45,22 +49,20 @@ public class UI_TranscriptStudent extends JFrame {
 	private Student curStudent;
 	private JLabel Dashboard;
 	private JLabel sign_out;
-	private JLabel schedule;
-	private JLabel profile;
-	private JTable table;
-	private JLabel cep;
-	private JLabel list_cep;
+    private JLabel schedule;
+    private JLabel profile;
+    private JLabel transcripts;
+    private JLabel cep;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();
-    private Vector<String> choose_term = new Vector<>();
-    private Vector<String> choose_year = new Vector<>();
-    private JComboBox<String> comboBox_term;
+    private JTable table;
     private JComboBox<String> comboBox_year;
-    
+    private Vector<String> choose_year = new Vector<>();
 
-	public UI_TranscriptStudent(Student student) {
+	public UI_TABLE_CEP_INFO_1(Student student) {
 		this.curStudent=student;
 		initializeData();
+		
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -139,7 +141,7 @@ public class UI_TranscriptStudent extends JFrame {
 		schedule.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(schedule);
 		
-		JLabel transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
+		transcripts = new JLabel("B\u1EA3ng \u0111i\u1EC3m");
 		transcripts.setForeground(Color.WHITE);
 		transcripts.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_3.png")));
 		transcripts.setHorizontalAlignment(SwingConstants.LEFT);
@@ -163,7 +165,7 @@ public class UI_TranscriptStudent extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		list_cep = new JLabel("Hồ sơ cần duyệt");
+		JLabel list_cep = new JLabel("H\u1ED3 s\u01A1 c\u1EA7n duy\u1EC7t");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -204,99 +206,121 @@ public class UI_TranscriptStudent extends JFrame {
 		table.setFillsViewportHeight(true);
 		content.add(sp);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		table.getColumnModel().getColumn(2).setPreferredWidth(200);
-		
-		JLabel filter_term = new JLabel("HỌC KỲ");
-		filter_term.setFont(new Font("Arial", Font.BOLD, 16));
-		filter_term.setBounds(content.getWidth()/20, content.getHeight()/7, 70, 16);
-		content.add(filter_term);
-		
-		comboBox_term = new JComboBox<String>(choose_term);
-		comboBox_term.setBounds(filter_term.getX() + 80, content.getHeight()/7, 50, 20);
-		content.add(comboBox_term);
+		table.getColumnModel().getColumn(1).setPreferredWidth(200);
 		
 		JLabel filter_year = new JLabel("NĂM HỌC");
 		filter_year.setFont(new Font("Arial", Font.BOLD, 16));
-		filter_year.setBounds(comboBox_term.getX()+comboBox_term.getWidth()+20, content.getHeight()/7, 100, 16);
+		filter_year.setBounds(content.getWidth()/20, content.getHeight()/7, 90, 16);
 		content.add(filter_year);
 		
 		comboBox_year = new JComboBox<String>(choose_year);
-		comboBox_year.setBounds(filter_year.getX()+90, content.getHeight()/7, 90, 20);
+		comboBox_year.setBounds(content.getWidth()/20 + filter_year.getWidth(), content.getHeight()/7, 120, 20);
 		content.add(comboBox_year);
 		
-		JLabel lblNewLabel = new JLabel("BẢNG ĐIỂM");
+		JLabel lblNewLabel = new JLabel("H\u1ED2 S\u01A0 C\u1EA6N DUY\u1EC6T");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
 		content.add(lblNewLabel);
 		
-		
-		filterListener();
 		clickListener();
-	}
-	
-	private void clickListener() {
-		Dashboard.addMouseListener(new MyListener(curStudent,this));
-		sign_out.addMouseListener(new MyListener(curStudent,this));
-		schedule.addMouseListener(new MyListener(curStudent,this));
-		profile.addMouseListener(new MyListener(curStudent,this));
-		cep.addMouseListener(new MyListener(curStudent,this));
-		list_cep.addMouseListener(new MyListener(curStudent,this));
-	}
-	
-	private void filterListener() {
-		comboBox_year.addActionListener (new FilterListener());
-		comboBox_term.addActionListener(new FilterListener());
 	}
 	class FilterListener implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();			
+			table.repaint();
 			loadData();
 		}
 	}
+	
 	@SuppressWarnings("unchecked")
-	private void loadData() {
+	private void initializeData() {
 		// TODO Auto-generated method stub
+		column.add("STT");
+		column.add("TIÊU ĐỀ");
+		column.add("NGÀY BẮT ĐẦU");
+		column.add("NGÀY KẾT THÚC");
+		
 		Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-        	// start a transaction
-            transaction = session.beginTransaction();
-            List<Transcript>transcripts;
-            Query query = session.createQuery("from CurrentCourse where scheduleID = :id");
-            String scheduleID=curStudent.getStudentID()+"-"+comboBox_year.getSelectedItem()+"-"+comboBox_term.getSelectedItem();
-            query.setParameter("id", scheduleID);
-            List<CurrentCourse> schedules= new ArrayList<>(query.list());
-            data.clear();
-            if(schedules.isEmpty()) {
-	           	return;
-           	}
-            for(Integer i=0;i<schedules.size();i++) {
-            	CurrentCourse cur=schedules.get(i);
-	            query = session.createQuery("from Transcript where transcriptID= :id");
-	            query.setParameter("id", curStudent.getStudentID()+"-"+cur.getCourse().getCourseID());
-	            transcripts = new ArrayList<>(query.list());
-	            for(Integer j=0;j< transcripts.size();j++) {
-	            	Transcript x = transcripts.get(j);
-	            	Vector<String> t2 =new Vector<>();       
-	            	t2.add(i.toString());
-	            	t2.add(cur.getCourse().getCourseID());
-	           		t2.add(cur.getCourse().getCourseName());
-	           		t2.add(Float.toString(x.getMidtermMark()));
-	           		t2.add(Float.toString(x.getFinaltermMark()));
-	            	t2.add(Float.toString(x.getOtherMark()));
-	            	t2.add(Float.toString(x.getTotalMark()));
-	            	data.add(t2);
-	            }
+            // start a transaction
+            transaction = session.beginTransaction();        
+            Query t = session.createQuery("from StudentAndYear where studentID = :id");
+            t.setParameter("id", curStudent.getStudentID());
+            List<StudentAndYear> l = new ArrayList<StudentAndYear>(t.list());
+            for(StudentAndYear x : l) {
+            	choose_year.add(x.getYear());
             }
-        	// commit transaction
+            
+            t = session.createQuery("from CheckExaminationPaper where year = :year");
+            t.setParameter("year", choose_year.get(choose_year.size()-1));
+            
+            List<CheckExaminationPaper> l2 = new ArrayList<CheckExaminationPaper>(t.list());
+            if(l2.isEmpty()) {
+            	return;
+            }
+            else {
+            	Vector<String> temp= null;
+            	Locale.setDefault(new Locale("vi", "VN"));
+            	for(Integer i =0;i<l2.size();i++) {
+            		CheckExaminationPaper cur = l2.get(i);
+            		temp=new Vector<>();
+            		temp.add(i.toString());
+            		temp.add(cur.getTitle());
+            		temp.add(cur.getStartingDate().toString());
+            		temp.add(cur.getEndingDate().toString());
+            		data.add(temp);
+            	}
+            }        
+            // commit transaction
             transaction.commit();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
+        }	
 	}
-	private String getLastName(String fullname) {
-		String []str = fullname.split(" ");
-		return str[str.length-1];
+	
+	@SuppressWarnings("unchecked")
+	private void loadData() {
+		// TODO Auto-generated method stub	
+		Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // start a transaction
+            transaction = session.beginTransaction(); 
+            Query t = session.createQuery("from CheckExaminationPaper where year = :year");
+            t.setParameter("year", comboBox_year.getSelectedItem());
+            List<CheckExaminationPaper> l2 = new ArrayList<CheckExaminationPaper>(t.list());
+            data.clear();
+            if(l2.isEmpty()) {
+            	return;
+            }
+            else {
+            	Vector<String> temp= null;
+            	Locale.setDefault(new Locale("vi", "VN"));
+            	for(Integer i =0;i<l2.size();i++) {
+            		CheckExaminationPaper cur = l2.get(i);
+            		temp=new Vector<>();
+            		temp.add(i.toString());
+            		temp.add(cur.getTitle());
+            		temp.add(cur.getStartingDate().toString());
+            		temp.add(cur.getEndingDate().toString());
+            		data.add(temp);
+            	}
+            }        
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }	
+	}
+	private void clickListener(){
+		Dashboard.addMouseListener(new MyListener(curStudent,this));
+		sign_out.addMouseListener(new MyListener(curStudent,this));
+		transcripts.addMouseListener(new MyListener(curStudent,this));
+		schedule.addMouseListener(new MyListener(curStudent,this));
+		profile.addMouseListener(new MyListener(curStudent,this));
+		cep.addMouseListener(new MyListener(curStudent,this));
+		
+		comboBox_year.addActionListener (new FilterListener());
+		comboBox_year.setSelectedIndex(choose_year.size()-1);
 	}
 	private void allignCenterAllColumn(JTable table) {
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -305,65 +329,8 @@ public class UI_TranscriptStudent extends JFrame {
 			 table.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
 		}
 	}
-
-	@SuppressWarnings("unchecked")
-	private void initializeData() {
-		// TODO Auto-generated method stub
-		choose_term.add("1");
-		choose_term.add("2");
-		choose_term.add("3");
-		
-		//LOAD HEADER
-		column.add("STT");
-		column.add("MÃ MÔN");
-		column.add("TÊN MÔN");
-		column.add("ĐIỂM GIỮA KÌ");
-		column.add("ĐIỂM CUỐI KÌ");
-		column.add("ĐIỂM KHÁC");
-		column.add("ĐIỂM TỔNG");
-		
-		Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-        	// start a transaction
-            transaction = session.beginTransaction();  
-            Query t = session.createQuery("from StudentAndYear where studentID = :id");
-            t.setParameter("id", curStudent.getStudentID());
-            List<StudentAndYear> l = new ArrayList<StudentAndYear>(t.list());
-            for(StudentAndYear x : l) {
-            	choose_year.add(x.getYear());
-            }
-            
-            List<Transcript>transcripts;
-            Query query = session.createQuery("from CurrentCourse where scheduleID = :id");
-            String scheduleID=curStudent.getStudentID()+"-"+choose_year.get(0)+"-"+choose_term.get(0);
-            query.setParameter("id", scheduleID);
-            List<CurrentCourse> schedules= new ArrayList<>(query.list());
-            if(schedules.isEmpty()) {
-	           	return;
-           	}
-            for(Integer i=0;i<schedules.size();i++) {
-            	CurrentCourse cur=schedules.get(i);
-	            query = session.createQuery("from Transcript where transcriptID= :id");
-	            query.setParameter("id", curStudent.getStudentID()+"-"+cur.getCourse().getCourseID());
-	            transcripts = new ArrayList<>(query.list());
-	            for(Integer j=0;j< transcripts.size();j++) {
-	            	Transcript x = transcripts.get(j);
-	            	Vector<String> t2 =new Vector<>();       
-	            	t2.add(i.toString());
-	            	t2.add(cur.getCourse().getCourseID());
-	           		t2.add(cur.getCourse().getCourseName());
-	           		t2.add(Float.toString(x.getMidtermMark()));
-	           		t2.add(Float.toString(x.getFinaltermMark()));
-	            	t2.add(Float.toString(x.getOtherMark()));
-	            	t2.add(Float.toString(x.getTotalMark()));
-	            	data.add(t2);
-	            }
-            }
-        	// commit transaction
-            transaction.commit();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+	private String getLastName(String fullname) {
+		String []str = fullname.split(" ");
+		return str[str.length-1];
 	}
-	
 }

@@ -60,6 +60,7 @@ public class UI_Schedule extends JFrame {
 	private JLabel transcripts;
 	private JLabel profile;
 	private JLabel cep;
+	private JLabel list_cep;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();//{"STT","MÃ MÔN","TÊN MÔN", "PHÒNG HỌC","THỜI GIAN"};
     private Vector<String> choose_classes = new Vector<>();
@@ -176,7 +177,7 @@ public class UI_Schedule extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
+		list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -267,13 +268,11 @@ public class UI_Schedule extends JFrame {
 		 public void mouseClicked(MouseEvent e)  
 		 {  
 			 int row = table.rowAtPoint(e.getPoint());
-		     int col = table.columnAtPoint(e.getPoint());
-		     if(col == 1) {
-		    	 String curCourse = (String)table.getValueAt(row, col);
-		    	 UI_CurrentCourseInfo frame = new UI_CurrentCourseInfo(curStudent,comboBox_classes.getSelectedItem( )+"-"+curCourse,comboBox_classes.getSelectedItem( )+"-"+comboBox_year.getSelectedItem()+"-" +comboBox_term.getSelectedItem());
-		    	 frame.setVisible(true);
-		    	 dispose();
-		     }
+		     
+		     String curCourse = (String)table.getValueAt(row, 1);
+		     UI_CurrentCourseInfo frame = new UI_CurrentCourseInfo(curStudent,comboBox_classes.getSelectedItem( )+"-"+curCourse,comboBox_classes.getSelectedItem( )+"-"+comboBox_year.getSelectedItem()+"-" +comboBox_term.getSelectedItem());
+		     frame.setVisible(true);
+		     dispose();
 		 }  
 	}
 	private void clickListener() {
@@ -282,7 +281,7 @@ public class UI_Schedule extends JFrame {
 		transcripts.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
-		
+		list_cep.addMouseListener(new MyListener(curStudent,this));
 		if(curStudent.getRole()==0) {
 			table.addMouseListener(new TableListener());
 		}

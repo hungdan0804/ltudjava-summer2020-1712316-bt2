@@ -140,7 +140,7 @@ public class UI_DashBoard extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Danh s\u00E1ch ph\u00FAc kh\u1EA3o");
+		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -216,7 +216,7 @@ public class UI_DashBoard extends JFrame {
 		list_cep_box.setFont(new Font("Arial", Font.BOLD, 18));
 		list_cep_box.setHorizontalAlignment(SwingConstants.CENTER);
 		list_cep_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_5.png")));
-		list_cep_box.setText("<html><p>DANH S\u00C1CH <br> PH\u00DAC KH\u1EA2O</p></html>");
+		list_cep_box.setText("HỒ SƠ CẦN DUYỆT");
 		list_cep_box.setVerticalTextPosition(SwingConstants.TOP);
 		list_cep_box.setHorizontalTextPosition(SwingConstants.CENTER);
 		home.add(list_cep_box);

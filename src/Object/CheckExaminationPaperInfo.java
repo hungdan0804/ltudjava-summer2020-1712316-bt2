@@ -20,7 +20,6 @@ public class CheckExaminationPaperInfo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(columnDefinition = "integer auto_increment") 
 	protected int cepInfoID;
 	@ManyToOne
 	@JoinColumn (name="studentID")
@@ -31,20 +30,29 @@ public class CheckExaminationPaperInfo implements Serializable{
 	protected String columnUpdate;
 	protected float wantedMark;
 	protected String reason;
+	protected String status;
 	
 	public CheckExaminationPaperInfo() {
 		super();
 	}
-	public CheckExaminationPaperInfo(int cepInfoID, Student student, String currentCourse, int cep,
-			String columnUpdate, float wantedMark, String reason) {
+	public CheckExaminationPaperInfo(Student student, String currentCourse, int cep,
+			String columnUpdate, float wantedMark, String reason, String status) {
 		super();
-		this.cepInfoID = cepInfoID;
 		this.student = student;
 		this.currentCourse = currentCourse;
 		this.cep = cep;
 		this.columnUpdate = columnUpdate;
 		this.wantedMark = wantedMark;
 		this.reason = reason;
+		this.status=status;
+	}
+	
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	public int getCepInfoID() {
 		return cepInfoID;

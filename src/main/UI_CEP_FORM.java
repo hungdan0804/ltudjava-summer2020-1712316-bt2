@@ -3,26 +3,39 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import MyListener.MyListener;
+import Object.CheckExaminationPaper;
+import Object.CheckExaminationPaperInfo;
+import Object.Course;
+import Object.CurrentCourse;
 import Object.Student;
+import Util.HibernateUtil;
 import Util.RoundedButton;
 import Util.RoundedPanel;
 import Util.RoundedTextArea;
@@ -34,24 +47,33 @@ public class UI_CEP_FORM extends JFrame {
 	private JPanel contentPane;
 	private JPanel content;
 	private Student curStudent;
+	private String curCep;
+	private int curCepID;
 	private JLabel Dashboard;
 	private JLabel sign_out;
     private JLabel schedule;
     private JLabel profile;
     private JLabel transcripts;
     private JLabel cep;
+    private JTextArea textArea;
     private JPanel panel = new JPanel();
     private JPanel profile_content;
     private JTextField studentID_Box;
     private JTextField fullname_Box;
-    private JTextField course_box;
-    private JTextField columnM_Box;
+    private JComboBox<String> course_box;
+    private JComboBox<String> columnM_Box;
     private JTextField newM_Box; 
     private JButton change_password;
     private JButton save_info;
+    private Vector<String> data_column = new  Vector<>();
+    private Vector<String> data_course = new  Vector<>();
     
-	public UI_CEP_FORM(Student student) {
+	public UI_CEP_FORM(Student student, String curCep) {
 		this.curStudent=student;
+		this.curCep=curCep;
+		
+		initializeData();
+		
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -154,7 +176,7 @@ public class UI_CEP_FORM extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Danh s\u00E1ch ph\u00FAc kh\u1EA3o");
+		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -230,23 +252,21 @@ public class UI_CEP_FORM extends JFrame {
 		courseID.setBounds(fullname_Box.getX()+220,profile_content.getHeight()/10, 40, 16);
 		profile_content.add(courseID);
 		
-		course_box = new RoundedTextField(20);
-		course_box.setBorder(new EmptyBorder(0,10,0,0));
+		course_box = new JComboBox<String>(data_course);
 		course_box.setBackground(Color.WHITE);
-		course_box.setBounds(courseID.getX()+50, profile_content.getHeight()/10-3, 130, 25);
+		course_box.setBounds(courseID.getX()+50, profile_content.getHeight()/10-3, 200, 25);
 		profile_content.add(course_box);
-		course_box.setColumns(10);
+
 		
 		JLabel columnM  = new JLabel("CỘT ĐIỂM CẦN PHÚC KHẢO");
 		columnM .setFont(new Font("Arial", Font.BOLD, 16));
 		columnM .setBounds(profile_content.getWidth()/20,profile_content.getHeight()/5, 220, 16);
 		profile_content.add(columnM );
-		columnM_Box = new RoundedTextField(20);
-		columnM_Box.setBorder(new EmptyBorder(0,10,0,0));
+		
+		columnM_Box = new JComboBox<String>(data_column);
 		columnM_Box.setBackground(Color.WHITE);
 		columnM_Box.setBounds(columnM.getX()+230, profile_content.getHeight()/5-3, 150, 25);
 		profile_content.add(columnM_Box);
-		columnM_Box.setColumns(10);
 		
 		JLabel newM  = new JLabel("ĐIỂM MONG MUỐN");
 		newM .setFont(new Font("Arial", Font.BOLD, 16));
@@ -267,7 +287,7 @@ public class UI_CEP_FORM extends JFrame {
 		save_info.setBounds(profile_content.getWidth()/20, profile_content.getHeight()*9/10, 90, 23);
 		save_info.setBackground(new Color(22,72,159));
 		profile_content.add(save_info);
-		save_info.setVisible(false);
+
 		
 		change_password = new RoundedButton();
 		change_password.setForeground(Color.WHITE);
@@ -282,23 +302,116 @@ public class UI_CEP_FORM extends JFrame {
 		reason.setBounds(profile_content.getWidth()/20,profile_content.getHeight()*3/10, 220, 16);
 		profile_content.add(reason);
 		
-		JTextArea textArea = new RoundedTextArea();
+		textArea = new RoundedTextArea();
 		textArea.setBackground(Color.LIGHT_GRAY);
 		textArea.setBounds(profile_content.getWidth()/20,profile_content.getHeight()*2/5, profile_content.getWidth()*9/10, profile_content.getHeight()*4/10);
-		textArea.setBorder(new EmptyBorder(0,10,0,0));
-		textArea.setFont(new Font("Arial", Font.BOLD, 16));
+		textArea.setBorder(new EmptyBorder(10,10,0,0));
+		textArea.setFont(new Font("Arial", Font.PLAIN, 14));
 		profile_content.add(textArea);
 		
 		clickListener();
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void initializeData() {
+		// TODO Auto-generated method stub
+		data_column.add("Điểm giữa kì");
+		data_column.add("Điểm cuối kì");
+		data_column.add("Điểm khác");
+		
+		
+		Transaction transaction = null;
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+			// start a transaction
+            transaction = session.beginTransaction();
+            Query query = session.createQuery("from CheckExaminationPaper where title = :title");
+            query.setParameter("title", curCep);
+            List<CheckExaminationPaper> l = new ArrayList<>(query.list());
+            this.curCepID = l.get(0).getCepID();
+            if(!l.isEmpty()) {
+            	query = session.createQuery("from CurrentCourse where scheduleID = :id");
+            	String scheduleID = curStudent.getStudentID()+"-"+l.get(0).getYear()+"-"+l.get(0).getTerm();
+                query.setParameter("id", scheduleID);
+                List<CurrentCourse> s = new ArrayList<>(query.list());
+                for(CurrentCourse cur : s) {
+                	data_course.add(cur.getCourse().getCourseName());
+                }
+            }
+            
+            //import student for every current course 
+			transaction.commit();
+			
+		}catch (Exception e2) {
+            e2.printStackTrace();
+        }
+			
+	}
+
 	private void clickListener(){
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
+		schedule.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		
+		save_info.addActionListener(new ActionListener() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(!newM_Box.getText().isEmpty()) {
+					try {
+						float a = Float.parseFloat(newM_Box.getText());
+						if(a<10 && a>0) {
+							Transaction transaction = null;
+							try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+								// start a transaction
+					            transaction = session.beginTransaction();
+					            Query query = session.createQuery("from Course where courseName = :name");
+					            query.setParameter("name", course_box.getSelectedItem());
+					            List<Course> course = new ArrayList<>(query.list());
+					            String curCourseID=curStudent.getClasses()+"-"+course.get(0).getCourseID();
+					            String choose_column=(String) columnM_Box.getSelectedItem();
+					            CheckExaminationPaperInfo ex= new CheckExaminationPaperInfo(curStudent,curCourseID,curCepID,choose_column,a,textArea.getText(),"Chưa duyệt");
+					            session.save(ex);
+					            //import student for every current course 
+								transaction.commit();
+								UI_CEP ui = new UI_CEP(curStudent);
+								ui.setVisible(true);
+								dispose();
+							}catch (Exception e2) {
+					            e2.printStackTrace();
+					        }
+							
+						}else {
+							JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
+							
+						}
+					}catch(NumberFormatException e1) {
+						e1.printStackTrace();
+			        	JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
+					}
+				}else {
+					JOptionPane.showMessageDialog(contentPane,"Không bỏ trống phần điểm mong muốn !!!");
+				}
+				
+			}
+			
+		});
+		
+		change_password.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				UI_CEP ui = new UI_CEP(curStudent);
+				ui.setVisible(true);
+				dispose();
+			}
+			
+		});
 	}
 	
 	private String getLastName(String fullname) {

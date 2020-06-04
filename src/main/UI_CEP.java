@@ -3,10 +3,7 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -16,17 +13,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -66,6 +61,7 @@ public class UI_CEP extends JFrame {
     private JLabel transcripts;
     private ArrayList<String> data = new ArrayList<String>();
     private ArrayList<Integer> data_id = new ArrayList<>();
+    private Vector<Integer> data_term = new Vector<>();
     private GridBagLayout gbl = new GridBagLayout();
     private JScrollPane scrollbar;
     private JPanel panel = new JPanel();
@@ -76,6 +72,7 @@ public class UI_CEP extends JFrame {
     
 	public UI_CEP(Student student) {
 		this.curStudent=student;
+		initializeData();
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100,(int)dim.getWidth()*4/5,(int)dim.getHeight()*5/6);
@@ -177,7 +174,7 @@ public class UI_CEP extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Danh s\u00E1ch ph\u00FAc kh\u1EA3o");
+		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -237,6 +234,15 @@ public class UI_CEP extends JFrame {
 		listLabel();
 	}
 	
+	private void initializeData() {
+		
+		data_term.add(1);
+		data_term.add(2);
+		data_term.add(3);
+		
+		
+	}
+	
 	@SuppressWarnings("rawtypes")
 	private JLabel[] generateTextPane(int arraySize, ArrayList arrayList) {
 	        JLabel [] textPane = new JLabel[arraySize];
@@ -248,11 +254,8 @@ public class UI_CEP extends JFrame {
 	            textPane[i].addMouseListener(new MouseAdapter() {
 	            	public void mouseClicked(MouseEvent e) {
 	            		if(curStudent.getRole()==1) {
-	            			UI_TABLE_CEP_INFO ui = new UI_TABLE_CEP_INFO(curStudent);
-		            		ui.setVisible(true);
-		            		dispose();
-	            		}else {
-	            			UI_TABLE_CEP_INFO ui = new UI_TABLE_CEP_INFO(curStudent);
+	            			String title = ((JLabel)e.getSource()).getText();
+	            			UI_CEP_FORM ui = new UI_CEP_FORM(curStudent,title);
 		            		ui.setVisible(true);
 		            		dispose();
 	            		}
@@ -267,64 +270,82 @@ public class UI_CEP extends JFrame {
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
-		
-		btn_create.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				String title = null;
-				Date end =null;
-				Date start = null;		
-				JDateChooser jd = new JDateChooser();
-				String message ="Chọn ngày bắt đầu: \n";
-				Object[] params = {message,jd};
-				JOptionPane.showConfirmDialog(null,params,"Ngày bắt đầu", JOptionPane.PLAIN_MESSAGE);
-				start=((JDateChooser)params[1]).getDate();
-				jd.setDate(new Date(start.getTime() + 1 * 24 * 60 * 60 * 1000));
-				jd.setMinSelectableDate(new Date(start.getTime() + 1 * 24 * 60 * 60 * 1000));
-				
-				message = "Chọn ngày kết thúc: \n";
-				params[0]=message;
-				JOptionPane.showConfirmDialog(null,params,"Ngày kết thúc", JOptionPane.PLAIN_MESSAGE); 
-				end=((JDateChooser)params[1]).getDate();
-				
-				JTextArea textArea = new JTextArea();
-				textArea.setColumns(10);
-				textArea.setLineWrap(true);
-				textArea.setWrapStyleWord(true);
-				textArea.setSize(textArea.getPreferredSize().width, 1);
-				JOptionPane.showMessageDialog(null, new JScrollPane(textArea), "Tựa đề",
-				        JOptionPane.PLAIN_MESSAGE);
-				title = textArea.getText();
-				if(start!=null && end!=null && !title.isEmpty()) {
-					int choice = JOptionPane.showConfirmDialog(contentPane,"Ngày bắt đầu: "+start.toString()+"\nNgày kết thúc: "+end.toString()+"\nTựa đề: "+title+"\nBấm yes để tạo !!!", "Tạo phúc khảo",
-				            JOptionPane.YES_NO_OPTION);
-					if (choice == JOptionPane.YES_OPTION){
-						CheckExaminationPaper c = new CheckExaminationPaper(title,start,end);
-						Transaction transaction = null;
-						try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-							// start a transaction
-				            transaction = session.beginTransaction();
-				            session.save(c);
-				            //import student for every current course 
-							transaction.commit();
-							listLabel();
-						}catch (Exception e2) {
-				            e2.printStackTrace();
-				        }
-				    }
-				}else {
-					JOptionPane.showMessageDialog(contentPane,"Khởi tạo không thành công !!!");
+		profile.addMouseListener(new MyListener(curStudent,this));
+		if(curStudent.getRole()==0) {
+			btn_create.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+					String title = null;
+					Date end =null;
+					Date start = null;		
+					JDateChooser jd = new JDateChooser();
+					String message ="Chọn ngày bắt đầu: \n";
+					Object[] params = {message,jd};
+					
+					Vector<String> curYear= getCurrentYear();
+					JComboBox<String> jcb = new JComboBox<String>(curYear);			
+					JOptionPane.showMessageDialog( null, jcb, "Chọn năm học", JOptionPane.QUESTION_MESSAGE);
+					JComboBox<Integer> jcb2 = new JComboBox<Integer>(data_term);			
+					JOptionPane.showMessageDialog( null, jcb2, "Chọn học kỳ", JOptionPane.QUESTION_MESSAGE);
+					
+					JOptionPane.showConfirmDialog(null,params,"Ngày bắt đầu", JOptionPane.PLAIN_MESSAGE);
+					start=((JDateChooser)params[1]).getDate();
+					if(start == null) {
+						return;
+					}
+					jd.setDate(new Date(start.getTime() + 1 * 24 * 60 * 60 * 1000));
+					jd.setMinSelectableDate(new Date(start.getTime() + 1 * 24 * 60 * 60 * 1000));
+					
+					message = "Chọn ngày kết thúc: \n";
+					params[0]=message;
+					JOptionPane.showConfirmDialog(null,params,"Ngày kết thúc", JOptionPane.PLAIN_MESSAGE); 
+					end=((JDateChooser)params[1]).getDate();
+					
+					JTextArea textArea = new JTextArea();
+					textArea.setColumns(10);
+					textArea.setLineWrap(true);
+					textArea.setWrapStyleWord(true);
+					textArea.setSize(textArea.getPreferredSize().width, 1);
+					JOptionPane.showMessageDialog(null, new JScrollPane(textArea), "Tựa đề",
+					        JOptionPane.PLAIN_MESSAGE);
+					title = textArea.getText();
+					if(start!=null && end!=null && !title.isEmpty()) {
+						int choice = JOptionPane.showConfirmDialog(contentPane,"Ngày bắt đầu: "+start.toString()+"\nNgày kết thúc: "+end.toString()+"\nTựa đề: "+title+"\nNăm học: "+jcb.getSelectedItem()+"\nHọc kì: "+jcb2.getSelectedItem()+"\nBấm yes để tạo !!!", "Tạo phúc khảo",
+					            JOptionPane.YES_NO_OPTION);
+						if (choice == JOptionPane.YES_OPTION){
+							CheckExaminationPaper c = new CheckExaminationPaper(title,start,end,jcb.getSelectedItem().toString(),jcb2.getSelectedItem().toString());
+							Transaction transaction = null;
+							try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+								// start a transaction
+					            transaction = session.beginTransaction();
+					            session.save(c);
+					            //import student for every current course 
+								transaction.commit();
+								listLabel();
+							}catch (Exception e2) {
+					            e2.printStackTrace();
+					        }
+					    }
+					}else {
+						JOptionPane.showMessageDialog(contentPane,"Khởi tạo không thành công !!!");
+					}
 				}
-			}
-			
-		});
+				
+			});
+		}
 	}
 	
 	private String getLastName(String fullname) {
 		String []str = fullname.split(" ");
 		return str[str.length-1];
+	}
+	private Vector<String> getCurrentYear() {
+		Vector<String> res = new Vector<>();
+		int year = Calendar.getInstance().get(Calendar.YEAR);
+		res.add(year-1+"-"+year);
+		res.add(year+"-"+(year+1));
+		return res;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -356,10 +377,11 @@ public class UI_CEP extends JFrame {
         }
         
         textPane = generateTextPane(data.size(), data);
-       
+      
         for(int i=0;i<textPane.length;i++) {
             panel.add(textPane[i],new GridBagConstraints( 0,i,0,1, 
             		1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 20, 0), 0, 15));
+            
             panel.revalidate();
         }
         scrollbar.repaint();

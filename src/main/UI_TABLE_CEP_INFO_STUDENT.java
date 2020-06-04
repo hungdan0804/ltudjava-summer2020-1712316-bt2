@@ -8,21 +8,27 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
 
 import MyListener.MyListener;
 import Object.Student;
+import Util.HeaderRenderer;
 import Util.RoundedButton;
 import Util.RoundedPanel;
 import Util.RoundedTextField;
 
-public class UI_TABLE_CEP_INFO extends JFrame {
+public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -34,10 +40,14 @@ public class UI_TABLE_CEP_INFO extends JFrame {
     private JLabel profile;
     private JLabel transcripts;
     private JLabel cep;
-    private JPanel panel = new JPanel();
-    private JPanel profile_content;
-	public UI_TABLE_CEP_INFO(Student student) {
+	private Vector<Vector<String>> data= new Vector<Vector<String>>();
+    private Vector<String> column=new Vector<>();
+    private JTable table;
+
+	public UI_TABLE_CEP_INFO_STUDENT(Student student) {
 		this.curStudent=student;
+		initializeData();
+		
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -87,7 +97,7 @@ public class UI_TABLE_CEP_INFO extends JFrame {
 		navi_header.add(user_icon);
 		
 		
-		JLabel user_name = new JLabel("Ch�o "+getLastName(curStudent.getFullname()));
+		JLabel user_name = new JLabel("Chào "+getLastName(curStudent.getFullname()));
 		user_name.setFont(new Font("Arial", Font.BOLD, 16));
 		user_name.setForeground(Color.WHITE);
 		user_name.setHorizontalAlignment(SwingConstants.CENTER);
@@ -140,7 +150,7 @@ public class UI_TABLE_CEP_INFO extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Danh s\u00E1ch ph\u00FAc kh\u1EA3o");
+		JLabel list_cep = new JLabel("H\u1ED3 s\u01A1 c\u1EA7n duy\u1EC7t");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -170,12 +180,33 @@ public class UI_TABLE_CEP_INFO extends JFrame {
 		contentPane.add(content);
 		content.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("TH�NG TIN C� NH�N");
+		table = new JTable(data,column);
+		table.setEnabled(false);
+		table.setRowHeight(30);
+		allignCenterAllColumn(table);
+		JTableHeader t_header = table.getTableHeader();
+		t_header.setDefaultRenderer(new HeaderRenderer(table));
+		JScrollPane sp=new JScrollPane(table);
+		sp.setBounds(content.getWidth()/20, content.getHeight()/5, content.getWidth()*9/10, content.getHeight()*3/4);
+		table.setFillsViewportHeight(true);
+		content.add(sp);
+		
+		
+		JLabel lblNewLabel = new JLabel("H\u1ED2  S\u01A0 C\u1EA6N DUY\u1EC6T");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
 		content.add(lblNewLabel);
 		
 		clickListener();
+	}
+	private void initializeData() {
+		// TODO Auto-generated method stub
+		column.add("STT");
+		column.add("MÔN");
+		column.add("CỘT ĐIỂM PHÚC KHẢO");
+		column.add("ĐIỂM MONG MUỐN");
+		column.add("LÝ DO");
+		column.add("TRẠNG THÁI");
 	}
 	private void clickListener(){
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
@@ -185,7 +216,13 @@ public class UI_TABLE_CEP_INFO extends JFrame {
 		cep.addMouseListener(new MyListener(curStudent,this));
 		
 	}
-	
+	private void allignCenterAllColumn(JTable table) {
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+		for(int i = 0;i<table.getColumnCount();i++) {
+			 table.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
+		}
+	}
 	private String getLastName(String fullname) {
 		String []str = fullname.split(" ");
 		return str[str.length-1];

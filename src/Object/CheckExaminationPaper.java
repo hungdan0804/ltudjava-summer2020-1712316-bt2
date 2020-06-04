@@ -29,16 +29,44 @@ public class CheckExaminationPaper implements Serializable{
 	protected Date startingDate;
 	@Temporal(TemporalType.TIMESTAMP)
 	protected Date endingDate;
+	protected String year;
+	protected String term;
 	
 	@OneToMany(targetEntity=CheckExaminationPaperInfo.class, mappedBy="cep", fetch=FetchType.EAGER)
 	protected List<CheckExaminationPaperInfo> cepInfos=new ArrayList<>();
 		
-	public CheckExaminationPaper(String title, Date startingDate, Date endingDate) {
+	
+	public CheckExaminationPaper( String title, Date startingDate, Date endingDate, String year,
+			String term) {
 		super();
 		this.title = title;
 		this.startingDate = startingDate;
 		this.endingDate = endingDate;
+		this.year = year;
+		this.term = term;
 	}
+	
+	
+	public String getYear() {
+		return year;
+	}
+
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+
+	public String getTerm() {
+		return term;
+	}
+
+
+	public void setTerm(String term) {
+		this.term = term;
+	}
+
+
 	public CheckExaminationPaper() {
 		super();
 	}

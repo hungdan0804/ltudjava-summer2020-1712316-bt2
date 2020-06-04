@@ -166,7 +166,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("Danh s\u00E1ch ph\u00FAc kh\u1EA3o");
+		JLabel list_cep = new JLabel("Hồ sơ cần duyệt");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);

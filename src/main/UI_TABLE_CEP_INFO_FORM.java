@@ -44,6 +44,7 @@ public class UI_TABLE_CEP_INFO_FORM extends JFrame {
     private JLabel transcripts;
     private JLabel cep;
     private JLabel list_cep;
+    private JLabel list_classes;
     private JTextArea textArea;
     private JPanel panel = new JPanel();
     private JPanel profile_content;
@@ -170,7 +171,7 @@ public class UI_TABLE_CEP_INFO_FORM extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+		list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
 		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
 		list_classes.setForeground(Color.WHITE);
 		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
@@ -317,7 +318,7 @@ public class UI_TABLE_CEP_INFO_FORM extends JFrame {
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));
-		
+		list_classes.addMouseListener(new MyListener(curStudent,this));
 		
 		btn_accept.addActionListener(new ActionListener() {
 

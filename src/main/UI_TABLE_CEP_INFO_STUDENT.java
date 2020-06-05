@@ -167,13 +167,6 @@ public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
-		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
-		list_classes.setForeground(Color.WHITE);
-		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_7.png")));
-		list_classes.setBorder(new EmptyBorder(0,10,0,0));
-		navi_menu.add(list_classes);
 		
 		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
@@ -199,6 +192,7 @@ public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 		sp.setBounds(content.getWidth()/20, content.getHeight()/5, content.getWidth()*9/10, content.getHeight()*3/4);
 		table.setFillsViewportHeight(true);
 		content.add(sp);
+		table.getColumnModel().getColumn(1).setPreferredWidth(150);
 		
 		JLabel filter_status = new JLabel("TRẠNG THÁI");
 		filter_status.setFont(new Font("Arial", Font.BOLD, 16));
@@ -326,7 +320,6 @@ public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
-		
 		comboBox_status.addActionListener (new FilterListener());
 		
 	}

@@ -19,6 +19,7 @@ public class Classes implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
 	protected String classID;
+	protected String schoolyear;
 	@OneToMany(targetEntity=Student.class, mappedBy="classes", fetch=FetchType.EAGER)
 	protected List<Student> students = new ArrayList<>();
 	
@@ -27,11 +28,28 @@ public class Classes implements Serializable {
 	public Classes() {
 		
 	}
-	
-	
 	public Classes(String _classID) {
 		super();
 		this.classID = _classID;
+	}
+	
+	public Classes(String _classID,String year) {
+		super();
+		this.classID = _classID;
+		this.schoolyear=year;
+	}
+
+	
+	
+	
+
+	public String getSchoolyear() {
+		return schoolyear;
+	}
+
+
+	public void setSchoolyear(String schoolyear) {
+		this.schoolyear = schoolyear;
 	}
 
 

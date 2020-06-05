@@ -8,12 +8,12 @@ import javax.swing.JLabel;
 
 import Object.Student;
 import main.UI_CEP;
+import main.UI_Classes;
 import main.UI_DashBoard;
 import main.UI_Profile;
 import main.UI_Schedule;
 import main.UI_SignIn;
 import main.UI_TABLE_CEP_INFO_1;
-import main.UI_TABLE_CEP_INFO_2;
 import main.UI_TABLE_CEP_INFO_STUDENT;
 import main.UI_Transcript;
 import main.UI_TranscriptStudent;
@@ -38,8 +38,18 @@ public class MyListener extends MouseAdapter{
 		 	case "THÔNG TIN CÁ NHÂN": case "Thông tin cá nhân": UI_Profile ui4 = new UI_Profile(curStudent);ui4.setVisible(true);frame.dispose();break;
 		 	case "PHÚC KHẢO ĐIỂM": case "Phúc khảo điểm": UI_CEP ui5= new UI_CEP(curStudent);ui5.setVisible(true);frame.dispose();break;
 		 	case "HỒ SƠ CẦN DUYỆT": case "Hồ sơ cần duyệt": checkRoleListCep();break;
-		 };
+		 	case "DANH SÁCH LỚP": case "Danh sách lớp": checkRoleClasses();break;
+		 }
 	 }
+
+	private void checkRoleClasses() {
+		// TODO Auto-generated method stub
+		if(curStudent.getRole()==0) {
+			UI_Classes ui = new UI_Classes(curStudent); 
+			ui.setVisible(true);
+			frame.dispose();
+		}
+	}
 
 	private void checkRoleTranscript() {
 		// TODO Auto-generated method stub

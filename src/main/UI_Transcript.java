@@ -60,6 +60,7 @@ public class UI_Transcript extends JFrame {
 	private JTable table;
 	private JLabel profile;
 	private JLabel list_cep;
+	private JLabel list_classes;
 	private JLabel ratio_pass = new RoundedLabel();
 	private JLabel ratio_fail = new RoundedLabel();
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
@@ -191,7 +192,7 @@ public class UI_Transcript extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+		list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
 		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
 		list_classes.setForeground(Color.WHITE);
 		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
@@ -322,7 +323,7 @@ public class UI_Transcript extends JFrame {
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));
-		
+		list_classes.addMouseListener(new MyListener(curStudent,this));
 		table.getModel().addTableModelListener(new TableModelListener() {
 			@Override
 			public void tableChanged(TableModelEvent arg0) {

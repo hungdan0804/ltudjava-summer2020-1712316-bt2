@@ -63,6 +63,7 @@ public class UI_CurrentCourseInfo extends JFrame {
     private JLabel profile;
     private JLabel cep;
     private JLabel list_cep;
+    private JLabel list_classes;
 
 	public UI_CurrentCourseInfo(Student student,String curCourse,String scheduleID) {
 		this.curScheduleID=scheduleID;
@@ -179,13 +180,15 @@ public class UI_CurrentCourseInfo extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
-		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
-		list_classes.setForeground(Color.WHITE);
-		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
-		list_classes.setBorder(new EmptyBorder(0,10,0,0));
-		navi_menu.add(list_classes);
+		if(curStudent.getRole()==0) {
+			list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+			list_classes.setFont(new Font("Arial", Font.BOLD, 14));
+			list_classes.setForeground(Color.WHITE);
+			list_classes.setHorizontalAlignment(SwingConstants.LEFT);
+			list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
+			list_classes.setBorder(new EmptyBorder(0,10,0,0));
+			navi_menu.add(list_classes);
+		}
 		
 		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
@@ -259,6 +262,9 @@ public class UI_CurrentCourseInfo extends JFrame {
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));
+		if(curStudent.getRole()==0) {
+			list_classes.addMouseListener(new MyListener(curStudent,this));
+		}
 	}
 	
 	private void buttonListener() {
@@ -381,6 +387,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 	            		String[] split= curCourseID.split("-");
 	            		CurrentCourse cc=session.get(CurrentCourse.class,curScheduleID);
 	            		Schedule sche = session.get(Schedule.class, curScheduleID);
+	            		Classes classes = session.get(Classes.class, student.getClasses());
 	            		String scheduleID = student.getStudentID()+"-"+sche.getYear()+"-"+sche.getTerm();
 	            		//Check if schedule is created
 	            		Schedule t=null;
@@ -400,7 +407,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 	                    }
 	            		//new info for new Student
 	            		Schedule newsche=new Schedule(scheduleID,sche.getYear(),sche.getTerm());
-	            		CurrentCourse newcc=new CurrentCourse(cc.getCurrentCourseID(),cc.getCourse(),new Classes(student.getClasses()),cc.getLocation(),cc.getStartingTime(),scheduleID);
+	            		CurrentCourse newcc=new CurrentCourse(cc.getCurrentCourseID(),cc.getCourse(),classes,cc.getLocation(),cc.getStartingTime(),scheduleID);
 	            		CurrentCourseInfo ccinfo=new CurrentCourseInfo(student.getStudentID()+"-"+split[1],curCourseID,student);
 	            		session.save(ccinfo);
 	            		session.save(newcc);

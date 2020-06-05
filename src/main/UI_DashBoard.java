@@ -33,6 +33,8 @@ public class UI_DashBoard extends JFrame {
 	private JLabel cep_box;
 	private JLabel list_cep;
 	private JLabel list_cep_box;
+	private JLabel list_classes;
+	private JLabel list_classes_box;
 
 	/**
 	 * Create the frame.
@@ -149,14 +151,15 @@ public class UI_DashBoard extends JFrame {
 		list_cep.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_6.png")));
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
-		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
-		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
-		list_classes.setForeground(Color.WHITE);
-		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
-		list_classes.setBorder(new EmptyBorder(0,10,0,0));
-		navi_menu.add(list_classes);
+		if(curStudent.getRole()==0) {
+			list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+			list_classes.setFont(new Font("Arial", Font.BOLD, 14));
+			list_classes.setForeground(Color.WHITE);
+			list_classes.setHorizontalAlignment(SwingConstants.LEFT);
+			list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
+			list_classes.setBorder(new EmptyBorder(0,10,0,0));
+			navi_menu.add(list_classes);
+		}
 		
 		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
@@ -223,16 +226,17 @@ public class UI_DashBoard extends JFrame {
 		list_cep_box.setHorizontalTextPosition(SwingConstants.CENTER);
 		home.add(list_cep_box);
 		
-		JLabel list_classes_box = new RoundedLabel();
-		list_classes_box.setBackground(Color.WHITE);
-		list_classes_box.setFont(new Font("Arial", Font.BOLD, 18));
-		list_classes_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_6.png")));
-		list_classes_box.setHorizontalAlignment(SwingConstants.CENTER);
-		list_classes_box.setText("DANH S\u00C1CH L\u1EDAP");
-		list_classes_box.setVerticalTextPosition(SwingConstants.TOP);
-		list_classes_box.setHorizontalTextPosition(SwingConstants.CENTER);
-		home.add(list_classes_box);
-		
+		if(curStudent.getRole()==0) {
+			list_classes_box = new RoundedLabel();
+			list_classes_box.setBackground(Color.WHITE);
+			list_classes_box.setFont(new Font("Arial", Font.BOLD, 18));
+			list_classes_box.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/dashboard_icon_6.png")));
+			list_classes_box.setHorizontalAlignment(SwingConstants.CENTER);
+			list_classes_box.setText("DANH S\u00C1CH L\u1EDAP");
+			list_classes_box.setVerticalTextPosition(SwingConstants.TOP);
+			list_classes_box.setHorizontalTextPosition(SwingConstants.CENTER);
+			home.add(list_classes_box);
+		}
 		clickListener();
 	}
 	
@@ -248,7 +252,10 @@ public class UI_DashBoard extends JFrame {
 		cep_box.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));
 		list_cep_box.addMouseListener(new MyListener(curStudent,this));
-		
+		if(curStudent.getRole()==0) {
+			list_classes.addMouseListener(new MyListener(curStudent,this));
+			list_classes_box.addMouseListener(new MyListener(curStudent,this));
+		}
 	}
 	
 	private String getLastName(String fullname) {

@@ -49,6 +49,8 @@ public class UI_TABLE_CEP_INFO_2 extends JFrame {
     private JLabel profile;
     private JLabel transcripts;
     private JLabel cep;
+    private JLabel list_cep;
+    private JLabel list_classes;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();
     private JTable table;
@@ -163,7 +165,7 @@ public class UI_TABLE_CEP_INFO_2 extends JFrame {
 		cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(cep);
 		
-		JLabel list_cep = new JLabel("H\u1ED3 s\u01A1 c\u1EA7n duy\u1EC7t");
+		list_cep = new JLabel("H\u1ED3 s\u01A1 c\u1EA7n duy\u1EC7t");
 		list_cep.setFont(new Font("Arial", Font.BOLD, 14));
 		list_cep.setForeground(Color.WHITE);
 		list_cep.setHorizontalAlignment(SwingConstants.LEFT);
@@ -171,7 +173,7 @@ public class UI_TABLE_CEP_INFO_2 extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+		list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
 		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
 		list_classes.setForeground(Color.WHITE);
 		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
@@ -369,6 +371,8 @@ public class UI_TABLE_CEP_INFO_2 extends JFrame {
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
+		list_cep.addMouseListener(new MyListener(curStudent,this));
+		list_classes.addMouseListener(new MyListener(curStudent,this));
 		
 		comboBox_status.addActionListener(new FilterListener());
 		table.addMouseListener(new TableListener());

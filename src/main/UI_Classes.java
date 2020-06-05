@@ -9,8 +9,6 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,38 +18,37 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
+
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import MyListener.MyListener;
 import Object.Classes;
-import Object.Course;
-import Object.CurrentCourse;
-import Object.CurrentCourseInfo;
-import Object.Schedule;
 import Object.Student;
-import Object.StudentAndYear;
+
 import Util.HeaderRenderer;
 import Util.HibernateUtil;
 import Util.RoundedButton;
-import javax.swing.JTable;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JButton;
 
-public class UI_Schedule extends JFrame {
+
+public class UI_Classes extends JFrame {
+
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Student curStudent;
@@ -63,17 +60,15 @@ public class UI_Schedule extends JFrame {
 	private JLabel list_cep;
 	private JLabel list_classes;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
-    private Vector<String> column=new Vector<>();//{"STT","MÃ MÔN","TÊN MÔN", "PHÒNG HỌC","THỜI GIAN"};
+    private Vector<String> column=new Vector<>();
     private Vector<String> choose_classes = new Vector<>();
-    private Vector<String> choose_term = new Vector<>();
     private Vector<String> choose_year = new Vector<>();
-    private JComboBox<String> comboBox_term;
-    private JComboBox<String> comboBox_year;
-    private JComboBox<String> comboBox_classes;
+    private JComboBox<String> comboBox_classes = new JComboBox<String>(choose_classes);
+    private JComboBox<String> comboBox_schoolyear = new JComboBox<String>(choose_year);
     private JTable table;
     private JButton btn_import;
 
-	public UI_Schedule(Student student) {
+	public UI_Classes(Student student) {
 		this.curStudent=student;
 		initializeData();
 		setResizable(false);
@@ -206,7 +201,7 @@ public class UI_Schedule extends JFrame {
 		
 		JPanel content = new JPanel();
 		content.setBackground(Color.WHITE);
-		content.setBounds(navigation.getWidth(),header.getHeight(),contentPane.getWidth()-navigation.getWidth(),contentPane.getHeight()-header.getHeight());
+		content.setBounds(250,81,contentPane.getWidth()-navigation.getWidth(),contentPane.getHeight()-header.getHeight());
 		contentPane.add(content);
 		content.setLayout(null);
 		
@@ -221,34 +216,24 @@ public class UI_Schedule extends JFrame {
 		table.setFillsViewportHeight(true);
 		content.add(sp);
 		
+		JLabel filter_schoolyear = new JLabel("NIÊN KHÓA");
+		filter_schoolyear.setFont(new Font("Arial", Font.BOLD, 16));
+		filter_schoolyear.setBounds(content.getWidth()/20, content.getHeight()/7, 100, 16);
+		content.add(filter_schoolyear);
+		
+		comboBox_schoolyear.setBounds(content.getWidth()/20 + filter_schoolyear.getWidth(), content.getHeight()/7, 100, 20);
+		content.add(comboBox_schoolyear);
+		
 		JLabel filter_classes = new JLabel("LỚP");
 		filter_classes.setFont(new Font("Arial", Font.BOLD, 16));
-		filter_classes.setBounds(content.getWidth()/20, content.getHeight()/7, 46, 16);
+		filter_classes.setBounds(comboBox_schoolyear.getX()+comboBox_schoolyear.getWidth()+20, content.getHeight()/7, 50, 16);
 		content.add(filter_classes);
 		
-		comboBox_classes = new JComboBox<String>(choose_classes);
-		comboBox_classes.setBounds(content.getWidth()/20 + filter_classes.getWidth(), content.getHeight()/7, 90, 20);
+		comboBox_classes.setBounds(filter_classes.getX() + filter_classes.getWidth()+10, content.getHeight()/7, 100, 20);
 		content.add(comboBox_classes);
 		
-		JLabel filter_term = new JLabel("HỌC KỲ");
-		filter_term.setFont(new Font("Arial", Font.BOLD, 16));
-		filter_term.setBounds(comboBox_classes.getX()+comboBox_classes.getWidth()+20, content.getHeight()/7, 70, 16);
-		content.add(filter_term);
 		
-		comboBox_term = new JComboBox<String>(choose_term);
-		comboBox_term.setBounds(filter_term.getX() + 80, content.getHeight()/7, 50, 20);
-		content.add(comboBox_term);
-		
-		JLabel filter_year = new JLabel("NĂM HỌC");
-		filter_year.setFont(new Font("Arial", Font.BOLD, 16));
-		filter_year.setBounds(comboBox_term.getX()+comboBox_term.getWidth()+20, content.getHeight()/7, 100, 16);
-		content.add(filter_year);
-		
-		comboBox_year = new JComboBox<String>(choose_year);
-		comboBox_year.setBounds(filter_year.getX()+90, content.getHeight()/7, 90, 20);
-		content.add(comboBox_year);
-		
-		JLabel lblNewLabel = new JLabel("THỜI KHÓA BIỂU");
+		JLabel lblNewLabel = new JLabel("DANH S\u00C1CH L\u1EDAP");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
 		content.add(lblNewLabel);
@@ -267,17 +252,7 @@ public class UI_Schedule extends JFrame {
 		clickListener();
 	}
 	
-	class TableListener extends MouseAdapter{
-		 public void mouseClicked(MouseEvent e)  
-		 {  
-			 int row = table.rowAtPoint(e.getPoint());
-		     
-		     String curCourse = (String)table.getValueAt(row, 1);
-		     UI_CurrentCourseInfo frame = new UI_CurrentCourseInfo(curStudent,comboBox_classes.getSelectedItem( )+"-"+curCourse,comboBox_classes.getSelectedItem( )+"-"+comboBox_year.getSelectedItem()+"-" +comboBox_term.getSelectedItem());
-		     frame.setVisible(true);
-		     dispose();
-		 }  
-	}
+	
 	private void clickListener() {
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
@@ -285,23 +260,20 @@ public class UI_Schedule extends JFrame {
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));
-		if(curStudent.getRole()==0) {
-			table.addMouseListener(new TableListener());
-			list_classes.addMouseListener(new MyListener(curStudent,this));
-		}
+		
 	}
 	
 	private void filterListener() {
-		comboBox_year.addActionListener (new FilterListener());
-		comboBox_term.addActionListener(new FilterListener());
 		comboBox_classes.addActionListener(new FilterListener());
+		comboBox_schoolyear.addActionListener(new FilterListener2());
 	}
 	
 	private Vector<String> getCurrentYear() {
 		Vector<String> res = new Vector<>();
-		int year = Calendar.getInstance().get(Calendar.YEAR);
-		res.add(year-1+"-"+year);
-		res.add(year+"-"+(year+1));
+		Integer year = Calendar.getInstance().get(Calendar.YEAR);
+		res.add(year.toString());
+		year ++;
+		res.add(year.toString());
 		return res;
 	}
 	
@@ -310,17 +282,25 @@ public class UI_Schedule extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub				
-				JComboBox<String> jcb = new JComboBox<String>(choose_classes);			
-				JOptionPane.showMessageDialog( null, jcb, "Chọn lớp cần import", JOptionPane.QUESTION_MESSAGE);
 				Vector<String> curYear= getCurrentYear();
-				JComboBox<String> jcb2 = new JComboBox<String>(curYear);			
-				JOptionPane.showMessageDialog( null, jcb2, "Chọn năm học", JOptionPane.QUESTION_MESSAGE);
-				JComboBox<String> jcb3 = new JComboBox<String>(choose_term);			
-				JOptionPane.showMessageDialog( null, jcb3, "Chọn học kỳ", JOptionPane.QUESTION_MESSAGE);
-				if(!choose_classes.contains(jcb.getSelectedItem())) {
-					JOptionPane.showMessageDialog(contentPane, "Lớp này không tồn tại");
+				JComboBox<String> jcb = new JComboBox<String>(curYear);			
+				JOptionPane.showMessageDialog( null, jcb, "Chọn niên khóa", JOptionPane.QUESTION_MESSAGE);
+				String classID = JOptionPane.showInputDialog(contentPane, "Nhập vào mã lớp ");
+				Transaction transaction = null;
+				Classes checkClasses = null;
+				try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+					// start a transaction
+		            transaction = session.beginTransaction();
+		            checkClasses = session.get(Classes.class, classID);
+		            //import student for every current course 
+					transaction.commit();
+				}catch (Exception e2) {
+		            e2.printStackTrace();
+		        }
+				if(checkClasses != null) {
+					JOptionPane.showMessageDialog(contentPane, "Lớp này đã tồn tại");
 				}else {
-					int choice = JOptionPane.showConfirmDialog(contentPane,"Lớp: "+jcb.getSelectedItem()+"\nNăm học: "+jcb2.getSelectedItem()+"\nHọc kỳ: "+jcb3.getSelectedItem()+"\nBấm yes để chọn file dữ liệu !!!", "Import File",
+					int choice = JOptionPane.showConfirmDialog(contentPane,"Niên khóa: "+jcb.getSelectedItem()+"\nLớp: "+classID+"\nBấm yes để chọn file dữ liệu !!!", "Import File",
 				            JOptionPane.YES_NO_OPTION);
 	
 				    if (choice == JOptionPane.YES_OPTION){
@@ -329,10 +309,8 @@ public class UI_Schedule extends JFrame {
 				        int rVal = c.showOpenDialog(contentPane);
 				        if (rVal == JFileChooser.APPROVE_OPTION) {
 				        	String path=c.getSelectedFile().getAbsolutePath();
-				        	String classesID= (String) jcb.getSelectedItem();
-				        	String year= (String)jcb2.getSelectedItem();
-				        	String term= (String)jcb3.getSelectedItem();
-				        	updateSchedule(path,classesID,year,term);
+				        	updateClasses(path,classID,(String)jcb.getSelectedItem());
+				        	
 				        }
 				        if (rVal == JFileChooser.CANCEL_OPTION) {
 	
@@ -344,65 +322,23 @@ public class UI_Schedule extends JFrame {
 		
 	}
 	
-	@SuppressWarnings({ "unused", "unchecked" })
-	private void updateSchedule(String path,String curClasses,String year,String term) {
+
+	private void updateClasses(String path,String classID,String schoolyear) {
 		Transaction transaction = null;
-		Classes t=null;
 		Vector<Vector<String>> filedata= readfile(path);
 		try (Session session = HibernateUtil.getSessionFactory().openSession()){
 			transaction = session.beginTransaction();
-			t=session.get(Classes.class, curClasses);
-			//import schedule for admin
-			String classesSchedule=curClasses+"-"+year+"-"+term;
-			session.save(new Schedule(classesSchedule,year,term));
-			for(Vector<String> x : filedata) {
-				String currentCourseID = curClasses+"-"+x.get(1);
-				Course course = new Course(x.get(1),x.get(2));
-				
-				session.save(new CurrentCourse(currentCourseID,course,t,x.get(3),x.get(4),classesSchedule));
-			}
-			//if new schoolyear
-			Query o = session.createQuery("from StudentAndYear where studentID = :id");
-            o.setParameter("id", curStudent.getStudentID());
-            List<StudentAndYear> c = new ArrayList<StudentAndYear>(o.list());
-            if(c.isEmpty()) {
-            	session.save(new StudentAndYear(curStudent.getStudentID(),year));
-            	for(Student st : t.getStudents()) {
-        			session.save(new StudentAndYear(st.getStudentID(),year));
-        		}
-            }else {
-            	int flat=0;
-            	for(StudentAndYear cur: c) {
-            		if(cur.getYear().compareTo(year)==0) {
-            			flat++;
-            			break;
-            		}
-            	}
-            	if(flat==0) {
-            		session.save(new StudentAndYear(curStudent.getStudentID(),year));
-            		for(Student st : t.getStudents()) {
-            			session.save(new StudentAndYear(st.getStudentID(),year));
-            		}
-            	}
-            }
-			//import schedule for every student
-			for(Student st : t.getStudents()) {
-				String scheduleID =st.getStudentID()+"-"+year+"-"+term;
-				
-				//import current corse for every schedule
-				for(Vector<String> x : filedata) {
-					String currentCourseID = curClasses+"-"+x.get(1);
-					Course course = new Course(x.get(1),x.get(2));					
-					CurrentCourseInfo ccinfo=new CurrentCourseInfo(st.getStudentID()+"-"+x.get(1),currentCourseID,st);
-					session.save(new CurrentCourse(currentCourseID,course,t,x.get(3),x.get(4),scheduleID));
-					session.save(ccinfo);
-				}
-				session.save(new Schedule(scheduleID,year,term));
+			Classes newClasses = new Classes(classID,schoolyear);
+			session.save(newClasses);
+			for(int i = 0;i<filedata.size();i++) {
+				Vector<String> cur=filedata.get(i);
+				Student newStudent= new Student(cur.get(1),cur.get(2),cur.get(3),cur.get(4),classID,"123456",cur.get(5));
+				session.save(newStudent);
 			}
 			//import student for every current course 
 			transaction.commit();
 		}
-		loadData();
+		initializeData();
 	}
 	
 	private Vector<Vector<String>> readfile(String path) {
@@ -421,6 +357,7 @@ public class UI_Schedule extends JFrame {
 			    temp.add(data[2]);
 			    temp.add(data[3]);
 			    temp.add(data[4]);
+			    temp.add(data[5]);
 			    res.add(temp);
 			}
 		} catch (IOException e) {
@@ -432,67 +369,58 @@ public class UI_Schedule extends JFrame {
 
 	@SuppressWarnings("unchecked")
 	private void initializeData() {
-		if(curStudent.getRole() == 1) {
-			choose_classes.add(curStudent.getClasses());
-		}		
-		choose_term.add("1");
-		choose_term.add("2");
-		choose_term.add("3");
 		
-		//LOAD HEADER
-		column.add("STT");
-		column.add("MÃ MÔN");
-		column.add("TÊN MÔN");
-		column.add("PHÒNG HỌC");
-		column.add("THỜI GIAN");
+		if(column.isEmpty()) {
+			//LOAD HEADER
+			column.add("STT");
+			column.add("MSSV");
+			column.add("HỌ VÀ TÊN");
+			column.add("GIỚI TÍNH");
+			column.add("CMND");
+			column.add("ĐỊA CHỈ");
+		}
 		
 		Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
             transaction = session.beginTransaction();        
-            Query t = session.createQuery("from StudentAndYear where studentID = :id");
-            t.setParameter("id", curStudent.getStudentID());
-            List<StudentAndYear> l = new ArrayList<StudentAndYear>(t.list());
-            for(StudentAndYear x : l) {
-            	choose_year.add(x.getYear());
+            Query q = session.createQuery("from Classes group by schoolyear");
+            List<Classes> l = new ArrayList<>(q.list());
+            if(!l.isEmpty()) {
+            	choose_year.clear();
+            	for(Classes cur : l) {
+            		choose_year.add(cur.getSchoolyear());
+            	}
             }
-            if(curStudent.getRole()==0) {
-        	   Query query = session.createQuery("from Classes");
-        	   List<Classes> classes= new ArrayList<>(query.list());
-        	   for(Classes i :classes) {
-        		   choose_classes.add(i.getClassID());
-        	   }
+           
+            if(!choose_year.isEmpty()) {
+            	
+            	q = session.createQuery("from Classes where schoolyear = :year");
+            	q.setParameter("year", choose_year.get(choose_year.size()-1));
+            	List<Classes> l2 = new ArrayList<>(q.list());
+            	if(!l2.isEmpty()) {
+            		for(Classes cur :l2) {
+            			choose_classes.clear();
+            			choose_classes.add(cur.getClassID());
+            		}
+            		Classes curClasses = l2.get(0);
+            		for(Integer i=0;i<curClasses.getStudents().size();i++) {
+            			Student cur = curClasses.getStudents().get(i);
+            			Vector<String> temp= new Vector<>();
+            			temp.add(i.toString());
+            			temp.add(cur.getStudentID());
+            			temp.add(cur.getFullname());
+            			temp.add(cur.getGender());
+            			temp.add(cur.getIdCard());
+            			temp.add(cur.getAddress());
+            			data.add(temp);
+            		}
+            	}
+            	comboBox_schoolyear.setSelectedIndex(choose_year.size()-1);
+            	comboBox_classes.setSelectedIndex(0);
             }
-            // query a student
-            List<Schedule> schedules;
-            if(!choose_year.isEmpty()&&!choose_term.isEmpty()) {
-	            if(curStudent.getRole()==0) {
-	        	  
-	        	   Query query2 = session.createQuery("from Schedule where scheduleID= :id");
-	        	   String str =choose_classes.get(0)+"-"+choose_year.get(0)+"-"+choose_term.get(0);
-		           query2.setParameter("id", str);
-		           schedules = new ArrayList<>(query2.list());
-		           
-	           	 }else {
-		           Query query2 = session.createQuery("from Schedule where scheduleID= :id");
-		           query2.setParameter("id", curStudent.getStudentID()+"-"+choose_year.get(0)+"-"+choose_term.get(0));
-		           schedules = new ArrayList<>(query2.list());
-		           
-	           	 }
-	             if(schedules.isEmpty()) {
-	            	 return;
-	             }
-		         for(Integer i = 0; i <  schedules.get(0).getCurrentCourses().size();i++) {
-		           CurrentCourse cur = schedules.get(0).getCurrentCourses().get(i);
-		           Vector<String> row = new Vector<>(); 
-		           row.add(i.toString());
-		           row.add(cur.getCourse().getCourseID());
-		           row.add(cur.getCourse().getCourseName());
-		           row.add(cur.getLocation());
-		           row.add(cur.getStartingTime());
-		           data.add(row);
-		         }
-            }
+            
+            
             // commit transaction
             transaction.commit();
        } catch (Exception e) {
@@ -520,54 +448,87 @@ public class UI_Schedule extends JFrame {
 			loadData();
 		}
 	}
+	class FilterListener2 implements ActionListener{
+		@Override
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+			table.repaint();
+			loadClasses();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void loadClasses() {
+		Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // start a transaction
+            transaction = session.beginTransaction();        
+            if(!choose_year.isEmpty()) {
+            	
+            	Query q = session.createQuery("from Classes where schoolyear = :year");
+            	q.setParameter("year", comboBox_schoolyear.getSelectedItem());
+            	List<Classes> l2 = new ArrayList<>(q.list());
+            	data.clear();
+            	if(!l2.isEmpty()) {
+            		choose_classes.clear();
+            		for(Classes cur :l2) {
+            			choose_classes.add(cur.getClassID());
+            		}
+            		Classes curClasses = l2.get(0);
+            		for(Integer i=0;i<curClasses.getStudents().size();i++) {
+            			Student cur = curClasses.getStudents().get(i);
+            			Vector<String> temp= new Vector<>();
+            			temp.add(i.toString());
+            			temp.add(cur.getStudentID());
+            			temp.add(cur.getFullname());
+            			temp.add(cur.getGender());
+            			temp.add(cur.getIdCard());
+            			temp.add(cur.getAddress());
+            			data.add(temp);
+            		}
+            		
+            		comboBox_classes.setSelectedIndex(0);
+            		comboBox_classes.repaint();
+            	}
+            }
+           
+            // commit transaction
+            transaction.commit();
+       } catch (Exception e) {
+            e.printStackTrace();
+        }	
+	}
 	
 	@SuppressWarnings("unchecked")
 	private void loadData() {
 		Transaction transaction = null;
-		List<Schedule> schedules =null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
-            transaction = session.beginTransaction();
-            if(choose_year.isEmpty()) {
-            	Query t = session.createQuery("from StudentAndYear where studentID = :id");
-                t.setParameter("id", curStudent.getStudentID());
-                List<StudentAndYear> l = new ArrayList<StudentAndYear>(t.list());
-                for(StudentAndYear x : l) {
-                	choose_year.add(x.getYear());
-                }
-                comboBox_year.setSelectedIndex(0);
-                comboBox_year.repaint();
+            transaction = session.beginTransaction();        
+            if(!choose_year.isEmpty()) {
+            	
+            	Query q = session.createQuery("from Classes where classID= :id");
+            	q.setParameter("id", comboBox_classes.getSelectedItem());
+            	List<Classes> l2 = new ArrayList<>(q.list());
+            	data.clear();
+            	if(!l2.isEmpty()) {
+            		
+            		Classes curClasses = l2.get(0);
+            		for(Integer i=0;i<curClasses.getStudents().size();i++) {
+            			Student cur = curClasses.getStudents().get(i);
+            			Vector<String> temp= new Vector<>();
+            			temp.add(i.toString());
+            			temp.add(cur.getStudentID());
+            			temp.add(cur.getFullname());
+            			temp.add(cur.getGender());
+            			temp.add(cur.getIdCard());
+            			temp.add(cur.getAddress());
+            			data.add(temp);
+            		}
+            	}
             }
-            if(curStudent.getRole() == 0) {
-	            // query a student      
-            	Query query = session.createQuery("from Schedule where scheduleID= :id");
-            	String str= comboBox_classes.getSelectedItem()+"-"+comboBox_year.getSelectedItem()+"-"+comboBox_term.getSelectedItem();
-	           	query.setParameter("id", str);
-	           	schedules = new ArrayList<>(query.list());
-	           
-            }else {
-            	Query query = session.createQuery("from Schedule where scheduleID= :id");
-            	query.setParameter("id", curStudent.getStudentID()+"-"+comboBox_year.getSelectedItem()+"-"+comboBox_term.getSelectedItem());
-            	schedules = new ArrayList<>(query.list());
-            }
-            data.clear();
-            if(schedules.isEmpty()) {
-           	 	return;
-            }
-	        for(Integer i = 0; i <  schedules.get(0).getCurrentCourses().size();i++) {
-	          CurrentCourse cur = schedules.get(0).getCurrentCourses().get(i);
-	          Vector<String> row = new Vector<>(); 
-	          row.add(i.toString());
-	          row.add(cur.getCourse().getCourseID());
-	          row.add(cur.getCourse().getCourseName());
-	          row.add(cur.getLocation());
-	          row.add(cur.getStartingTime());
-	          data.add(row);
-	        }
+           
             // commit transaction
             transaction.commit();
-            DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
-            tableModel.fireTableDataChanged();
        } catch (Exception e) {
             e.printStackTrace();
         }	

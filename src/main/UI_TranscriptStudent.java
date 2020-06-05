@@ -171,14 +171,6 @@ public class UI_TranscriptStudent extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
-		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
-		list_classes.setForeground(Color.WHITE);
-		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_7.png")));
-		list_classes.setBorder(new EmptyBorder(0,10,0,0));
-		navi_menu.add(list_classes);
-		
 		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
 		sign_out.setForeground(Color.WHITE);
@@ -335,28 +327,31 @@ public class UI_TranscriptStudent extends JFrame {
             
             List<Transcript>transcripts;
             Query query = session.createQuery("from CurrentCourse where scheduleID = :id");
-            String scheduleID=curStudent.getStudentID()+"-"+choose_year.get(0)+"-"+choose_term.get(0);
-            query.setParameter("id", scheduleID);
-            List<CurrentCourse> schedules= new ArrayList<>(query.list());
-            if(schedules.isEmpty()) {
-	           	return;
-           	}
-            for(Integer i=0;i<schedules.size();i++) {
-            	CurrentCourse cur=schedules.get(i);
-	            query = session.createQuery("from Transcript where transcriptID= :id");
-	            query.setParameter("id", curStudent.getStudentID()+"-"+cur.getCourse().getCourseID());
-	            transcripts = new ArrayList<>(query.list());
-	            for(Integer j=0;j< transcripts.size();j++) {
-	            	Transcript x = transcripts.get(j);
-	            	Vector<String> t2 =new Vector<>();       
-	            	t2.add(i.toString());
-	            	t2.add(cur.getCourse().getCourseID());
-	           		t2.add(cur.getCourse().getCourseName());
-	           		t2.add(Float.toString(x.getMidtermMark()));
-	           		t2.add(Float.toString(x.getFinaltermMark()));
-	            	t2.add(Float.toString(x.getOtherMark()));
-	            	t2.add(Float.toString(x.getTotalMark()));
-	            	data.add(t2);
+            if(!choose_year.isEmpty() && !choose_term.isEmpty()) {
+	            String scheduleID=curStudent.getStudentID()+"-"+choose_year.get(0)+"-"+choose_term.get(0);
+	            query.setParameter("id", scheduleID);
+	            List<CurrentCourse> schedules= new ArrayList<>(query.list());
+	            
+	            if(schedules.isEmpty()) {
+		           	return;
+	           	}
+	            for(Integer i=0;i<schedules.size();i++) {
+	            	CurrentCourse cur=schedules.get(i);
+		            query = session.createQuery("from Transcript where transcriptID= :id");
+		            query.setParameter("id", curStudent.getStudentID()+"-"+cur.getCourse().getCourseID());
+		            transcripts = new ArrayList<>(query.list());
+		            for(Integer j=0;j< transcripts.size();j++) {
+		            	Transcript x = transcripts.get(j);
+		            	Vector<String> t2 =new Vector<>();       
+		            	t2.add(i.toString());
+		            	t2.add(cur.getCourse().getCourseID());
+		           		t2.add(cur.getCourse().getCourseName());
+		           		t2.add(Float.toString(x.getMidtermMark()));
+		           		t2.add(Float.toString(x.getFinaltermMark()));
+		            	t2.add(Float.toString(x.getOtherMark()));
+		            	t2.add(Float.toString(x.getTotalMark()));
+		            	data.add(t2);
+		            }
 	            }
             }
         	// commit transaction

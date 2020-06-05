@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -28,7 +29,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
@@ -60,6 +60,7 @@ public class UI_CEP extends JFrame {
     private JLabel profile;
     private JLabel transcripts;
     private JLabel list_cep;
+    private JLabel list_classes;
     private ArrayList<String> data = new ArrayList<String>();
     private ArrayList<Integer> data_id = new ArrayList<>();
     private Vector<Integer> data_term = new Vector<>();
@@ -183,13 +184,15 @@ public class UI_CEP extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
-		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
-		list_classes.setForeground(Color.WHITE);
-		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_7.png")));
-		list_classes.setBorder(new EmptyBorder(0,10,0,0));
-		navi_menu.add(list_classes);
+		if(curStudent.getRole()==0) {
+			list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+			list_classes.setFont(new Font("Arial", Font.BOLD, 14));
+			list_classes.setForeground(Color.WHITE);
+			list_classes.setHorizontalAlignment(SwingConstants.LEFT);
+			list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
+			list_classes.setBorder(new EmptyBorder(0,10,0,0));
+			navi_menu.add(list_classes);
+		}
 		
 		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
@@ -274,6 +277,9 @@ public class UI_CEP extends JFrame {
 		profile.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));
 		if(curStudent.getRole()==0) {
+			list_classes.addMouseListener(new MyListener(curStudent,this));
+		}
+		if(curStudent.getRole()==0) {
 			btn_create.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
@@ -282,6 +288,7 @@ public class UI_CEP extends JFrame {
 					Date end =null;
 					Date start = null;		
 					JDateChooser jd = new JDateChooser();
+					jd.setMinSelectableDate(new Date());
 					String message ="Chọn ngày bắt đầu: \n";
 					Object[] params = {message,jd};
 					
@@ -303,17 +310,12 @@ public class UI_CEP extends JFrame {
 					params[0]=message;
 					JOptionPane.showConfirmDialog(null,params,"Ngày kết thúc", JOptionPane.PLAIN_MESSAGE); 
 					end=((JDateChooser)params[1]).getDate();
-					
-					JTextArea textArea = new JTextArea();
-					textArea.setColumns(10);
-					textArea.setLineWrap(true);
-					textArea.setWrapStyleWord(true);
-					textArea.setSize(textArea.getPreferredSize().width, 1);
-					JOptionPane.showMessageDialog(null, new JScrollPane(textArea), "Tựa đề",
-					        JOptionPane.PLAIN_MESSAGE);
-					title = textArea.getText();
+					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+			        String startingDate = formatter.format(start);
+			        String endingDate=formatter.format(end);
+					title = "Đợt phúc khảo từ ngày "+startingDate+" đến ngày "+endingDate;
 					if(start!=null && end!=null && !title.isEmpty()) {
-						int choice = JOptionPane.showConfirmDialog(contentPane,"Ngày bắt đầu: "+start.toString()+"\nNgày kết thúc: "+end.toString()+"\nTựa đề: "+title+"\nNăm học: "+jcb.getSelectedItem()+"\nHọc kì: "+jcb2.getSelectedItem()+"\nBấm yes để tạo !!!", "Tạo phúc khảo",
+						int choice = JOptionPane.showConfirmDialog(contentPane,"Ngày bắt đầu: "+startingDate+"\nNgày kết thúc: "+endingDate+"\nTựa đề: "+title+"\nNăm học: "+jcb.getSelectedItem()+"\nHọc kì: "+jcb2.getSelectedItem()+"\nBấm yes để tạo !!!", "Tạo phúc khảo",
 					            JOptionPane.YES_NO_OPTION);
 						if (choice == JOptionPane.YES_OPTION){
 							CheckExaminationPaper c = new CheckExaminationPaper(title,start,end,jcb.getSelectedItem().toString(),jcb2.getSelectedItem().toString());

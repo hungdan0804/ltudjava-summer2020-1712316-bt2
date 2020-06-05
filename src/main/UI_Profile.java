@@ -45,6 +45,7 @@ public class UI_Profile extends JFrame {
     private JLabel cep;
     private JLabel transcripts;
     private JLabel list_cep;
+    private JLabel list_classes;
     private JPanel profile_content;
     private JTextField studentID_Box;
     private JTextField fullname_Box;
@@ -168,13 +169,15 @@ public class UI_Profile extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
-		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
-		list_classes.setForeground(Color.WHITE);
-		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_7.png")));
-		list_classes.setBorder(new EmptyBorder(0,10,0,0));
-		navi_menu.add(list_classes);
+		if(curStudent.getRole()==0) {
+			list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+			list_classes.setFont(new Font("Arial", Font.BOLD, 14));
+			list_classes.setForeground(Color.WHITE);
+			list_classes.setHorizontalAlignment(SwingConstants.LEFT);
+			list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
+			list_classes.setBorder(new EmptyBorder(0,10,0,0));
+			navi_menu.add(list_classes);
+		}
 		
 		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
@@ -320,7 +323,9 @@ public class UI_Profile extends JFrame {
 		transcripts.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));
-		
+		if(curStudent.getRole()==0) {
+			list_classes.addMouseListener(new MyListener(curStudent,this));
+		}
 		update_info.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

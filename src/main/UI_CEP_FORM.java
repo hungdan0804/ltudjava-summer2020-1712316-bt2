@@ -56,6 +56,7 @@ public class UI_CEP_FORM extends JFrame {
     private JLabel transcripts;
     private JLabel cep;
     private JLabel list_cep;
+    private JLabel list_classes;
     private JTextArea textArea;
     private JPanel panel = new JPanel();
     private JPanel profile_content;
@@ -185,13 +186,15 @@ public class UI_CEP_FORM extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		JLabel list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
-		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
-		list_classes.setForeground(Color.WHITE);
-		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-		list_classes.setIcon(new ImageIcon(UI_Schedule.class.getResource("/img/navi_icon_7.png")));
-		list_classes.setBorder(new EmptyBorder(0,10,0,0));
-		navi_menu.add(list_classes);
+		if(curStudent.getRole()==0) {
+			list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+			list_classes.setFont(new Font("Arial", Font.BOLD, 14));
+			list_classes.setForeground(Color.WHITE);
+			list_classes.setHorizontalAlignment(SwingConstants.LEFT);
+			list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
+			list_classes.setBorder(new EmptyBorder(0,10,0,0));
+			navi_menu.add(list_classes);
+		}
 		
 		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
@@ -356,6 +359,9 @@ public class UI_CEP_FORM extends JFrame {
 		schedule.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));
+		if(curStudent.getRole()==0) {
+			list_classes.addMouseListener(new MyListener(curStudent,this));
+		}
 		save_info.addActionListener(new ActionListener() {
 
 			@SuppressWarnings("unchecked")
@@ -365,7 +371,7 @@ public class UI_CEP_FORM extends JFrame {
 				if(!newM_Box.getText().isEmpty()) {
 					try {
 						float a = Float.parseFloat(newM_Box.getText());
-						if(a<10 && a>0) {
+						if(a<=10 && a>=0) {
 							Transaction transaction = null;
 							try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 								// start a transaction

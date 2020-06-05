@@ -3,11 +3,15 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -22,9 +26,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import MyListener.MyListener;
+import Object.CheckExaminationPaper;
+import Object.CheckExaminationPaperInfo;
 import Object.Student;
 import Util.HeaderRenderer;
+import Util.HibernateUtil;
 
 public class UI_TABLE_CEP_INFO_2 extends JFrame {
 
@@ -43,9 +54,11 @@ public class UI_TABLE_CEP_INFO_2 extends JFrame {
     private JTable table;
     private JComboBox<String> comboBox_status;
     private Vector<String> choose_status = new Vector<>();
+    private String curCep;
 
-	public UI_TABLE_CEP_INFO_2(Student student) {
+	public UI_TABLE_CEP_INFO_2(Student student, String curTitle) {
 		this.curStudent=student;
+		this.curCep=curTitle;
 		initializeData();
 		
 		setResizable(false);
@@ -207,7 +220,17 @@ public class UI_TABLE_CEP_INFO_2 extends JFrame {
 		
 		clickListener();
 	}
+	
+	
+	class FilterListener implements ActionListener{
+		@Override
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+			table.repaint();
+			loadData();
+		}
+	}
 
+	@SuppressWarnings("unchecked")
 	private void initializeData() {
 		// TODO Auto-generated method stub
 		column.add("STT");
@@ -219,7 +242,126 @@ public class UI_TABLE_CEP_INFO_2 extends JFrame {
 		choose_status.add("Chưa duyệt");
 		choose_status.add("Chấp nhận");
 		choose_status.add("Từ chối");
+		
+		Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // start a transaction
+            transaction = session.beginTransaction();        
+            Query t = session.createQuery("from CheckExaminationPaper where title = :title");
+            t.setParameter("title", curCep);
+            List<CheckExaminationPaper> l = new ArrayList<CheckExaminationPaper>(t.list());
+            
+            t = session.createQuery("from CheckExaminationPaperInfo where cep= :cepid");
+            t.setParameter("cepid", l.get(0).getCepID());
+            List<CheckExaminationPaperInfo> l2 = new ArrayList<CheckExaminationPaperInfo>(t.list());
+            
+            if(l2.isEmpty()) {
+            	return;
+            }
+            Vector<String> temp=null;
+            String[] split =null;
+            for(Integer i =0;i<l2.size();i++) {
+            	CheckExaminationPaperInfo cur= l2.get(i);
+            	split = cur.getCurrentCourse().split("-");
+            	t = session.createQuery("from Course where courseID = :id");
+                t.setParameter("id", split[1]);
+            	temp =new Vector<>();
+            	temp.add(i.toString());
+            	temp.add(cur.getStudent().getStudentID());
+            	temp.add(cur.getStudent().getFullname());
+            	temp.add(cur.getStatus());
+            	data.add(temp);
+            	
+            } 
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }	
 	}
+	
+	@SuppressWarnings("unchecked")
+	private void loadData() {
+		// TODO Auto-generated method stub
+		Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            // start a transaction
+            transaction = session.beginTransaction();        
+            Query t = session.createQuery("from CheckExaminationPaper where title = :title");
+            t.setParameter("title", curCep);
+            List<CheckExaminationPaper> l = new ArrayList<CheckExaminationPaper>(t.list());
+            
+            if(comboBox_status.getSelectedIndex()==0) { //get all
+            	t = session.createQuery("from CheckExaminationPaperInfo where cep= :cepid ");
+                t.setParameter("cepid", l.get(0).getCepID());
+           
+            }else {//get by filter
+            	 t = session.createQuery("from CheckExaminationPaperInfo where cep= :cepid and status = :status");
+                 t.setParameter("cepid", l.get(0).getCepID());
+                 t.setParameter("status", comboBox_status.getSelectedItem());
+            }
+            
+            List<CheckExaminationPaperInfo> l2 = new ArrayList<CheckExaminationPaperInfo>(t.list());
+            data.clear();
+            if(l2.isEmpty()) {
+            	return;
+            }
+            Vector<String> temp=null;
+            String[] split =null;
+            for(Integer i =0;i<l2.size();i++) {
+            	CheckExaminationPaperInfo cur= l2.get(i);
+            	split = cur.getCurrentCourse().split("-");
+            	t = session.createQuery("from Course where courseID = :id");
+                t.setParameter("id", split[1]);
+            	temp =new Vector<>();
+            	temp.add(i.toString());
+            	temp.add(cur.getStudent().getStudentID());
+            	temp.add(cur.getStudent().getFullname());
+            	temp.add(cur.getStatus());
+            	data.add(temp);
+            	
+            } 
+            // commit transaction
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }	
+	}
+	
+	
+	class TableListener extends MouseAdapter{
+		 @SuppressWarnings("unchecked")
+		public void mouseClicked(MouseEvent e)  
+		 {  
+			 int row = table.rowAtPoint(e.getPoint());
+			 Transaction transaction = null;
+			 try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+		            // start a transaction
+		        	transaction = session.beginTransaction();
+		        	
+		        	Query t = session.createQuery("from CheckExaminationPaper where title = :title");
+		            t.setParameter("title", curCep);
+		            List<CheckExaminationPaper> l = new ArrayList<CheckExaminationPaper>(t.list());
+		        	
+		        	String curStudentID = (String)table.getValueAt(row, 1);
+		        	String curStatus= (String)table.getValueAt(row, 3);
+		        	if(curStatus.compareTo("Chưa duyệt") ==0) {
+		        		Query q  = session.createQuery("from CheckExaminationPaperInfo where studentID = :id and cep = :cepID");
+			        	q.setParameter("id",curStudentID);
+			        	q.setParameter("cepID", l.get(0).getCepID());
+			        	List<CheckExaminationPaperInfo> l2 = new ArrayList<>(q.list());
+			        	UI_TABLE_CEP_INFO_FORM frame = new UI_TABLE_CEP_INFO_FORM(curStudent,l2.get(0));
+					    frame.setVisible(true);
+					    dispose();
+		        	}
+		        	// commit a transastion
+		        	transaction.commit();
+		     } catch (Exception e2) {
+		           e2.printStackTrace();
+		     }	
+		 }  
+	}
+	
 	private void clickListener(){
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
@@ -228,6 +370,8 @@ public class UI_TABLE_CEP_INFO_2 extends JFrame {
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		
+		comboBox_status.addActionListener(new FilterListener());
+		table.addMouseListener(new TableListener());
 	}
 	private void allignCenterAllColumn(JTable table) {
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();

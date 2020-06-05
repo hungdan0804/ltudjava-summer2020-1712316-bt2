@@ -3,12 +3,13 @@ package main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -32,14 +33,11 @@ import org.hibernate.Transaction;
 
 import MyListener.MyListener;
 import Object.CheckExaminationPaper;
-import Object.Classes;
-import Object.CurrentCourse;
-import Object.Schedule;
 import Object.Student;
 import Object.StudentAndYear;
 import Util.HeaderRenderer;
 import Util.HibernateUtil;
-import main.UI_TABLE_CEP_INFO_STUDENT.FilterListener;
+
 
 public class UI_TABLE_CEP_INFO_1 extends JFrame {
 
@@ -311,6 +309,17 @@ public class UI_TABLE_CEP_INFO_1 extends JFrame {
             e.printStackTrace();
         }	
 	}
+	class TableListener extends MouseAdapter{
+		 public void mouseClicked(MouseEvent e)  
+		 {  
+			 int row = table.rowAtPoint(e.getPoint());
+		     
+		     String curCEP = (String)table.getValueAt(row, 1);
+		     UI_TABLE_CEP_INFO_2 frame = new UI_TABLE_CEP_INFO_2(curStudent,curCEP);
+		     frame.setVisible(true);
+		     dispose();
+		 }  
+	}
 	private void clickListener(){
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
@@ -321,6 +330,8 @@ public class UI_TABLE_CEP_INFO_1 extends JFrame {
 		
 		comboBox_year.addActionListener (new FilterListener());
 		comboBox_year.setSelectedIndex(choose_year.size()-1);
+		
+		table.addMouseListener(new TableListener());
 	}
 	private void allignCenterAllColumn(JTable table) {
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();

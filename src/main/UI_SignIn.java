@@ -13,6 +13,8 @@ import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.mindrot.jbcrypt.BCrypt;
+
 import Object.Student;
 import Util.HibernateUtil;
 import Util.RoundedButton;
@@ -150,7 +152,7 @@ public class UI_SignIn extends JFrame {
 		            student = session.get(Student.class,usernameField.getText());
 		            if(student !=null) {
 		            	String myPass=String.valueOf(passwordField.getPassword());
-		            	if(student.getPassword().compareTo(myPass)==0) {
+		            	if(BCrypt.checkpw(myPass, student.getPassword())) {
 		            		dashboard=new UI_DashBoard(student);
 		            		dashboard.setVisible(true);
 		            		dispose();
@@ -180,7 +182,7 @@ public class UI_SignIn extends JFrame {
 			            student = session.get(Student.class,usernameField.getText());
 			            if(student !=null) {
 			            	String myPass=String.valueOf(passwordField.getPassword());
-			            	if(student.getPassword().compareTo(myPass)==0) {
+			            	if(BCrypt.checkpw(myPass, student.getPassword())){
 			            		dashboard=new UI_DashBoard(student);
 			            		dashboard.setVisible(true);
 			            		dispose();

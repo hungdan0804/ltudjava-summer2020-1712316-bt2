@@ -27,6 +27,7 @@ import javax.swing.text.Document;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.mindrot.jbcrypt.BCrypt;
 
 import MyListener.MyListener;
 import Object.Student;
@@ -380,7 +381,7 @@ public class UI_Profile_ChangePassword extends JFrame {
 			    try {
 			    	String myPass=curStudent.getPassword();
 			    	
-			    	if(myPass.compareTo(doc.getText(0, doc.getLength())) != 0) {
+			    	if(!BCrypt.checkpw(doc.getText(0, doc.getLength()), myPass)) {
 			    		old_password_box.setForeground(Color.RED);
 			    		old_password_check = false;
 			    	}else {
@@ -441,7 +442,7 @@ public class UI_Profile_ChangePassword extends JFrame {
 				// TODO Auto-generated method stub
 				if(old_password_check && rpnew_password_check) {
 					String myPass=String.valueOf(new_password_box.getPassword());
-					curStudent.setPassword(myPass);	
+					curStudent.setPassword(BCrypt.hashpw(myPass, BCrypt.gensalt()));	
 					Transaction transaction = null;
 					try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 						// start a transaction

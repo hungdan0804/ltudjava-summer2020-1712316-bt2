@@ -37,6 +37,7 @@ import javax.swing.table.JTableHeader;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.mindrot.jbcrypt.BCrypt;
 
 import MyListener.MyListener;
 import Object.Classes;
@@ -332,7 +333,7 @@ public class UI_Classes extends JFrame {
 			session.save(newClasses);
 			for(int i = 0;i<filedata.size();i++) {
 				Vector<String> cur=filedata.get(i);
-				Student newStudent= new Student(cur.get(1),cur.get(2),cur.get(3),cur.get(4),classID,"123456",cur.get(5));
+				Student newStudent= new Student(cur.get(1),cur.get(2),cur.get(3),cur.get(4),classID,BCrypt.hashpw("123456", BCrypt.gensalt()),cur.get(5));
 				session.save(newStudent);
 			}
 			//import student for every current course 

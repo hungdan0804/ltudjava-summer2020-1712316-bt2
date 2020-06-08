@@ -74,7 +74,16 @@ public class UI_CEP_FORM extends JFrame {
 		this.curStudent=student;
 		this.curCep=curCep;
 		
-		initializeData();
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initializeData();
+				course_box.setSelectedIndex(0);
+			}
+			
+		});
+		t1.start();
 		
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
@@ -350,6 +359,46 @@ public class UI_CEP_FORM extends JFrame {
         }
 			
 	}
+	
+	@SuppressWarnings("unchecked")
+	private void saveForm() {
+		if(!newM_Box.getText().isEmpty()) {
+			try {
+				float a = Float.parseFloat(newM_Box.getText());
+				if(a<=10 && a>=0) {
+					Transaction transaction = null;
+					try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+						// start a transaction
+			            transaction = session.beginTransaction();
+			            Query query = session.createQuery("from Course where courseName = :name");
+			            query.setParameter("name", course_box.getSelectedItem());
+			            List<Course> course = new ArrayList<>(query.list());
+			            String curCourseID=curStudent.getClasses()+"-"+course.get(0).getCourseID();
+			            String choose_column=(String) columnM_Box.getSelectedItem();
+			            CheckExaminationPaperInfo ex= new CheckExaminationPaperInfo(curStudent,curCourseID,curCepID,choose_column,a,textArea.getText(),"Chưa duyệt");
+			            session.save(ex);
+			            //import student for every current course 
+						transaction.commit();
+						UI_CEP ui = new UI_CEP(curStudent);
+						ui.setVisible(true);
+						dispose();
+					}catch (Exception e2) {
+			            e2.printStackTrace();
+			        }
+					
+				}else {
+					JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
+					
+				}
+			}catch(NumberFormatException e1) {
+				e1.printStackTrace();
+	        	JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
+			}
+		}else {
+			JOptionPane.showMessageDialog(contentPane,"Không bỏ trống phần điểm mong muốn !!!");
+		}
+		
+	}
 
 	private void clickListener(){
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
@@ -364,46 +413,19 @@ public class UI_CEP_FORM extends JFrame {
 		}
 		save_info.addActionListener(new ActionListener() {
 
-			@SuppressWarnings("unchecked")
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if(!newM_Box.getText().isEmpty()) {
-					try {
-						float a = Float.parseFloat(newM_Box.getText());
-						if(a<=10 && a>=0) {
-							Transaction transaction = null;
-							try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-								// start a transaction
-					            transaction = session.beginTransaction();
-					            Query query = session.createQuery("from Course where courseName = :name");
-					            query.setParameter("name", course_box.getSelectedItem());
-					            List<Course> course = new ArrayList<>(query.list());
-					            String curCourseID=curStudent.getClasses()+"-"+course.get(0).getCourseID();
-					            String choose_column=(String) columnM_Box.getSelectedItem();
-					            CheckExaminationPaperInfo ex= new CheckExaminationPaperInfo(curStudent,curCourseID,curCepID,choose_column,a,textArea.getText(),"Chưa duyệt");
-					            session.save(ex);
-					            //import student for every current course 
-								transaction.commit();
-								UI_CEP ui = new UI_CEP(curStudent);
-								ui.setVisible(true);
-								dispose();
-							}catch (Exception e2) {
-					            e2.printStackTrace();
-					        }
-							
-						}else {
-							JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
-							
-						}
-					}catch(NumberFormatException e1) {
-						e1.printStackTrace();
-			        	JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
+				Thread t1= new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						saveForm();
+						
 					}
-				}else {
-					JOptionPane.showMessageDialog(contentPane,"Không bỏ trống phần điểm mong muốn !!!");
-				}
-				
+					
+				});
+				t1.start();
 			}
 			
 		});

@@ -55,7 +55,16 @@ public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 
 	public UI_TABLE_CEP_INFO_STUDENT(Student student) {
 		this.curStudent=student;
-		initializeData();
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initializeData();
+				table.repaint();
+			}
+			
+		});
+		t1.start();
 		
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
@@ -307,8 +316,16 @@ public class UI_TABLE_CEP_INFO_STUDENT extends JFrame {
 	class FilterListener implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();
-			loadData();
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadData();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 	}
 	

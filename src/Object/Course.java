@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="course",schema="project_demo")
+@Table(name="course",schema="project1712316")
 public class Course implements Serializable {
 
 	

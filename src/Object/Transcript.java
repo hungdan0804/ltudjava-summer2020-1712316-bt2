@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="transcript",schema="project_demo")
+@Table(name="transcript",schema="project1712316")
 public class Transcript implements Serializable{
 
 	private static final long serialVersionUID = 1L;

@@ -443,16 +443,24 @@ public class UI_Profile_ChangePassword extends JFrame {
 				if(old_password_check && rpnew_password_check) {
 					String myPass=String.valueOf(new_password_box.getPassword());
 					curStudent.setPassword(BCrypt.hashpw(myPass, BCrypt.gensalt()));	
-					Transaction transaction = null;
-					try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-						// start a transaction
-			            transaction = session.beginTransaction();
-			            session.merge(curStudent);
-			            //import student for every current course 
-						transaction.commit();
-					}catch (Exception e2) {
-			            e2.printStackTrace();
-			        }
+					Thread t1= new Thread(new Runnable() {
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							Transaction transaction = null;
+							try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+								// start a transaction
+					            transaction = session.beginTransaction();
+					            session.merge(curStudent);
+					            //import student for every current course 
+								transaction.commit();
+							}catch (Exception e2) {
+					            e2.printStackTrace();
+					        }
+						}
+						
+					});
+					t1.start();
 					UI_Profile ui = new UI_Profile(curStudent);
 					ui.setVisible(true);
 					dispose();

@@ -364,17 +364,25 @@ public class UI_Profile extends JFrame {
 				curStudent.setIdCard(idCard_Box.getText());
 				curStudent.setAddress(address_Box.getText());
 				
-				Transaction transaction = null;
-				try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-					// start a transaction
-		            transaction = session.beginTransaction();
-		            session.merge(curStudent);
-		            //import student for every current course 
-					transaction.commit();
-				}catch (Exception e2) {
-		            e2.printStackTrace();
-		        }
-			}		
+				Thread t1= new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Transaction transaction = null;
+						try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+							// start a transaction
+				            transaction = session.beginTransaction();
+				            session.merge(curStudent);
+				            //import student for every current course 
+							transaction.commit();
+						}catch (Exception e2) {
+				            e2.printStackTrace();
+				        }
+					}
+					
+				});
+				t1.start();
+			}	
 		});
 		change_password.addActionListener(new ActionListener() {
 

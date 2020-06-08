@@ -75,7 +75,20 @@ public class UI_Schedule extends JFrame {
 
 	public UI_Schedule(Student student) {
 		this.curStudent=student;
-		initializeData();
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initializeData();
+				comboBox_year.setSelectedIndex(0);
+				comboBox_classes.setSelectedIndex(0);
+				comboBox_term.setSelectedIndex(0);
+				
+			}
+			
+		});
+		t1.start();
+		
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -270,12 +283,13 @@ public class UI_Schedule extends JFrame {
 	class TableListener extends MouseAdapter{
 		 public void mouseClicked(MouseEvent e)  
 		 {  
-			 int row = table.rowAtPoint(e.getPoint());
-		     
-		     String curCourse = (String)table.getValueAt(row, 1);
-		     UI_CurrentCourseInfo frame = new UI_CurrentCourseInfo(curStudent,comboBox_classes.getSelectedItem( )+"-"+curCourse,comboBox_classes.getSelectedItem( )+"-"+comboBox_year.getSelectedItem()+"-" +comboBox_term.getSelectedItem());
-		     frame.setVisible(true);
-		     dispose();
+			 int row = table.rowAtPoint(e.getPoint());	
+			 if(!data.isEmpty()) {
+				 String curCourse = (String)table.getValueAt(row, 1);
+				 UI_CurrentCourseInfo frame = new UI_CurrentCourseInfo(curStudent,comboBox_classes.getSelectedItem( )+"-"+curCourse,comboBox_classes.getSelectedItem( )+"-"+comboBox_year.getSelectedItem()+"-" +comboBox_term.getSelectedItem());
+				 frame.setVisible(true);
+				 dispose();
+			 }
 		 }  
 	}
 	private void clickListener() {
@@ -332,7 +346,16 @@ public class UI_Schedule extends JFrame {
 				        	String classesID= (String) jcb.getSelectedItem();
 				        	String year= (String)jcb2.getSelectedItem();
 				        	String term= (String)jcb3.getSelectedItem();
-				        	updateSchedule(path,classesID,year,term);
+
+							Thread t1= new Thread(new Runnable() {
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									updateSchedule(path,classesID,year,term);
+								}
+								
+							});
+							t1.start();
 				        }
 				        if (rVal == JFileChooser.CANCEL_OPTION) {
 	
@@ -344,7 +367,7 @@ public class UI_Schedule extends JFrame {
 		
 	}
 	
-	@SuppressWarnings({ "unused", "unchecked" })
+	@SuppressWarnings({"unchecked"})
 	private void updateSchedule(String path,String curClasses,String year,String term) {
 		Transaction transaction = null;
 		Classes t=null;
@@ -357,8 +380,7 @@ public class UI_Schedule extends JFrame {
 			session.save(new Schedule(classesSchedule,year,term));
 			for(Vector<String> x : filedata) {
 				String currentCourseID = curClasses+"-"+x.get(1);
-				Course course = new Course(x.get(1),x.get(2));
-				
+				Course course = new Course(x.get(1),x.get(2));			
 				session.save(new CurrentCourse(currentCourseID,course,t,x.get(3),x.get(4),classesSchedule));
 			}
 			//if new schoolyear
@@ -447,31 +469,31 @@ public class UI_Schedule extends JFrame {
 		column.add("THỜI GIAN");
 		
 		Transaction transaction = null;
+		List<StudentAndYear> l =null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
-            transaction = session.beginTransaction();        
+            transaction = session.beginTransaction();
             Query t = session.createQuery("from StudentAndYear where studentID = :id");
             t.setParameter("id", curStudent.getStudentID());
-            List<StudentAndYear> l = new ArrayList<StudentAndYear>(t.list());
+            l = new ArrayList<StudentAndYear>(t.list());
             for(StudentAndYear x : l) {
             	choose_year.add(x.getYear());
             }
             if(curStudent.getRole()==0) {
-        	   Query query = session.createQuery("from Classes");
-        	   List<Classes> classes= new ArrayList<>(query.list());
-        	   for(Classes i :classes) {
-        		   choose_classes.add(i.getClassID());
-        	   }
+            	Query query = session.createQuery("from Classes");
+            	List<Classes> classes= new ArrayList<>(query.list());
+            	for(Classes i :classes) {
+            		choose_classes.add(i.getClassID());
+            	}     	
             }
             // query a student
             List<Schedule> schedules;
             if(!choose_year.isEmpty()&&!choose_term.isEmpty()) {
 	            if(curStudent.getRole()==0) {
-	        	  
-	        	   Query query2 = session.createQuery("from Schedule where scheduleID= :id");
-	        	   String str =choose_classes.get(0)+"-"+choose_year.get(0)+"-"+choose_term.get(0);
-		           query2.setParameter("id", str);
-		           schedules = new ArrayList<>(query2.list());
+	            	Query query2 = session.createQuery("from Schedule where scheduleID= :id");
+	            	String str =choose_classes.get(0)+"-"+choose_year.get(0)+"-"+choose_term.get(0);
+	            	query2.setParameter("id", str);
+	            	schedules = new ArrayList<>(query2.list());
 		           
 	           	 }else {
 		           Query query2 = session.createQuery("from Schedule where scheduleID= :id");
@@ -479,6 +501,7 @@ public class UI_Schedule extends JFrame {
 		           schedules = new ArrayList<>(query2.list());
 		           
 	           	 }
+           
 	             if(schedules.isEmpty()) {
 	            	 return;
 	             }
@@ -492,10 +515,9 @@ public class UI_Schedule extends JFrame {
 		           row.add(cur.getStartingTime());
 		           data.add(row);
 		         }
+	            transaction.commit();
             }
-            // commit transaction
-            transaction.commit();
-       } catch (Exception e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }	
 	}
@@ -516,8 +538,17 @@ public class UI_Schedule extends JFrame {
 	class FilterListener implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();
-			loadData();
+			
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadData();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 	}
 	
@@ -535,8 +566,10 @@ public class UI_Schedule extends JFrame {
                 for(StudentAndYear x : l) {
                 	choose_year.add(x.getYear());
                 }
-                comboBox_year.setSelectedIndex(0);
-                comboBox_year.repaint();
+                if(!choose_year.isEmpty()) {
+                	comboBox_year.setSelectedIndex(0);
+                	comboBox_year.repaint();
+                }
             }
             if(curStudent.getRole() == 0) {
 	            // query a student      
@@ -566,6 +599,7 @@ public class UI_Schedule extends JFrame {
 	        }
             // commit transaction
             transaction.commit();
+
             DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
             tableModel.fireTableDataChanged();
        } catch (Exception e) {

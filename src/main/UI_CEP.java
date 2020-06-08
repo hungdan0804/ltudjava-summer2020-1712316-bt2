@@ -75,6 +75,7 @@ public class UI_CEP extends JFrame {
 	public UI_CEP(Student student) {
 		this.curStudent=student;
 		initializeData();
+	
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100,(int)dim.getWidth()*4/5,(int)dim.getHeight()*5/6);
@@ -235,7 +236,17 @@ public class UI_CEP extends JFrame {
 	    
 	    
 		clickListener();
-		listLabel();
+		
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				listLabel();
+				
+			}
+			
+		});
+		t1.start();
 	}
 	
 	private void initializeData() {
@@ -313,7 +324,7 @@ public class UI_CEP extends JFrame {
 					SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 			        String startingDate = formatter.format(start);
 			        String endingDate=formatter.format(end);
-					title = "Đợt phúc khảo từ ngày "+startingDate+" đến ngày "+endingDate;
+					title = "Đợt phúc khảo từ ngày "+startingDate+" đến ngày "+endingDate+" Học kỳ "+jcb2.getSelectedItem()+" năm học " +jcb.getSelectedItem();
 					if(start!=null && end!=null && !title.isEmpty()) {
 						int choice = JOptionPane.showConfirmDialog(contentPane,"Ngày bắt đầu: "+startingDate+"\nNgày kết thúc: "+endingDate+"\nTựa đề: "+title+"\nNăm học: "+jcb.getSelectedItem()+"\nHọc kì: "+jcb2.getSelectedItem()+"\nBấm yes để tạo !!!", "Tạo phúc khảo",
 					            JOptionPane.YES_NO_OPTION);
@@ -326,7 +337,17 @@ public class UI_CEP extends JFrame {
 					            session.save(c);
 					            //import student for every current course 
 								transaction.commit();
-								listLabel();
+								Thread t1= new Thread(new Runnable() {
+									@Override
+									public void run() {
+										// TODO Auto-generated method stub
+										listLabel();
+										
+									}
+									
+								});
+								t1.start();
+								
 							}catch (Exception e2) {
 					            e2.printStackTrace();
 					        }

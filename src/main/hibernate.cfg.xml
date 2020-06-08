@@ -5,10 +5,11 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.password">123456789</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/project_demo</property>
-        <property name="hibernate.connection.username">root</property>
-	    <mapping class="Object.Student" />
+        <property name="hibernate.connection.password">Kd123456789</property>
+        <property name="hibernate.connection.url">jdbc:mysql://db4free.net:3306/project1712316</property>
+        <property name="hibernate.connection.username">project1712316</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <mapping class="Object.Student" />
 	    <mapping class="Object.Classes" />
 	    <mapping class="Object.Course" />
 	    <mapping class="Object.CurrentCourse" />

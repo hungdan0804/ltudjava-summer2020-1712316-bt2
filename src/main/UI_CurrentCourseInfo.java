@@ -69,7 +69,16 @@ public class UI_CurrentCourseInfo extends JFrame {
 		this.curScheduleID=scheduleID;
 		this.curCourseID=curCourse;
 		this.curStudent=student;
-		initializeData();
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initializeData();
+				table.repaint();
+			}
+			
+		});
+		t1.start();
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -282,17 +291,36 @@ public class UI_CurrentCourseInfo extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			JButton temp=(JButton) e.getSource();
+			String MSSV =JOptionPane.showInputDialog("Nhập vào MSSV: ");
 			switch(temp.getText()) {
-				case "Thêm SV": insertRow();break;
-				case "Xóa SV": deleteRow();break;
+				case "Thêm SV":
+					Thread t1= new Thread(new Runnable() {
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							insertRow(MSSV);
+						}
+						
+					});
+					t1.start();
+					break;
+				case "Xóa SV": 
+					Thread t2= new Thread(new Runnable() {
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							deleteRow(MSSV);
+						}
+						
+					});
+					t2.start();break;
 			}
 			
 		}
 
 		@SuppressWarnings({ "unchecked", "unused" })
-		private void deleteRow() {
+		private void deleteRow(String MSSV) {
 			// TODO Auto-generated method stub
-			String MSSV =JOptionPane.showInputDialog("Nhập vào MSSV: ");
 			Transaction transaction = null;
 			Student student = null;
 			try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -363,9 +391,8 @@ public class UI_CurrentCourseInfo extends JFrame {
 		}
 
 		@SuppressWarnings("unchecked")
-		private void insertRow() {
+		private void insertRow(String MSSV) {
 			// TODO Auto-generated method stub
-			String MSSV =JOptionPane.showInputDialog("Nhập vào MSSV: ");
 			Transaction transaction = null;
 			Student student = null;
 			try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -385,7 +412,10 @@ public class UI_CurrentCourseInfo extends JFrame {
 	            	}else {
 	            		data.add(res);
 	            		String[] split= curCourseID.split("-");
-	            		CurrentCourse cc=session.get(CurrentCourse.class,curScheduleID);
+	            		Query q = session.createQuery("from CurrentCourse where scheduleId= :scheID and currentCourseID= :ccID");
+	            		q.setParameter("scheID", curScheduleID);
+	            		q.setParameter("ccID", curCourseID);
+	            		List<CurrentCourse> cc=new ArrayList<>(q.list());
 	            		Schedule sche = session.get(Schedule.class, curScheduleID);
 	            		Classes classes = session.get(Classes.class, student.getClasses());
 	            		String scheduleID = student.getStudentID()+"-"+sche.getYear()+"-"+sche.getTerm();
@@ -407,7 +437,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 	                    }
 	            		//new info for new Student
 	            		Schedule newsche=new Schedule(scheduleID,sche.getYear(),sche.getTerm());
-	            		CurrentCourse newcc=new CurrentCourse(cc.getCurrentCourseID(),cc.getCourse(),classes,cc.getLocation(),cc.getStartingTime(),scheduleID);
+	            		CurrentCourse newcc=new CurrentCourse(cc.get(0).getCurrentCourseID(),cc.get(0).getCourse(),classes,cc.get(0).getLocation(),cc.get(0).getStartingTime(),scheduleID);
 	            		CurrentCourseInfo ccinfo=new CurrentCourseInfo(student.getStudentID()+"-"+split[1],curCourseID,student);
 	            		session.save(ccinfo);
 	            		session.save(newcc);

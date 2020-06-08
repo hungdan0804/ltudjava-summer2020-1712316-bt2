@@ -60,7 +60,17 @@ public class UI_TranscriptStudent extends JFrame {
 
 	public UI_TranscriptStudent(Student student) {
 		this.curStudent=student;
-		initializeData();
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initializeData();
+				comboBox_year.setSelectedIndex(0);
+				comboBox_term.setSelectedIndex(0);
+			}
+			
+		});
+		t1.start();
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -242,8 +252,16 @@ public class UI_TranscriptStudent extends JFrame {
 	class FilterListener implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();			
-			loadData();
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadData();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 	}
 	@SuppressWarnings("unchecked")

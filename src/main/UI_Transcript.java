@@ -81,7 +81,22 @@ public class UI_Transcript extends JFrame {
 
 	public UI_Transcript(Student student){
 		this.curStudent=student;
-		initializeData();
+		
+		
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initializeData();
+				comboBox_year.setSelectedIndex(0);
+				comboBox_term.setSelectedIndex(0);
+				comboBox_course.setSelectedIndex(0);
+				comboBox_pass.setSelectedIndex(0);
+				
+			}
+			
+		});
+		t1.start();
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -314,7 +329,44 @@ public class UI_Transcript extends JFrame {
 		clickListener();
 	}
 
-	
+	private void updateMark() {
+		if(table.isEditing()) {
+			String value = (String) table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
+			try {
+				float a = Float.parseFloat(value);
+				if(a<10 && a>0) {
+					
+					Transaction transaction = null;
+					try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+						// start a transaction
+			            transaction = session.beginTransaction();
+			            String[]course = comboBox_course.getSelectedItem().toString().split("-");
+			            String transcriptID=table.getValueAt(table.getSelectedRow(),1)+"-"+course[1];
+			            Transcript transcript= (Transcript)session.get(Transcript.class,transcriptID);
+			            switch(table.getSelectedColumn()) {
+							case 3: transcript.setMidtermMark(Float.parseFloat(value));break;
+							case 4:	transcript.setFinaltermMark(Float.parseFloat(value));break;
+							case 5:	transcript.setOtherMark(Float.parseFloat(value));break;
+							case 6: transcript.setTotalMark(Float.parseFloat(value));break;		
+			            }
+			            session.merge(transcript);
+			            //import student for every current course 
+						transaction.commit();
+						loadData();
+					}catch (Exception e2) {
+			            e2.printStackTrace();
+			        }
+				}else {
+					JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
+					loadData();
+				}
+			}catch(NumberFormatException e) {
+				e.printStackTrace();
+				loadData();
+	        	JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
+			}
+		}
+	}
 	
 	private void clickListener() {
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
@@ -328,43 +380,15 @@ public class UI_Transcript extends JFrame {
 			@Override
 			public void tableChanged(TableModelEvent arg0) {
 				// TODO Auto-generated method stub
-				if(table.isEditing()) {
-					String value = (String) table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
-					try {
-						float a = Float.parseFloat(value);
-						if(a<10 && a>0) {
-							
-							Transaction transaction = null;
-							try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-								// start a transaction
-					            transaction = session.beginTransaction();
-					            String[]course = comboBox_course.getSelectedItem().toString().split("-");
-					            String transcriptID=table.getValueAt(table.getSelectedRow(),1)+"-"+course[1];
-					            Transcript transcript= (Transcript)session.get(Transcript.class,transcriptID);
-					            switch(table.getSelectedColumn()) {
-									case 3: transcript.setMidtermMark(Float.parseFloat(value));break;
-									case 4:	transcript.setFinaltermMark(Float.parseFloat(value));break;
-									case 5:	transcript.setOtherMark(Float.parseFloat(value));break;
-									case 6: transcript.setTotalMark(Float.parseFloat(value));break;		
-					            }
-					            session.merge(transcript);
-					            //import student for every current course 
-								transaction.commit();
-								loadData();
-							}catch (Exception e2) {
-					            e2.printStackTrace();
-					        }
-						}else {
-							JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
-							loadData();
-						}
-					}catch(NumberFormatException e) {
-						e.printStackTrace();
-						loadData();
-			        	JOptionPane.showMessageDialog(contentPane,"Nhập sai Format điểm !!!");
+				Thread t1= new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						updateMark(); 
 					}
-				}
-			        
+					
+				});
+				t1.start();		        
 			}
 		});
 		btn_import.addActionListener(new ActionListener() {
@@ -408,7 +432,15 @@ public class UI_Transcript extends JFrame {
 			        if (rVal == JFileChooser.APPROVE_OPTION) {
 			        	String path=c.getSelectedFile().getAbsolutePath();
 			        	String currentCourseID= (String) jcb4.getSelectedItem();
-			        	updateTranscript(path,currentCourseID);
+			        	Thread t1= new Thread(new Runnable() {
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								updateTranscript(path,currentCourseID);
+							}
+							
+						});
+						t1.start();
 			        	
 			        	comboBox_year.setSelectedItem(jcb2.getSelectedItem());
 			        	comboBox_term.setSelectedItem(jcb3.getSelectedItem());
@@ -590,7 +622,7 @@ public class UI_Transcript extends JFrame {
 	           		choose_course.add(x.getCurrentCourseID());
 	           	}
 	           	comboBox_course.setSelectedItem(choose_course.get(0));
-	            	comboBox_course.repaint();
+	            
             }else {
             	choose_course.add(" ");
             	comboBox_course.setSelectedItem(choose_course.get(0));
@@ -757,23 +789,47 @@ public class UI_Transcript extends JFrame {
 	class FilterListener implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();			
-			loadCourse();
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadCourse();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 	}
 	class FilterListener2 implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();
-			loadData();
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadData();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 
 	}
 	class FilterListener3 implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();
-			loadRatio();
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadRatio();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 	}
 }

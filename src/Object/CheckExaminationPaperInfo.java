@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="checkexaminationpaperinfo",schema="project_demo")
+@Table(name="checkexaminationpaperinfo",schema="project1712316")
 public class CheckExaminationPaperInfo implements Serializable{
 
 	

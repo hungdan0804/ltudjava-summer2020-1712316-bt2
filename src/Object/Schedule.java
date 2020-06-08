@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="schedule",schema="project_demo")
+@Table(name="schedule",schema="project1712316")
 public class Schedule implements Serializable {
 
 	private static final long serialVersionUID = 1L;

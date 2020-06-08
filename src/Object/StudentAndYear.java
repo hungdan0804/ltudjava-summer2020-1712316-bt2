@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="studentandyear",schema="project_demo")
+@Table(name="studentandyear",schema="project1712316")
 public class StudentAndYear implements Serializable{
 
 	private static final long serialVersionUID = 1L;

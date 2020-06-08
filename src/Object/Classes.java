@@ -11,7 +11,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="classes",schema="project_demo")
+@Table(name="classes",schema="project1712316")
 public class Classes implements Serializable {
 	/**
 	 * 

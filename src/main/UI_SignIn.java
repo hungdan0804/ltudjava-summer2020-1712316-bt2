@@ -159,9 +159,10 @@ public class UI_SignIn extends JFrame {
 		            	}else {
 		            		JOptionPane.showMessageDialog(contentPane,"Sai Mật khẩu hoặc tài khoản !!!");
 		            	}
-		            }
+		            }          
 		            // commit transaction
 		            transaction.commit();
+		           
 		       } catch (Exception e) {
 		            e.printStackTrace();
 		        }
@@ -189,9 +190,10 @@ public class UI_SignIn extends JFrame {
 			            	}else {
 			            		JOptionPane.showMessageDialog(contentPane,"Sai Mật khẩu hoặc tài khoản !!!");
 			            	}
-			            }
+			            }      
 			            // commit transaction
 			            transaction.commit();
+			        
 			       } catch (Exception e) {
 			            e.printStackTrace();
 			        }

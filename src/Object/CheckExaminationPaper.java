@@ -16,7 +16,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name="checkexaminationpaper",schema="project_demo")
+@Table(name="checkexaminationpaper",schema="project1712316")
 public class CheckExaminationPaper implements Serializable{
 
 

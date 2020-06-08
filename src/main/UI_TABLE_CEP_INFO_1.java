@@ -60,8 +60,16 @@ public class UI_TABLE_CEP_INFO_1 extends JFrame {
 
 	public UI_TABLE_CEP_INFO_1(Student student) {
 		this.curStudent=student;
-		initializeData();
-		
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initializeData();
+				comboBox_year.setSelectedIndex(0);				
+			}
+			
+		});
+		t1.start();
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -207,7 +215,7 @@ public class UI_TABLE_CEP_INFO_1 extends JFrame {
 		table.setFillsViewportHeight(true);
 		content.add(sp);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-		table.getColumnModel().getColumn(1).setPreferredWidth(200);
+		
 		
 		JLabel filter_year = new JLabel("NĂM HỌC");
 		filter_year.setFont(new Font("Arial", Font.BOLD, 16));
@@ -228,8 +236,17 @@ public class UI_TABLE_CEP_INFO_1 extends JFrame {
 	class FilterListener implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();
-			loadData();
+
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadData();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 	}
 	
@@ -271,7 +288,7 @@ public class UI_TABLE_CEP_INFO_1 extends JFrame {
             		temp.add(cur.getEndingDate().toString());
             		data.add(temp);
             	}
-            }        
+            }
             // commit transaction
             transaction.commit();
         } catch (Exception e) {
@@ -316,11 +333,12 @@ public class UI_TABLE_CEP_INFO_1 extends JFrame {
 		 public void mouseClicked(MouseEvent e)  
 		 {  
 			 int row = table.rowAtPoint(e.getPoint());
-		     
-		     String curCEP = (String)table.getValueAt(row, 1);
-		     UI_TABLE_CEP_INFO_2 frame = new UI_TABLE_CEP_INFO_2(curStudent,curCEP);
-		     frame.setVisible(true);
-		     dispose();
+		     if(!data.isEmpty()) {
+		    	 String curCEP = (String)table.getValueAt(row, 1);
+		    	 UI_TABLE_CEP_INFO_2 frame = new UI_TABLE_CEP_INFO_2(curStudent,curCEP);
+		    	 frame.setVisible(true);
+		    	 dispose();
+		     }
 		 }  
 	}
 	private void clickListener(){

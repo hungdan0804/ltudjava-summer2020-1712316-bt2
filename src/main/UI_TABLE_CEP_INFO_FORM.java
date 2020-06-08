@@ -325,23 +325,32 @@ public class UI_TABLE_CEP_INFO_FORM extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				Transaction transaction = null;
-				try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-					// start a transaction
-		            transaction = session.beginTransaction();
-		            curCepInfo.setStatus("Chấp nhận");
-		            session.merge(curCepInfo);
-		            //import student for every current course
-		            CheckExaminationPaper c = session.get(CheckExaminationPaper.class, curCepInfo.getCep());
-					transaction.commit();
+				
+				Thread t1= new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Transaction transaction = null;
+						try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+							// start a transaction
+				            transaction = session.beginTransaction();
+				            curCepInfo.setStatus("Chấp nhận");
+				            session.merge(curCepInfo);
+				            //import student for every current course
+				            CheckExaminationPaper c = session.get(CheckExaminationPaper.class, curCepInfo.getCep());
+							transaction.commit();
+							
+							UI_TABLE_CEP_INFO_2 ui = new UI_TABLE_CEP_INFO_2(curStudent,c.getTitle());
+				            ui.setVisible(true);
+				            dispose();
+						}catch (Exception e2) {
+				            e2.printStackTrace();
+				        }
+							
+					}
 					
-					UI_TABLE_CEP_INFO_2 ui = new UI_TABLE_CEP_INFO_2(curStudent,c.getTitle());
-		            ui.setVisible(true);
-		            dispose();
-				}catch (Exception e2) {
-		            e2.printStackTrace();
-		        }
-					
+				});
+				t1.start();
 			}
 			
 		});
@@ -350,23 +359,31 @@ public class UI_TABLE_CEP_INFO_FORM extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				Transaction transaction = null;
-				try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-					// start a transaction
-		            transaction = session.beginTransaction();
-		            curCepInfo.setStatus("Từ chối");
-		            session.merge(curCepInfo);
-		            //import student for every current course 
-		            CheckExaminationPaper c = session.get(CheckExaminationPaper.class, curCepInfo.getCep());	            
-					transaction.commit();
-					UI_TABLE_CEP_INFO_2 ui = new UI_TABLE_CEP_INFO_2(curStudent,c.getTitle());
-		            ui.setVisible(true);
-		            dispose();
+				Thread t1= new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Transaction transaction = null;
+						try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+							// start a transaction
+				            transaction = session.beginTransaction();
+				            curCepInfo.setStatus("Từ chối");
+				            session.merge(curCepInfo);
+				            //import student for every current course 
+				            CheckExaminationPaper c = session.get(CheckExaminationPaper.class, curCepInfo.getCep());	            
+							transaction.commit();
+							UI_TABLE_CEP_INFO_2 ui = new UI_TABLE_CEP_INFO_2(curStudent,c.getTitle());
+				            ui.setVisible(true);
+				            dispose();
+							
+						}catch (Exception e2) {
+				            e2.printStackTrace();
+				        }
+							
+					}
 					
-				}catch (Exception e2) {
-		            e2.printStackTrace();
-		        }
-					
+				});
+				t1.start();
 			}
 			
 		});

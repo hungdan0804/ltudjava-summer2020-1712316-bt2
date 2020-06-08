@@ -71,7 +71,17 @@ public class UI_Classes extends JFrame {
 
 	public UI_Classes(Student student) {
 		this.curStudent=student;
-		initializeData();
+		Thread t1= new Thread(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				initializeData();
+				comboBox_schoolyear.setSelectedIndex(0);
+				comboBox_classes.setSelectedIndex(0);
+			}
+			
+		});
+		t1.start();
 		setResizable(false);
 		Dimension dim= Toolkit.getDefaultToolkit().getScreenSize();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -310,7 +320,17 @@ public class UI_Classes extends JFrame {
 				        int rVal = c.showOpenDialog(contentPane);
 				        if (rVal == JFileChooser.APPROVE_OPTION) {
 				        	String path=c.getSelectedFile().getAbsolutePath();
-				        	updateClasses(path,classID,(String)jcb.getSelectedItem());
+				        	Thread t1= new Thread(new Runnable() {
+				    			@Override
+				    			public void run() {
+				    				// TODO Auto-generated method stub
+				    				updateClasses(path,classID,(String)jcb.getSelectedItem());
+				    				
+				    			}
+				    			
+				    		});
+				    		t1.start();
+				        	
 				        	
 				        }
 				        if (rVal == JFileChooser.CANCEL_OPTION) {
@@ -385,7 +405,7 @@ public class UI_Classes extends JFrame {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
             transaction = session.beginTransaction();        
-            Query q = session.createQuery("from Classes group by schoolyear");
+            Query q = session.createQuery("from Classes group by schoolyear,classID");
             List<Classes> l = new ArrayList<>(q.list());
             if(!l.isEmpty()) {
             	choose_year.clear();
@@ -445,15 +465,31 @@ public class UI_Classes extends JFrame {
 	class FilterListener implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();
-			loadData();
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadData();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 	}
 	class FilterListener2 implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
-			table.repaint();
-			loadClasses();
+			Thread t1= new Thread(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					loadClasses();
+					table.repaint();
+				}
+				
+			});
+			t1.start();
 		}
 	}
 	

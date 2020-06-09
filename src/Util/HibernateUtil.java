@@ -7,7 +7,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 
-
+//https://howtodoinjava.com/hibernate/hibarnate-4-how-to-build-sessionfactory/
 public class HibernateUtil {
 	private static final SessionFactory sessionFactory = buildSessionFatory();
 	private static SessionFactory buildSessionFatory() {

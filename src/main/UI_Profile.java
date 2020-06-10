@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import javax.swing.SwingConstants;
@@ -207,7 +208,7 @@ public class UI_Profile extends JFrame {
 		studentID_Box = new RoundedTextField(20);
 		studentID_Box.setBorder(new EmptyBorder(0,10,0,0));
 		studentID_Box.setText(curStudent.getStudentID());
-		studentID_Box.setBackground(Color.WHITE);
+		studentID_Box.setBackground(Color.LIGHT_GRAY);
 		studentID_Box.setEditable(false);
 		studentID_Box.setBounds(profile_content.getX()+60, profile_content.getHeight()/10-3, 90, 25);
 		profile_content.add(studentID_Box);
@@ -221,7 +222,7 @@ public class UI_Profile extends JFrame {
 		fullname_Box = new RoundedTextField(20);
 		fullname_Box.setBorder(new EmptyBorder(0,10,0,0));
 		fullname_Box.setText(curStudent.getFullname());
-		fullname_Box.setBackground(Color.WHITE);
+		fullname_Box.setBackground(Color.LIGHT_GRAY);
 		fullname_Box.setEditable(false);
 		fullname_Box.setBounds(fullName.getX()+100, profile_content.getHeight()/10-3, 200, 25);
 		profile_content.add(fullname_Box);
@@ -235,7 +236,7 @@ public class UI_Profile extends JFrame {
 		gender_Box = new RoundedTextField(20);
 		gender_Box.setBorder(new EmptyBorder(0,10,0,0));
 		gender_Box.setText(curStudent.getGender());
-		gender_Box.setBackground(Color.WHITE);
+		gender_Box.setBackground(Color.LIGHT_GRAY);
 		gender_Box.setEditable(false);
 		gender_Box.setBounds(gender.getX()+90, profile_content.getHeight()/10-3, 60, 25);
 		profile_content.add(gender_Box);
@@ -249,7 +250,7 @@ public class UI_Profile extends JFrame {
 		idCard_Box = new RoundedTextField(20);
 		idCard_Box.setBorder(new EmptyBorder(0,10,0,0));
 		idCard_Box.setText(curStudent.getIdCard());
-		idCard_Box.setBackground(Color.WHITE);
+		idCard_Box.setBackground(Color.LIGHT_GRAY);
 		idCard_Box.setEditable(false);
 		idCard_Box.setBounds(idCard.getX()+210, profile_content.getHeight()/5-3, 150, 25);
 		profile_content.add(idCard_Box);
@@ -263,7 +264,7 @@ public class UI_Profile extends JFrame {
 		classes_Box = new RoundedTextField(20);
 		classes_Box.setBorder(new EmptyBorder(0,10,0,0));
 		classes_Box.setText(curStudent.getClasses());
-		classes_Box.setBackground(Color.WHITE);
+		classes_Box.setBackground(Color.LIGHT_GRAY);
 		classes_Box.setEditable(false);
 		classes_Box.setBounds(classes.getX()+50, profile_content.getHeight()/5-3, 90, 25);
 		profile_content.add(classes_Box);
@@ -277,7 +278,7 @@ public class UI_Profile extends JFrame {
 		address_Box = new RoundedTextField(20);
 		address_Box.setBorder(new EmptyBorder(0,10,0,0));
 		address_Box.setText(curStudent.getAddress());
-		address_Box.setBackground(Color.WHITE);
+		address_Box.setBackground(Color.LIGHT_GRAY);
 		address_Box.setEditable(false);
 		address_Box.setBounds(address.getX()+70, profile_content.getHeight()*3/10-3, 500, 25);
 		profile_content.add(address_Box);
@@ -334,13 +335,13 @@ public class UI_Profile extends JFrame {
 				save_info.setVisible(true);
 		
 				fullname_Box.setEditable(true);
-				fullname_Box.setBackground(Color.LIGHT_GRAY);
+				fullname_Box.setBackground(Color.WHITE);
 				
 				idCard_Box.setEditable(true);
-				idCard_Box.setBackground(Color.LIGHT_GRAY);
+				idCard_Box.setBackground(Color.WHITE);
 				
 				address_Box.setEditable(true);
-				address_Box.setBackground(Color.LIGHT_GRAY);
+				address_Box.setBackground(Color.WHITE);
 			}
 		});
 		save_info.addActionListener(new ActionListener() {
@@ -352,14 +353,20 @@ public class UI_Profile extends JFrame {
 				save_info.setVisible(false);
 		
 				fullname_Box.setEditable(false);
-				fullname_Box.setBackground(Color.WHITE);
+				fullname_Box.setBackground(Color.LIGHT_GRAY);
 				
 				idCard_Box.setEditable(false);
-				idCard_Box.setBackground(Color.WHITE);
+				idCard_Box.setBackground(Color.LIGHT_GRAY);
 				
 				address_Box.setEditable(false);
-				address_Box.setBackground(Color.WHITE);
+				address_Box.setBackground(Color.LIGHT_GRAY);
 				
+				
+				if(idCard_Box.getText().length() > 10) {
+		        	JOptionPane.showMessageDialog(contentPane,"Không nhập đúng dữ liệu !!!" );
+		        	idCard_Box.setText(curStudent.getIdCard());
+					return;
+				}
 				curStudent.setFullname(fullname_Box.getText());
 				curStudent.setIdCard(idCard_Box.getText());
 				curStudent.setAddress(address_Box.getText());

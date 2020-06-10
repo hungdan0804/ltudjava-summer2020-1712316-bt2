@@ -60,6 +60,7 @@ public class UI_Classes extends JFrame {
 	private JLabel cep;
 	private JLabel list_cep;
 	private JLabel list_classes;
+	private JLabel schedule;
 	private Vector<Vector<String>> data= new Vector<Vector<String>>();
     private Vector<String> column=new Vector<>();
     private Vector<String> choose_classes = new Vector<>();
@@ -152,7 +153,7 @@ public class UI_Classes extends JFrame {
 		Dashboard.setHorizontalAlignment(SwingConstants.LEFT);
 		navi_menu.add(Dashboard);
 		
-		JLabel schedule = new JLabel("Th\u1EDDi kh\u00F3a bi\u1EC3u");
+		schedule = new JLabel("Th\u1EDDi kh\u00F3a bi\u1EC3u");
 		schedule.setForeground(Color.WHITE);
 		schedule.setFont(new Font("Arial", Font.BOLD, 14));
 		schedule.setBorder(new EmptyBorder(0,10,0,0));
@@ -268,6 +269,7 @@ public class UI_Classes extends JFrame {
 		Dashboard.addMouseListener(new MyListener(curStudent,this));
 		sign_out.addMouseListener(new MyListener(curStudent,this));
 		transcripts.addMouseListener(new MyListener(curStudent,this));
+		schedule.addMouseListener(new MyListener(curStudent,this));
 		profile.addMouseListener(new MyListener(curStudent,this));
 		cep.addMouseListener(new MyListener(curStudent,this));
 		list_cep.addMouseListener(new MyListener(curStudent,this));

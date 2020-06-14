@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -42,7 +41,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import MyListener.MyListener;
 import Object.Classes;
 import Object.Student;
-
 import Util.HeaderRenderer;
 import Util.HibernateUtil;
 import Util.RoundedButton;
@@ -69,6 +67,7 @@ public class UI_Classes extends JFrame {
     private JComboBox<String> comboBox_schoolyear = new JComboBox<String>(choose_year);
     private JTable table;
     private JButton btn_import;
+    private JButton insertRow;
 
 	public UI_Classes(Student student) {
 		this.curStudent=student;
@@ -77,8 +76,6 @@ public class UI_Classes extends JFrame {
 			public void run() {
 				// TODO Auto-generated method stub
 				initializeData();
-				comboBox_schoolyear.setSelectedIndex(0);
-				comboBox_classes.setSelectedIndex(0);
 			}
 			
 		});
@@ -193,15 +190,14 @@ public class UI_Classes extends JFrame {
 		list_cep.setBorder(new EmptyBorder(0,10,0,0));
 		navi_menu.add(list_cep);
 		
-		if(curStudent.getRole()==0) {
-			list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
-			list_classes.setFont(new Font("Arial", Font.BOLD, 14));
-			list_classes.setForeground(Color.WHITE);
-			list_classes.setHorizontalAlignment(SwingConstants.LEFT);
-			list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
-			list_classes.setBorder(new EmptyBorder(0,10,0,0));
-			navi_menu.add(list_classes);
-		}
+		list_classes = new JLabel("Danh s\u00E1ch l\u1EDBp");
+		list_classes.setFont(new Font("Arial", Font.BOLD, 14));
+		list_classes.setForeground(Color.WHITE);
+		list_classes.setHorizontalAlignment(SwingConstants.LEFT);
+		list_classes.setIcon(new ImageIcon(UI_DashBoard.class.getResource("/img/navi_icon_7.png")));
+		list_classes.setBorder(new EmptyBorder(0,10,0,0));
+		navi_menu.add(list_classes);
+
 		
 		sign_out = new JLabel("\u0110\u0103ng xu\u1EA5t");
 		sign_out.setFont(new Font("Arial", Font.BOLD, 14));
@@ -249,17 +245,21 @@ public class UI_Classes extends JFrame {
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel.setBounds(content.getWidth()/20, content.getHeight()/18, content.getWidth(), 20);
 		content.add(lblNewLabel);
-		//authentication
-		if(curStudent.getRole()==0) {
-			btn_import = new RoundedButton();
-			btn_import.setText("Import");
-			btn_import.setForeground(Color.WHITE);
-			btn_import.setBackground(new Color(22,72,159));
-			btn_import.setFont(new Font("Arial", Font.BOLD, 12));
-			btn_import.setBounds(content.getWidth()-content.getWidth()/5,content.getHeight()/7, 100, 23);
-			content.add(btn_import);	
-			importListener();
-		}
+		btn_import = new RoundedButton();
+		btn_import.setText("Import");
+		btn_import.setForeground(Color.WHITE);
+		btn_import.setBackground(new Color(22,72,159));
+		btn_import.setFont(new Font("Arial", Font.BOLD, 12));
+		btn_import.setBounds(content.getWidth()-content.getWidth()/3,content.getHeight()/7, 100, 23);
+		content.add(btn_import);	
+		insertRow = new RoundedButton();
+		insertRow.setBackground(new Color(22,72,159));
+		insertRow.setForeground(Color.WHITE);
+		insertRow.setFont(new Font("Arial", Font.BOLD, 12));
+		insertRow.setText("Thêm SV");
+		insertRow.setBounds(btn_import.getX()+btn_import.getWidth()+10, content.getHeight()/7, 90, 23);
+		content.add(insertRow);
+		importListener();
 		filterListener();
 		clickListener();
 	}
@@ -289,8 +289,69 @@ public class UI_Classes extends JFrame {
 		res.add(year.toString());
 		return res;
 	}
+
+
+	private void insertRow(String MSSV,String fullname,String idCard,String gender) {
+		// TODO Auto-generated method stub
+		Transaction transaction = null;
+		Student student = null;
+		try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        	 // start a transaction
+            transaction = session.beginTransaction();
+            student = session.get(Student.class, MSSV);
+            if(student != null) {
+            	JOptionPane.showMessageDialog(contentPane, "Đã tồn tại sinh viên này !!!");
+            }else {
+            	Vector<String> res = new Vector<>();
+            	res.add(Integer.toString(data.size()));
+            	res.add(MSSV);
+            	res.add(fullname);
+            	res.add(gender);
+            	res.add(idCard);
+            	res.add("");
+            	data.add(res);
+            	table.repaint();
+                session.save(new Student(MSSV,fullname,gender,idCard,(String)comboBox_classes.getSelectedItem(),BCrypt.hashpw(MSSV, BCrypt.gensalt()),""));
+            }
+            // commit transaction
+            transaction.commit();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+	
 	
 	private void importListener() {
+		
+		insertRow.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				String MSSV = JOptionPane.showInputDialog("Nhập vào MSSV");
+				String fullname = JOptionPane.showInputDialog("Nhập vào Họ và tên");
+				String [] gend= {"Nam","Nữ"};
+				JComboBox<String> jcb = new JComboBox<String>(gend);			
+				JOptionPane.showMessageDialog( null, jcb, "Chọn giới tính", JOptionPane.QUESTION_MESSAGE);
+				String idCard = JOptionPane.showInputDialog("Nhập vào chứng minh nhân dân");
+				int choice = JOptionPane.showConfirmDialog(contentPane,"MSSV: "+MSSV+"\nHọ và tên: "+fullname+"\nGiới tính: "+jcb.getSelectedItem()+"\nCMND: "+idCard+"\nBấm yes để thêm sinh viên !!!", "Thêm sinh viên",
+			            JOptionPane.YES_NO_OPTION);
+				if (choice == JOptionPane.YES_OPTION){
+					Thread t1= new Thread(new Runnable() {
+		    			@Override
+		    			public void run() {
+		    				// TODO Auto-generated method stub
+		    				insertRow(MSSV,fullname,idCard,(String)jcb.getSelectedItem());   
+		    				
+		    			}
+		    			
+		    		});
+		    		t1.start();  	
+				}
+			}
+		});
+		
+		
 		btn_import.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -355,7 +416,7 @@ public class UI_Classes extends JFrame {
 			session.save(newClasses);
 			for(int i = 0;i<filedata.size();i++) {
 				Vector<String> cur=filedata.get(i);
-				Student newStudent= new Student(cur.get(1),cur.get(2),cur.get(3),cur.get(4),classID,BCrypt.hashpw("123456", BCrypt.gensalt()),cur.get(5));
+				Student newStudent= new Student(cur.get(1),cur.get(2),cur.get(3),cur.get(4),classID,BCrypt.hashpw(cur.get(1), BCrypt.gensalt()),cur.get(5));
 				session.save(newStudent);
 			}
 			//import student for every current course 
@@ -370,7 +431,7 @@ public class UI_Classes extends JFrame {
 		String row="";
 		Vector<Vector<String>> res = new Vector<>();
 		try {
-			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path), Charset.defaultCharset()));
+			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
 			bfr.readLine();
 			while ((row = bfr.readLine()) != null) {
 				Vector<String> temp = new Vector<>();

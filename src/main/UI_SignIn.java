@@ -132,7 +132,6 @@ public class UI_SignIn extends JFrame {
 		background.setOpaque(true);
 		background.setIcon(new ImageIcon(new ImageIcon(UI_SignIn.class.getResource("/img/hcmus_bg.jpg")).getImage().getScaledInstance(contentPane.getWidth(), contentPane.getHeight()*7/8, Image.SCALE_DEFAULT)));
 		content.add(background);
-		
 		submitForm();
 	}
 	

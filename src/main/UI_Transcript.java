@@ -13,7 +13,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -32,6 +31,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import org.hibernate.Query;
@@ -88,11 +88,7 @@ public class UI_Transcript extends JFrame {
 			public void run() {
 				// TODO Auto-generated method stub
 				initializeData();
-				comboBox_year.setSelectedIndex(0);
-				comboBox_term.setSelectedIndex(0);
-				comboBox_course.setSelectedIndex(0);
-				comboBox_pass.setSelectedIndex(0);
-				
+				table.repaint();
 			}
 			
 		});
@@ -437,15 +433,14 @@ public class UI_Transcript extends JFrame {
 							public void run() {
 								// TODO Auto-generated method stub
 								updateTranscript(path,currentCourseID);
+								loadData();
+					        	table.repaint();
+					        	AbstractTableModel model = (AbstractTableModel) table.getModel();
+					        	model.fireTableDataChanged();
 							}
 							
 						});
-						t1.start();
-			        	
-			        	comboBox_year.setSelectedItem(jcb2.getSelectedItem());
-			        	comboBox_term.setSelectedItem(jcb3.getSelectedItem());
-			        	comboBox_course.setSelectedItem(jcb4.getSelectedItem());
-			        	loadData();	        	
+						t1.start();      	
 			        }
 			        if (rVal == JFileChooser.CANCEL_OPTION) {
 
@@ -493,7 +488,7 @@ public class UI_Transcript extends JFrame {
 		String row="";
 		Vector<Vector<String>> res = new Vector<>();
 		try {
-			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path), Charset.defaultCharset()));
+			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path),"UTF-8"));
 			bfr.readLine();
 			while ((row = bfr.readLine()) != null) {
 				Vector<String> temp = new Vector<>();
@@ -546,50 +541,33 @@ public class UI_Transcript extends JFrame {
             	choose_year.add(x.getYear());
             }
             
-            List<Transcript>transcripts;
             //load All classes
             Query query = session.createQuery("from Classes");
             List<Classes> classes= new ArrayList<>(query.list());
             for(Classes i :classes) {
             	choose_classes.add(i.getClassID());
             }
-            query = session.createQuery("from CurrentCourse where scheduleID = :id");
-            String scheduleID=choose_classes.get(0)+"-"+choose_year.get(0)+"-"+choose_term.get(0);
-            query.setParameter("id", scheduleID);
-            List<CurrentCourse> schedules= new ArrayList<>(query.list());
-            if(!schedules.isEmpty()) {
-	           	for(CurrentCourse x: schedules) {
-	          		choose_course.add(x.getCurrentCourseID());
-	           	}
-           	}else {
-           		ratio_pass.setText("Đậu: " + "0%" );
-                ratio_fail.setText("Rớt: " + "0%" );
-                
-            	return;
+            List<CurrentCourse> schedules=null;
+            choose_course.clear();
+            for(String i : choose_classes) {
+	            query = session.createQuery("from CurrentCourse where scheduleID = :id");
+	            String scheduleID=i+"-"+choose_year.get(0)+"-"+choose_term.get(0);
+	            query.setParameter("id", scheduleID);
+	            schedules= new ArrayList<>(query.list());
+	            if(!schedules.isEmpty()) {
+		           	for(CurrentCourse x: schedules) {
+		          		choose_course.add(x.getCurrentCourseID());
+		           	}
+	           	}else {
+	           		ratio_pass.setText("Đậu: " + "0%" );
+	                ratio_fail.setText("Rớt: " + "0%" );
+	            	return;
+	            }
             }
-            CurrentCourse cur= schedules.get(0);
-            query = session.createQuery("from Transcript where currentCourse= :id");
-            query.setParameter("id", cur.getCurrentCourseID());
-            transcripts = new ArrayList<>(query.list());
-            int passRatio=0;
-            for(Integer i=0;i< transcripts.size();i++) {
-            	Transcript x = transcripts.get(i);
-            	Vector<String> t2 =new Vector<>();
-            	passRatio+=checkPass(x);
-            	t2.add(i.toString());
-            	t2.add(x.getStudent().getStudentID());
-           		t2.add(x.getStudent().getFullname());
-           		t2.add(Float.toString(x.getMidtermMark()));
-           		t2.add(Float.toString(x.getFinaltermMark()));
-            	t2.add(Float.toString(x.getOtherMark()));
-            	t2.add(Float.toString(x.getTotalMark()));
-            	data.add(t2);
-            }
-           	int pass=Math.round((float)passRatio/transcripts.size()*100);         	
-            ratio_pass.setText("Đậu: " + pass +"%" );
-            ratio_fail.setText("Rớt: " + (100-pass) +"%" );
         	// commit transaction
             transaction.commit();
+            comboBox_year.setSelectedIndex(0);
+            
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -610,56 +588,37 @@ public class UI_Transcript extends JFrame {
             //Default RatioBox
             comboBox_pass.setSelectedIndex(0);
             comboBox_pass.repaint();
-            List<Transcript>transcripts;
-            
-            Query query = session.createQuery("from CurrentCourse where scheduleID = :id");
-            String scheduleID=choose_classes.get(0)+"-"+comboBox_year.getSelectedItem()+"-"+comboBox_term.getSelectedItem();
-            query.setParameter("id", scheduleID);
-            List<CurrentCourse> schedules= new ArrayList<>(query.list());
-           	choose_course.clear();
-	        if(!schedules.isEmpty()) {
-	        	for(CurrentCourse x: schedules) {
-	           		choose_course.add(x.getCurrentCourseID());
+            List<CurrentCourse> schedules=null;
+            Query query;
+            if(!choose_course.isEmpty()) {
+            	choose_course.clear();
+            }
+            for(String i : choose_classes) {
+	            query = session.createQuery("from CurrentCourse where scheduleID = :id");
+	            String scheduleID=i+"-"+comboBox_year.getSelectedItem()+"-"+comboBox_term.getSelectedItem();
+	            query.setParameter("id", scheduleID);
+	            schedules= new ArrayList<>(query.list());
+	           	
+		        if(!schedules.isEmpty()) {
+		        	for(CurrentCourse x: schedules) {
+		           		choose_course.add(x.getCurrentCourseID());
+		           	}
+		           	       	
+		            
+	            }else {
+	            	choose_course.add(" ");
+	            	comboBox_course.setSelectedItem(choose_course.get(0));
+	           		comboBox_course.repaint();
+	           		data.clear();
+	           		ratio_pass.setText("Đậu: " + "0%" );
+	                ratio_fail.setText("Rớt: " + "0%" );
+	                
+	                ratio_pass.repaint();
+	                ratio_fail.repaint();
+	           		return;
 	           	}
-	           	comboBox_course.setSelectedItem(choose_course.get(0));
-	            
-            }else {
-            	choose_course.add(" ");
-            	comboBox_course.setSelectedItem(choose_course.get(0));
-           		comboBox_course.repaint();
-           		data.clear();
-           		ratio_pass.setText("Đậu: " + "0%" );
-                ratio_fail.setText("Rớt: " + "0%" );
-                
-                ratio_pass.repaint();
-                ratio_fail.repaint();
-           		return;
-           	}
-            	
-            CurrentCourse cur= schedules.get(0);
-           	query = session.createQuery("from Transcript where currentCourse= :id");
-           	query.setParameter("id", cur.getCurrentCourseID());
-           	transcripts = new ArrayList<>(query.list());
-           	data.clear();
-           	int passRatio=0;
-           	if(!transcripts.isEmpty()) {
-	           	for(Integer i=0;i< transcripts.size();i++) {
-	           		Transcript x = transcripts.get(i);
-	           		Vector<String> t2 =new Vector<>();
-	           		passRatio+=checkPass(x);
-	           		t2.add(i.toString());
-	           		t2.add(x.getStudent().getStudentID());
-	           		t2.add(x.getStudent().getFullname());
-	           		t2.add(Float.toString(x.getMidtermMark()));
-	           		t2.add(Float.toString(x.getFinaltermMark()));
-	           		t2.add(Float.toString(x.getOtherMark()));
-	           		t2.add(Float.toString(x.getTotalMark()));
-	           		data.add(t2);
-	           	}
-           	}   
-           	int pass=Math.round((float)passRatio/transcripts.size()*100);         	
-            ratio_pass.setText("Đậu: " + pass +"%" );
-            ratio_fail.setText("Rớt: " + (100-pass) +"%" );
+            }
+            comboBox_course.setSelectedIndex(0);
         	// commit transaction
             transaction.commit();
         }catch (Exception e) {
@@ -789,6 +748,7 @@ public class UI_Transcript extends JFrame {
 	class FilterListener implements ActionListener{
 		@Override
 		public void actionPerformed(java.awt.event.ActionEvent e) {
+					// TODO Auto-generated method stub
 			Thread t1= new Thread(new Runnable() {
 				@Override
 				public void run() {

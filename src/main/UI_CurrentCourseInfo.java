@@ -403,7 +403,7 @@ public class UI_CurrentCourseInfo extends JFrame {
 	            	JOptionPane.showMessageDialog(contentPane, "Không tồn tại sinh viên !!!");
 	            }else {
 	            	Vector<String> res = new Vector<>();
-	            	res.add(Integer.toString(data.size()));
+	            	res.add(Integer.toString(data.size()+1));
 	            	res.add(student.getStudentID());
 	            	res.add(student.getFullname());
 	            	res.add(student.getIdCard());

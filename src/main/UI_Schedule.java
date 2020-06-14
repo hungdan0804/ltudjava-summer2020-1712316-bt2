@@ -15,7 +15,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -80,10 +79,7 @@ public class UI_Schedule extends JFrame {
 			public void run() {
 				// TODO Auto-generated method stub
 				initializeData();
-				comboBox_year.setSelectedIndex(0);
 				comboBox_classes.setSelectedIndex(0);
-				comboBox_term.setSelectedIndex(0);
-				
 			}
 			
 		});
@@ -352,6 +348,9 @@ public class UI_Schedule extends JFrame {
 								public void run() {
 									// TODO Auto-generated method stub
 									updateSchedule(path,classesID,year,term);
+									choose_year.clear();
+									loadData();
+									comboBox_year.setSelectedIndex(choose_year.size()-1);
 								}
 								
 							});
@@ -424,7 +423,6 @@ public class UI_Schedule extends JFrame {
 			//import student for every current course 
 			transaction.commit();
 		}
-		loadData();
 	}
 	
 	private Vector<Vector<String>> readfile(String path) {
@@ -433,7 +431,7 @@ public class UI_Schedule extends JFrame {
 		String row="";
 		Vector<Vector<String>> res = new Vector<>();
 		try {
-			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path), Charset.defaultCharset()));
+			bfr= new BufferedReader(new InputStreamReader(new FileInputStream(path),"UTF-8"));
 			bfr.readLine();
 			while ((row = bfr.readLine()) != null) {
 				Vector<String> temp = new Vector<>();
@@ -559,6 +557,7 @@ public class UI_Schedule extends JFrame {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             // start a transaction
             transaction = session.beginTransaction();
+            
             if(choose_year.isEmpty()) {
             	Query t = session.createQuery("from StudentAndYear where studentID = :id");
                 t.setParameter("id", curStudent.getStudentID());

@@ -66,7 +66,7 @@ public class UI_TranscriptStudent extends JFrame {
 				// TODO Auto-generated method stub
 				initializeData();
 				comboBox_year.setSelectedIndex(0);
-				comboBox_term.setSelectedIndex(0);
+				table.repaint();
 			}
 			
 		});
